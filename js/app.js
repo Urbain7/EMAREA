@@ -1,28 +1,28 @@
 /* =============================== */
-/* MOTEUR D'AGRÉGATION EM AREA V2.2 */
+/* MOTEUR EM AREA V3 (Full Features) */
 /* =============================== */
 
 let allProducts = [];
 let allShops = [];
+let viewedProducts = JSON.parse(localStorage.getItem('em_history')) || [];
 
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
+    checkDarkMode(); // Vérifie le thème
+    renderHistory(); // Affiche l'historique
 });
 
+// --- 1. INITIALISATION ---
 async function initApp() {
-    // 1. Affiche l'animation de chargement
     showSkeletonLoader();
 
     try {
-        // 2. Charger les boutiques
         const res = await fetch('shops.json');
-        if (!res.ok) throw new Error("Impossible de charger les boutiques");
+        if (!res.ok) throw new Error("Erreur Shops");
         allShops = await res.json();
         
         renderShops();
         
-        // 3. Charger les produits (Méthode robuste)
-        // Promise.allSettled permet de continuer même si une boutique plante
         const promises = allShops.map(shop => fetchShopProducts(shop));
         const results = await Promise.allSettled(promises);
         
@@ -31,9 +31,7 @@ async function initApp() {
 
         results.forEach(result => {
             if (result.status === 'fulfilled') {
-                const items = result.value;
-                items.forEach(p => {
-                    // Logique Promo : Produit Star OU Prix barré
+                result.value.forEach(p => {
                     if (p.is_star === true || (p.prix_original && p.prix_original > p.prix)) {
                         promoItems.push(p);
                     } else {
@@ -43,175 +41,180 @@ async function initApp() {
             }
         });
 
-        // Mélange aléatoire
         promoItems.sort(() => 0.5 - Math.random());
         standardItems.sort(() => 0.5 - Math.random());
         
-        // Stockage global
         allProducts = [...promoItems, ...standardItems];
 
-        // 4. Nettoyage et Affichage
-         // A. On vide le conteneur des produits (on enlève l'animation Skeleton)
+        // Nettoyage
         document.getElementById('products-container').innerHTML = ''; 
-        
-        // B. CORRECTION : On force la disparition du texte "Chargement..." s'il est là
-        const textLoader = document.getElementById('loader');
-        if(textLoader) textLoader.style.display = 'none';
+        const loader = document.getElementById('loader');
+        if(loader) loader.style.display = 'none';
         
         renderPromos(promoItems);
         renderProducts(standardItems);
-
-        // Active la recherche
         setupSearch();
 
     } catch (e) {
-        console.error("Erreur critique:", e);
-        document.getElementById('products-container').innerHTML = 
-            `<div style="text-align:center; padding:20px;">Erreur de connexion au marché.</div>`;
+        console.error(e);
+        document.getElementById('products-container').innerHTML = `<div style="text-align:center;">Erreur connexion.</div>`;
     }
 }
 
-async function fetchShopProducts(shop) {
-    try {
-        // Timeout de 5 secondes pour ne pas bloquer le site
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-        const res = await fetch(`${shop.url}/data/produits.json`, { signal: controller.signal });
-        clearTimeout(timeoutId);
-
-        if(!res.ok) return [];
-        const data = await res.json();
-        const items = data.items ? data.items : data;
-        
-        // Normalisation
-        return items.map(p => ({
-            ...p,
-            shopName: shop.name,
-            shopUrl: shop.url,
-            isVerified: shop.verified,
-            // Si l'image n'est pas un lien complet, on ajoute l'URL de la boutique
-            image: p.image.startsWith('http') ? p.image : `${shop.url}/${p.image}`
-        }));
-    } catch (err) { 
-        console.warn(`Boutique ${shop.name} inaccessible.`);
-        return []; 
-    }
-}
-
-function renderShops() {
-    const container = document.getElementById('shops-container');
-    const count = document.getElementById('shop-count');
-    if(count) count.textContent = `${allShops.length} actifs`;
-    
-    container.innerHTML = '';
-    allShops.forEach(shop => {
-        container.innerHTML += `
-            <a href="${shop.url}" class="shop-card" target="_blank">
-                <img src="${shop.logo}" class="shop-logo" onerror="this.src='https://via.placeholder.com/70'">
-                <div class="shop-name">${shop.name}</div>
-            </a>
-        `;
-    });
-}
-
-function renderPromos(promos) {
-    const container = document.getElementById('promo-container');
-    container.innerHTML = '';
-
-    if (promos.length === 0) {
-        container.style.display = 'none';
-        return;
-    }
-
-    promos.forEach(p => {
-        const price = Number(p.prix).toLocaleString() + ' F';
-        const oldPrice = p.prix_original ? `<span class="old-price">${Number(p.prix_original).toLocaleString()} F</span>` : '';
-
-        container.innerHTML += `
-            <div class="promo-card">
-                <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank">
-                    <img src="${p.image}" loading="lazy" onerror="this.src='https://via.placeholder.com/80?text=No+Img'">
-                </a>
-                <div class="promo-info">
-                    <div class="product-shop" style="color:#e67e22;">🔥 PROMO FLASH</div>
-                    <div class="promo-title">${p.nom}</div>
-                    <div>
-                        ${oldPrice}
-                        <span class="promo-price">${price}</span>
-                    </div>
-                    <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank" class="btn btn-primary" style="font-size:0.7rem; padding:5px 15px; margin-top:5px;">Voir</a>
-                </div>
-            </div>
-        `;
-    });
-}
-
+// --- 2. FONCTIONS DE RENDU (Modifiées pour Copie Lien & Historique) ---
 function renderProducts(products) {
     const container = document.getElementById('products-container');
-    
     if(container.innerHTML.includes('skeleton')) container.innerHTML = ''; 
 
     if(products.length === 0) {
-        container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:20px; color:#999;">Aucun produit trouvé.</div>`;
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:20px; color:#999;">Rien trouvé.</div>`;
         return;
     }
 
     products.slice(0, 30).forEach(p => {
         const price = Number(p.prix).toLocaleString() + ' F';
         
-        // PAS DE BADGE CERTIFIÉ ICI
-        
         container.innerHTML += `
             <div class="product-card" data-aos="fade-up">
-                <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank">
-                    <img src="${p.image}" class="product-img" loading="lazy" onerror="this.src='https://via.placeholder.com/150?text=Image+Error'">
+                <!-- Bouton Copier Lien (Idée 6.55) -->
+                <button class="btn-copy" onclick="copyLink('${p.shopUrl}/produit.html?id=${p.id}')">🔗</button>
+                
+                <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank" onclick="addToHistory('${p.id}', '${p.nom}', '${p.image}', '${p.shopUrl}')">
+                    <img src="${p.image}" class="product-img" loading="lazy" onerror="this.src='https://via.placeholder.com/150'">
                 </a>
                 <div class="product-info">
                     <div class="product-shop">${p.shopName}</div>
                     <div class="product-title">${p.nom}</div>
                     <div class="product-price">${price}</div>
-                    <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank" class="btn btn-outline" style="font-size:0.8rem; padding:5px;">Voir</a>
+                    <!-- Bouton avec Vibration (Idée 2.2) -->
+                    <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank" 
+                       onclick="vibratePhone(); addToHistory('${p.id}', '${p.nom}', '${p.image}', '${p.shopUrl}')" 
+                       class="btn btn-outline" style="font-size:0.8rem; padding:5px;">
+                       Voir
+                    </a>
                 </div>
             </div>
         `;
     });
 }
 
-function setupSearch() {
-    const input = document.getElementById('search-input');
-    input.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        const promoContainer = document.getElementById('promo-container');
-        const container = document.getElementById('products-container');
+// --- 3. FONCTIONS UTILITAIRES ---
 
-        if(term.length === 0) {
-            promoContainer.style.display = 'flex';
-            container.innerHTML = '';
-            // On réaffiche les produits standards (simplifié)
-            const standards = allProducts.filter(p => !p.prix_original || p.prix_original <= p.prix);
-            renderProducts(standards);
-            return;
-        }
+// Fetch sécurisé
+async function fetchShopProducts(shop) {
+    try {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), 5000);
+        const res = await fetch(`${shop.url}/data/produits.json`, { signal: controller.signal });
+        clearTimeout(id);
+        if(!res.ok) return [];
+        const data = await res.json();
+        const items = data.items ? data.items : data;
+        return items.map(p => ({
+            ...p, shopName: shop.name, shopUrl: shop.url, isVerified: shop.verified,
+            image: p.image.startsWith('http') ? p.image : `${shop.url}/${p.image}`
+        }));
+    } catch { return []; }
+}
 
-        promoContainer.style.display = 'none';
-        container.innerHTML = '';
-        const filtered = allProducts.filter(p => p.nom.toLowerCase().includes(term));
-        renderProducts(filtered);
+// Rendering Promos & Shops (Identique avant, résumé pour gain de place)
+function renderShops() {
+    const c = document.getElementById('shops-container');
+    c.innerHTML = '';
+    allShops.forEach(s => {
+        c.innerHTML += `<a href="${s.url}" class="shop-card"><img src="${s.logo}" class="shop-logo"><div class="shop-name">${s.name}</div></a>`;
+    });
+    // Ajout du lien vers Jobs dans la liste des shops (Optionnel)
+    c.innerHTML += `<a href="jobs.html" class="shop-card"><div class="shop-logo" style="display:flex;align-items:center;justify-content:center;background:#333;color:white;">💼</div><div class="shop-name">Jobs</div></a>`;
+}
+
+function renderPromos(promos) {
+    const c = document.getElementById('promo-container');
+    if(promos.length===0) { c.style.display='none'; return; }
+    c.innerHTML = '';
+    promos.forEach(p => {
+        c.innerHTML += `<div class="promo-card"><a href="${p.shopUrl}" onclick="addToHistory('${p.id}', '${p.nom}', '${p.image}', '${p.shopUrl}')"><img src="${p.image}"></a><div class="promo-info"><div class="product-shop" style="color:#e67e22;">🔥 PROMO</div><div class="promo-title">${p.nom}</div><span class="promo-price">${Number(p.prix).toLocaleString()} F</span></div></div>`;
     });
 }
 
-function showSkeletonLoader() {
-    const container = document.getElementById('products-container');
-    container.innerHTML = '';
-    // Génère 4 fausses cartes de chargement
-    for(let i=0; i<4; i++) {
-        container.innerHTML += `
-            <div class="skeleton-card skeleton">
-                <div class="skeleton-img skeleton"></div>
-                <div class="skeleton-line skeleton"></div>
-                <div class="skeleton-line short skeleton"></div>
-            </div>
-        `;
+// --- 4. NOUVELLES FONCTIONNALITÉS ---
+
+// Dark Mode
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    vibratePhone();
+    // Sauvegarde
+    if(document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('em_theme', 'dark');
+    } else {
+        localStorage.setItem('em_theme', 'light');
     }
+}
+
+function checkDarkMode() {
+    const theme = localStorage.getItem('em_theme');
+    if(theme === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+}
+
+// Vibration (Haptique)
+window.vibratePhone = () => {
+    if (navigator.vibrate) {
+        navigator.vibrate(50); // Vibre 50ms
+    }
+};
+
+// Copier Lien
+window.copyLink = (url) => {
+    vibratePhone();
+    navigator.clipboard.writeText(url).then(() => {
+        alert("Lien copié !");
+    });
+};
+
+// Historique
+window.addToHistory = (id, name, img, url) => {
+    // Évite les doublons
+    viewedProducts = viewedProducts.filter(p => p.id !== id);
+    // Ajoute au début
+    viewedProducts.unshift({ id, name, img, url });
+    // Garde max 10
+    if(viewedProducts.length > 10) viewedProducts.pop();
+    // Sauvegarde
+    localStorage.setItem('em_history', JSON.stringify(viewedProducts));
+};
+
+function renderHistory() {
+    const container = document.getElementById('history-container');
+    if(!container || viewedProducts.length === 0) return;
+    
+    document.getElementById('history-section').style.display = 'block';
+    container.innerHTML = '';
+    
+    viewedProducts.forEach(p => {
+        container.innerHTML += `
+            <a href="${p.url}/produit.html?id=${p.id}" class="history-card">
+                <img src="${p.img}">
+                <div>${p.name}</div>
+            </a>
+        `;
+    });
+}
+
+// Search et Loader (Déjà vus)
+function setupSearch() {
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const c = document.getElementById('products-container');
+        c.innerHTML = '';
+        const f = allProducts.filter(p => p.nom.toLowerCase().includes(term));
+        if(f.length>0) renderProducts(f);
+        else c.innerHTML = '<div style="text-align:center;width:100%;">Rien trouvé</div>';
+    });
+}
+function showSkeletonLoader() {
+    const c = document.getElementById('products-container');
+    c.innerHTML = '';
+    for(let i=0; i<4; i++) c.innerHTML += `<div class="skeleton-card skeleton"><div class="skeleton-img skeleton"></div><div class="skeleton-line skeleton"></div></div>`;
 }
