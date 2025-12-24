@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>EM AREA</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
@@ -12,7 +12,6 @@
 </head>
 <body>
 
-    <!-- Header -->
     <header class="app-header">
         <a href="index.html" class="logo">EM <span>AREA</span></a>
         <a href="vendre.html" style="font-size:0.8rem; font-weight:600;">Devenir Vendeur</a>
@@ -29,18 +28,27 @@
             <span>Boutiques Officielles</span>
             <span style="font-size:0.8rem; color:#888;" id="shop-count">0 actifs</span>
         </div>
-        <div class="shops-slider" id="shops-container">
+        <div class="shops-slider" id="shops-container"></div>
+
+        <!-- NOUVEAU : SLIDER PROMOS & TENDANCES -->
+        <!-- Algorithme spécial : Affiche les produits avec réduction ou Stars -->
+        <div class="section-title">
+            <span>⚡ Offres Flash & Promos</span>
+            <span class="scroll-hint-text">Glisser ↔</span>
+        </div>
+        
+        <!-- Conteneur horizontal (Slider) -->
+        <div class="promo-slider-container" id="promo-container">
             <!-- Rempli par JS -->
+            <div class="loader-mini">Recherche des promos...</div>
         </div>
 
-        <!-- Produits -->
+        <!-- Grille Produits Classique -->
         <div class="section-title">
-            <span>🔥 Tendances & Nouveautés</span>
+            <span>🔥 Tout le catalogue</span>
         </div>
-        <div id="loader" style="text-align:center; padding:40px; color:#888;">Chargement du marché...</div>
-        <div class="product-grid" id="products-container">
-            <!-- Rempli par JS -->
-        </div>
+        <div id="loader" style="text-align:center; padding:40px; color:#888;">Chargement...</div>
+        <div class="product-grid" id="products-container"></div>
         
         <button id="load-more-btn" class="btn btn-outline" style="display:none;">Voir plus d'offres ↓</button>
     </div>
@@ -52,7 +60,7 @@
             <p>Accédez au marché plus rapidement.</p>
             <button class="btn btn-primary" onclick="alert('Ajoutez ce site à votre écran d\'accueil !')">📲 Installer</button>
         </div>
-        <p>&copy; 2025 EM AREA. Tous droits réservés.</p>
+        <p>&copy; 2025 EM AREA.</p>
     </footer>
 
     <!-- Bottom Nav -->
@@ -67,7 +75,6 @@
         </a>
     </nav>
 
-    <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>AOS.init();</script>
     <script src="js/app.js"></script>
