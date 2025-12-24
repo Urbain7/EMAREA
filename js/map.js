@@ -1,117 +1,112 @@
-/* =============================== */
-/* LOGIQUE DE LA CARTE (LEAFLET)   */
-/* =============================== */
-
 let map;
 let allShops = [];
+let userPos = null;
+let routingControl = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Récupérer les boutiques
     const res = await fetch('shops.json');
     allShops = await res.json();
-    
     initMap();
-    renderDistanceList(null); // Liste vide au début
 });
 
 function initMap() {
-    // Centrer sur Lomé par défaut
     map = L.map('map').setView([6.172, 1.23], 12);
     
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap'
     }).addTo(map);
 
-    // Ajouter les marqueurs des boutiques
     allShops.forEach(shop => {
         if(shop.lat && shop.lng) {
-            const popup = `<b>${shop.name}</b><br>${shop.location}<br><a href="${shop.url}" target="_blank">Visiter</a>`;
+            // Bouton "Y aller" qui lance la fonction drawRoute
+            const popup = `
+                <b>${shop.name}</b><br>${shop.location}<br>
+                <button onclick="drawRoute(${shop.lat}, ${shop.lng})" style="background:#2EC4B6; color:white; border:none; padding:5px 10px; border-radius:4px; margin-top:5px; cursor:pointer;">🛣️ Y aller</button>
+            `;
             L.marker([shop.lat, shop.lng]).addTo(map).bindPopup(popup);
         }
     });
 }
 
-// Fonction appelée par le bouton "Autour de moi"
 window.locateUser = () => {
-    if (!navigator.geolocation) {
-        alert("La géolocalisation n'est pas supportée par votre navigateur.");
-        return;
-    }
+    if (!navigator.geolocation) return alert("GPS non supporté");
 
     navigator.geolocation.getCurrentPosition(
         (position) => {
-            const userLat = position.coords.latitude;
-            const userLng = position.coords.longitude;
+            userPos = [position.coords.latitude, position.coords.longitude];
             
-            // Zoom sur l'utilisateur
-            map.setView([userLat, userLng], 14);
+            map.setView(userPos, 13);
+            L.marker(userPos, {icon: redIcon()}).addTo(map).bindPopup("Vous").openPopup();
             
-            // Marqueur Utilisateur (Rouge)
-            L.marker([userLat, userLng], {icon: redIcon()}).addTo(map).bindPopup("Vous êtes ici").openPopup();
-            
-            // Calcul des distances
-            calculateDistances(userLat, userLng);
+            // Calculer les distances pour la liste
+            renderDistanceList(userPos);
         },
-        () => {
-            alert("Impossible de vous localiser. Vérifiez vos paramètres GPS.");
-        }
+        () => alert("Activez votre GPS !")
     );
 };
 
-function calculateDistances(lat, lng) {
-    // Formule de Haversine pour la distance
-    allShops.forEach(shop => {
-        if(shop.lat) {
-            shop.distance = getDistanceFromLatLonInKm(lat, lng, shop.lat, shop.lng);
-        } else {
-            shop.distance = 9999; // Loin (Boutique en ligne)
-        }
-    });
-
-    // Trier du plus proche au plus loin
-    allShops.sort((a, b) => a.distance - b.distance);
-
-    renderDistanceList(true);
-}
-
-function renderDistanceList(hasLocation) {
-    const container = document.getElementById('distance-list');
-    container.innerHTML = '';
-
-    if(!hasLocation) {
-        container.innerHTML = '<p style="text-align:center;color:#888;">Cliquez sur "Autour de moi" pour voir les distances.</p>';
+// --- FONCTION DE TRACÉ D'ITINÉRAIRE ---
+window.drawRoute = (destLat, destLng) => {
+    if (!userPos) {
+        alert("Veuillez d'abord cliquer sur '📍 Autour de moi' pour vous localiser.");
         return;
     }
 
-    allShops.forEach(shop => {
-        // Si distance infinie (boutique en ligne), on ne l'affiche pas dans le tri kilométrique
-        if(shop.distance < 9000) {
-            container.innerHTML += `
+    // Supprimer l'ancien tracé s'il y en a un
+    if (routingControl) {
+        map.removeControl(routingControl);
+    }
+
+    // Créer le nouveau tracé
+    if (typeof L.Routing !== 'undefined') {
+        routingControl = L.Routing.control({
+            waypoints: [
+                L.latLng(userPos[0], userPos[1]),
+                L.latLng(destLat, destLng)
+            ],
+            routeWhileDragging: false,
+            // On cache les instructions textuelles moches (on garde que la ligne)
+            show: false, 
+            createMarker: function() { return null; } // Pas de nouveaux marqueurs moches
+        }).addTo(map);
+    } else {
+        alert("Chargement de la carte en cours...");
+    }
+};
+
+function renderDistanceList(user) {
+    const list = document.getElementById('distance-list');
+    list.innerHTML = '';
+    
+    allShops.forEach(s => {
+        if(s.lat) s.dist = getDist(user[0], user[1], s.lat, s.lng);
+        else s.dist = 9999;
+    });
+    allShops.sort((a,b) => a.dist - b.dist);
+
+    allShops.forEach(s => {
+        if(s.dist < 9000) {
+            list.innerHTML += `
                 <div class="distance-item">
-                    <img src="${shop.logo}" style="width:40px; height:40px; border-radius:50%; margin-right:10px;">
-                    <div>
-                        <div style="font-weight:bold;">${shop.name}</div>
-                        <div style="font-size:0.8rem; color:#666;">${shop.location}</div>
+                    <img src="${s.logo}" style="width:40px;height:40px;border-radius:50%;margin-right:10px;">
+                    <div style="flex:1;">
+                        <div style="font-weight:bold">${s.name}</div>
+                        <div style="font-size:0.7rem">${s.location}</div>
                     </div>
-                    <div class="dist-val">${shop.distance.toFixed(1)} km</div>
-                </div>
-            `;
+                    <div class="dist-val">${s.dist.toFixed(1)} km</div>
+                </div>`;
         }
     });
 }
 
-// Maths (Haversine)
-function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-  var R = 6371; // Rayon de la terre en km
-  var dLat = deg2rad(lat2-lat1); 
-  var dLon = deg2rad(lon2-lon1); 
-  var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2); 
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-  return R * c; 
+function getDist(lat1,lon1,lat2,lon2) {
+  var R = 6371; 
+  var dLat = (lat2-lat1)*(Math.PI/180); 
+  var dLon = (lon2-lon1)*(Math.PI/180); 
+  var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*(Math.PI/180))*Math.cos(lat2*(Math.PI/180))*Math.sin(dLon/2)*Math.sin(dLon/2); 
+  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))); 
 }
-function deg2rad(deg) { return deg * (Math.PI/180) }
 
-// Petite icône rouge pour l'user
 function redIcon() {
     return new L.Icon({
         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
