@@ -23,34 +23,49 @@
         <div class="section-title">Offres d'emploi disponibles</div>
         <p style="font-size:0.8rem; color:#666; margin-bottom:20px;">Les boutiques partenaires recrutent.</p>
 
-        <!-- Liste des Jobs -->
-        <!-- DANS jobs.html -->
+      <!-- DANS jobs.html -->
 
         <!-- Job 1 -->
-        <div class="job-card">
+        <!-- data-id="job-1" : Identifiant unique -->
+        <!-- data-views="142" : Nombre de vues de départ (simulé) -->
+        <!-- onclick="registerView('job-1')" : Déclenche le comptage au clic -->
+        <div class="job-card" id="job-1" data-views="142" onclick="registerView('job-1')">
             <span class="job-tag">Vente</span>
-            <div style="float:right;" class="job-time">⏱️ Publié le 24/12 à 14:30</div> <!-- DATE AJOUTÉE -->
+            
+            <!-- Ligne Infos : Date + Vues -->
+            <div style="float:right; font-size:0.7rem; color:#999; display:flex; gap:10px;">
+                <span class="job-time">⏱️ 24/12</span>
+                <span style="color:#666; font-weight:600;">
+                    👁️ <span id="view-txt-job-1">142</span>
+                </span>
+            </div>
             
             <h3 style="margin:5px 0; clear:both;">Vendeuse Boutique</h3>
             <p style="font-size:0.8rem; color:#888;">Sandy'Shop - Agoè</p>
-            <p style="font-size:0.85rem;">Cherche vendeuse dynamique, habitant la zone. Expérience souhaitée.</p>
+            <p style="font-size:0.85rem;">Cherche vendeuse dynamique. Expérience souhaitée.</p>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
                 <span class="job-salary">40.000F / mois</span>
-                <a href="#" class="btn btn-primary" style="font-size:0.7rem; padding:8px 15px;">Postuler</a>
+                <button class="btn btn-primary" style="font-size:0.7rem; padding:8px 15px;">Postuler</button>
             </div>
         </div>
 
         <!-- Job 2 -->
-        <div class="job-card">
+        <div class="job-card" id="job-2" data-views="859" onclick="registerView('job-2')">
             <span class="job-tag">Logistique</span>
-            <div style="float:right;" class="job-time">⏱️ Publié le 24/12 à 09:15</div> <!-- DATE AJOUTÉE -->
+            
+            <div style="float:right; font-size:0.7rem; color:#999; display:flex; gap:10px;">
+                <span class="job-time">⏱️ 24/12</span>
+                <span style="color:#666; font-weight:600;">
+                    👁️ <span id="view-txt-job-2">859</span>
+                </span>
+            </div>
             
             <h3 style="margin:5px 0; clear:both;">Livreur Moto (Zem)</h3>
             <p style="font-size:0.8rem; color:#888;">EM AREA - Toute la ville</p>
-            <p style="font-size:0.85rem;">Nous cherchons des livreurs avec moto personnelle. Paiement à la course.</p>
+            <p style="font-size:0.85rem;">Paiement à la course. Moto personnelle requise.</p>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
                 <span class="job-salary">Commission</span>
-                <a href="#" class="btn btn-primary" style="font-size:0.7rem; padding:8px 15px;">Postuler</a>
+                <button class="btn btn-primary" style="font-size:0.7rem; padding:8px 15px;">Postuler</button>
             </div>
         </div>
     </div>
