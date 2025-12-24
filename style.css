@@ -132,3 +132,26 @@ footer { background: var(--dark); color: #888; padding: 40px 20px 80px; text-ali
 
 .scroll-hint-text { font-size: 0.7rem; color: #999; animation: bounceX 1.5s infinite; }
 @keyframes bounceX { 0%, 100% {transform: translateX(0);} 50% {transform: translateX(5px);} }
+
+/* BOUTON INSTALLATION FLOTTANT */
+#pwa-install-btn {
+    display: none; /* Caché par défaut */
+    position: fixed;
+    bottom: 80px; /* Au dessus du menu du bas */
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--dark);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 9999;
+    border: 1px solid white;
+    animation: popUp 0.5s ease-out;
+    cursor: pointer;
+    font-size: 0.9rem;
+    align-items: center;
+    gap: 10px;
+}
+@keyframes popUp { from{transform:translate(-50%, 100px);} to{transform:translate(-50%, 0);} }
