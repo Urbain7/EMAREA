@@ -249,4 +249,34 @@ body.dark-mode .theme-toggle { background: white; color: var(--dark); }
     cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border: none; z-index: 2;
 }
-body.dark-mode .btn-copy { background: #333; color: white; }
+/* --- AJOUTS FINAUX style.css --- */
+
+/* 1. CORRECTION LOGO MODE SOMBRE */
+body.dark-mode .logo { 
+    color: #ffffff !important; /* Force le blanc */
+}
+/* Le point orange reste orange grâce au span, pas besoin de toucher */
+
+/* 2. STYLE DATE DES JOBS */
+.job-time {
+    font-size: 0.7rem;
+    color: #999;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+body.dark-mode .job-time { color: #bbb; }
+
+/* 3. MODE SOMBRE CARTE (Boutons et Fond) */
+/* Rend les popups de la carte sombres aussi */
+body.dark-mode .leaflet-popup-content-wrapper,
+body.dark-mode .leaflet-popup-tip {
+    background: #1e1e1e;
+    color: white;
+}
+body.dark-mode .leaflet-popup-content h3 { color: white; }
+body.dark-mode .leaflet-popup-content p { color: #ccc !important; }
+
+/* Ajustement bouton toggle sur la map (pour qu'il soit au dessus de la carte) */
+body .theme-toggle { z-index: 9999; }
