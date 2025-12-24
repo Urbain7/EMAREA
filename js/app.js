@@ -284,3 +284,64 @@ function renderHistory() {
         `;
     });
 }
+/* --- AJOUTS DANS js/app.js (Système de Vues Uniques) --- */
+
+// 1. Au chargement, on vérifie les vues déjà enregistrées
+document.addEventListener('DOMContentLoaded', () => {
+    // On sélectionne toutes les cartes Job
+    const jobs = document.querySelectorAll('.job-card');
+    
+    jobs.forEach(job => {
+        const id = job.id; // ex: 'job-1'
+        const baseViews = parseInt(job.getAttribute('data-views'));
+        const viewText = document.getElementById(`view-txt-${id}`);
+        
+        // On regarde dans la mémoire du téléphone si c'est déjà vu
+        const hasSeen = localStorage.getItem(`seen_${id}`);
+        
+        if (hasSeen) {
+            // Si déjà vu, on affiche le nombre + 1
+            viewText.textContent = formatViews(baseViews + 1);
+            // On ajoute une petite classe visuelle (optionnel)
+            viewText.style.color = "#FF9F1C"; // Orange pour dire "Vu"
+        } else {
+            // Sinon on affiche le nombre de base
+            viewText.textContent = formatViews(baseViews);
+        }
+    });
+});
+
+// 2. Fonction déclenchée au clic (Utilisateur Unique)
+window.registerView = (jobId) => {
+    // Vérifie si déjà compté
+    if (!localStorage.getItem(`seen_${jobId}`)) {
+        
+        // 1. Marquer comme vu dans le téléphone
+        localStorage.setItem(`seen_${jobId}`, 'true');
+        
+        // 2. Mettre à jour l'affichage visuel (+1)
+        const el = document.getElementById(`view-txt-${jobId}`);
+        const card = document.getElementById(jobId);
+        
+        // Récupère le nombre actuel non-formaté depuis l'attribut HTML
+        let currentCount = parseInt(card.getAttribute('data-views'));
+        let newCount = currentCount + 1;
+        
+        // Animation simple du chiffre
+        el.textContent = formatViews(newCount);
+        el.style.color = "#FF9F1C"; // Change la couleur
+        
+        console.log(`Vue unique comptabilisée pour ${jobId}`);
+    }
+};
+
+// 3. Formatteur style YouTube (1200 -> 1.2k)
+function formatViews(num) {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    }
+    if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'k';
+    }
+    return num.toString();
+}
