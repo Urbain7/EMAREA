@@ -9,20 +9,21 @@
         .job-card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .job-tag { display: inline-block; background: #e3f2fd; color: #2196f3; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-bottom: 10px; }
         .job-salary { color: #27ae60; font-weight: bold; font-size: 0.9rem; }
-        .dark-mode .job-card { background: #1a1a1a; border-color: #333; color: white; }
+        /* Support Dark Mode */
+        body.dark-mode .job-card { background: #1e1e1e; border-color: #333; color: white; }
     </style>
 </head>
 <body>
     <header class="app-header">
         <a href="index.html" class="logo">EM <span>JOBS</span></a>
-        <a href="index.html" style="font-size:0.8rem;">Retour</a>
+        <!-- Plus besoin de lien retour, on a le menu du bas -->
     </header>
 
     <div class="container">
         <div class="section-title">💼 Offres d'emploi disponibles</div>
         <p style="font-size:0.8rem; color:#666; margin-bottom:20px;">Les boutiques partenaires recrutent.</p>
 
-        <!-- Liste des Jobs (Statique pour l'exemple) -->
+        <!-- Liste des Jobs -->
         <div class="job-card">
             <span class="job-tag">Vente</span>
             <h3 style="margin:5px 0;">Vendeuse Boutique</h3>
@@ -30,7 +31,7 @@
             <p style="font-size:0.85rem;">Cherche vendeuse dynamique, habitant la zone. Expérience souhaitée.</p>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
                 <span class="job-salary">40.000F / mois</span>
-                <a href="https://wa.me/22890000000?text=Je postule pour vendeuse" class="btn btn-primary" style="font-size:0.7rem; padding:8px 15px;">Postuler</a>
+                <a href="#" class="btn btn-primary" style="font-size:0.7rem; padding:8px 15px;">Postuler</a>
             </div>
         </div>
 
@@ -41,30 +42,28 @@
             <p style="font-size:0.85rem;">Nous cherchons des livreurs avec moto personnelle. Paiement à la course.</p>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
                 <span class="job-salary">Commission</span>
-                <a href="https://wa.me/22890000000?text=Je suis livreur" class="btn btn-primary" style="font-size:0.7rem; padding:8px 15px;">Postuler</a>
+                <a href="#" class="btn btn-primary" style="font-size:0.7rem; padding:8px 15px;">Postuler</a>
             </div>
         </div>
     </div>
-<!-- À REMPLACER DANS index.html, map.html ET jobs.html -->
-<nav class="bottom-nav">
-    <!-- Lien Accueil -->
-    <a href="index.html" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-        Accueil
-    </a>
-    
-    <!-- NOUVEAU : Lien Jobs -->
-    <a href="jobs.html" class="nav-item active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-        Jobs
-    </a>
 
-    <!-- Lien Carte -->
-    <a href="map.html" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
-        Carte
-    </a>
-</nav>
-    <script src="js/app.js"></script> <!-- Pour le dark mode -->
+    <!-- Menu du bas -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            Accueil
+        </a>
+        <a href="jobs.html" class="nav-item active"> <!-- Note le ACTIVE ici -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            Jobs
+        </a>
+        <a href="map.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+            Carte
+        </a>
+    </nav>
+    
+    <div class="theme-toggle" onclick="toggleDarkMode()">🌓</div>
+    <script src="js/app.js"></script>
 </body>
 </html>
