@@ -1,5 +1,5 @@
 /* =============================== */
-/* MOTEUR D'AGRÉGATION EM AREA    */
+/* MOTEUR D'AGRÉGATION EM AREA V2 */
 /* =============================== */
 
 let allProducts = [];
@@ -15,56 +15,56 @@ async function initApp() {
         const res = await fetch('shops.json');
         allShops = await res.json();
         
-        // Afficher les logos
         renderShops();
         
         // 2. Aspirer les produits
         const promises = allShops.map(shop => fetchShopProducts(shop));
         const results = await Promise.all(promises);
         
-        // 3. Algorithme de tri intelligent
-        // On veut mélanger, mais mettre les "Nouveaux" (3 derniers de chaque boutique) en avant
-        let newItems = [];
-        let standardItems = [];
+        let promoItems = []; // Liste pour le slider
+        let standardItems = []; // Liste pour la grille
 
         results.forEach(items => {
-            // Les produits JSON sont souvent du plus vieux au plus récent
-            // On inverse pour avoir les récents
-            const reversed = items.reverse();
-            
-            // Les 3 premiers sont "Nouveaux"
-            reversed.forEach((p, index) => {
-                if(index < 3) {
-                    p.isNew = true;
-                    newItems.push(p);
+            items.forEach(p => {
+                // ALGORITHME DE TRI PROMO
+                // Si le produit est "Star" OU s'il a un prix original (donc une réduction)
+                // On le met dans le slider Promo
+                if (p.is_star === true || (p.prix_original && p.prix_original > p.prix)) {
+                    promoItems.push(p);
                 } else {
                     standardItems.push(p);
                 }
             });
         });
 
-        // Mélange aléatoire des standards pour l'équité
+        // Mélange
+        promoItems.sort(() => 0.5 - Math.random());
         standardItems.sort(() => 0.5 - Math.random());
-        // Mélange des nouveaux aussi
-        newItems.sort(() => 0.5 - Math.random());
+        
+        // On fusionne tout pour la recherche globale, mais on affiche séparément
+        allProducts = [...promoItems, ...standardItems];
 
-        // Fusion : Nouveaux d'abord, le reste ensuite
-        allProducts = [...newItems, ...standardItems];
-
-        // 4. Affichage
+        // 3. Affichage
         document.getElementById('loader').style.display = 'none';
-        renderProducts(allProducts);
+        
+        // Affiche le slider horizontal des promos
+        renderPromos(promoItems);
+        
+        // Affiche la grille classique
+        renderProducts(standardItems);
 
-        // Activer la recherche
+        // Recherche
         document.getElementById('search-input').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             const filtered = allProducts.filter(p => p.nom.toLowerCase().includes(term));
+            // En recherche, on affiche tout dans la grille
             renderProducts(filtered);
+            // On cache le slider promo pendant la recherche pour ne pas gêner
+            document.getElementById('promo-container').style.display = term ? 'none' : 'flex';
         });
 
     } catch (e) {
         console.error(e);
-        document.getElementById('loader').innerHTML = "Erreur de connexion.";
     }
 }
 
@@ -80,7 +80,6 @@ async function fetchShopProducts(shop) {
             shopName: shop.name,
             shopUrl: shop.url,
             isVerified: shop.verified,
-            // Correction URL image absolue
             image: p.image.startsWith('http') ? p.image : `${shop.url}/${p.image}`
         }));
     } catch { return []; }
@@ -101,20 +100,50 @@ function renderShops() {
     });
 }
 
+// NOUVEAU : Fonction pour le slider horizontal
+function renderPromos(promos) {
+    const container = document.getElementById('promo-container');
+    container.innerHTML = '';
+
+    if (promos.length === 0) {
+        container.innerHTML = '<p style="font-size:0.8rem; color:#888; padding:10px;">Pas de promo aujourd\'hui.</p>';
+        return;
+    }
+
+    promos.forEach(p => {
+        const price = Number(p.prix).toLocaleString() + ' F';
+        // Affichage ancien prix barré
+        const oldPrice = p.prix_original ? `<span class="old-price">${Number(p.prix_original).toLocaleString()} F</span>` : '';
+
+        container.innerHTML += `
+            <div class="promo-card">
+                <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank">
+                    <img src="${p.image}" loading="lazy">
+                </a>
+                <div class="promo-info">
+                    <div class="product-shop" style="color:#e67e22;">🔥 PROMO FLASH</div>
+                    <div class="promo-title">${p.nom}</div>
+                    <div>
+                        ${oldPrice}
+                        <span class="promo-price">${price}</span>
+                    </div>
+                    <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank" class="btn btn-primary" style="font-size:0.7rem; padding:5px 15px; margin-top:5px;">Voir</a>
+                </div>
+            </div>
+        `;
+    });
+}
+
 function renderProducts(products) {
     const container = document.getElementById('products-container');
     container.innerHTML = '';
-
-    // Pagination simple : on affiche les 20 premiers pour l'instant
-    // (Vous pourrez réactiver le Load More plus tard)
+    
     products.slice(0, 24).forEach(p => {
         const price = Number(p.prix).toLocaleString() + ' F';
-        const badge = p.isNew ? '<span class="tag-new">NOUVEAU</span>' : '';
         const certif = p.isVerified ? '<span class="badge-verified">CERTIFIÉ</span>' : '';
 
         container.innerHTML += `
             <div class="product-card" data-aos="fade-up">
-                ${badge}
                 <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank">
                     <img src="${p.image}" class="product-img" loading="lazy">
                 </a>
