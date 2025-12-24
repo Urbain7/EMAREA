@@ -312,7 +312,7 @@ body.dark-mode .leaflet-popup-tip {
 body.dark-mode .leaflet-popup-content h3 { color: #ff9f1c !important; }
 body.dark-mode .leaflet-popup-content p { color: #ddd !important; }
 
-* Boutons */
+/* Boutons */
 .btn { display: inline-block; padding: 10px 20px; border-radius: 50px; font-weight: 600; transition: 0.2s; border: none; cursor: pointer; }
 .btn-primary { background: var(--primary); color: white; }
 .btn-outline { border: 1px solid #ddd; background: white; color: var(--dark); width: 100%; margin-top: 10px; }
