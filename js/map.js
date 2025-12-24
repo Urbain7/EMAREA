@@ -1,6 +1,6 @@
-/* --- START OF FILE js/map.js (Version Stable) --- */
+/* --- START OF FILE js/map.js --- */
 
-let map;
+let map = null; // Important : on initialise à null
 let allShops = [];
 let userPos = null;
 let routingControl = null;
@@ -18,25 +18,23 @@ const iconShop = L.icon({
     iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
 });
 
-// Démarrage
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("Démarrage Map...");
-    
-    // Petite sécurité : on attend 100ms que le HTML soit bien en place
-    setTimeout(() => {
-        if(document.getElementById('map')) {
-            initMap();
-            loadShopsData();
-        } else {
-            console.error("Erreur: Pas de div #map trouvée !");
-        }
-    }, 100);
+// On attend que TOUT soit chargé (HTML + CSS + Images)
+window.addEventListener('load', () => {
+    // Si la div #map existe, on lance la carte
+    if(document.getElementById('map')) {
+        initMap();
+        loadShopsData();
+    }
 });
 
 function initMap() {
-    // Si la carte existe déjà, on ne la recrée pas (évite bug gris)
-    if (map) return;
+    // Sécurité : Si une carte existe déjà, on la détruit proprement
+    if (map !== null) {
+        map.remove();
+        map = null;
+    }
 
+    // Création de la carte
     map = L.map('map').setView([6.172, 1.23], 13);
     
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -55,16 +53,18 @@ function initMap() {
         }).addTo(map);
     });
 
+    // Boussole
     addCompassControl();
-    
-    // Force la carte à se redessiner après chargement (Correction bug gris)
+
+    // ASTUCE : On force la carte à recalculer sa taille après 500ms
+    // C'est souvent ça qui corrige le bug de l'écran gris/blanc
     setTimeout(() => { map.invalidateSize(); }, 500);
 }
 
 async function loadShopsData() {
     try {
         const res = await fetch('shops.json');
-        if(!res.ok) return;
+        if(!res.ok) return; // Si erreur, on arrête sans planter
         allShops = await res.json();
         
         allShops.forEach(shop => {
@@ -84,16 +84,17 @@ async function loadShopsData() {
             }
         });
         
-        // Si l'utilisateur est déjà localisé (rechargement page), on met à jour la liste
         if(userPos) renderDistanceList(userPos);
 
-    } catch (e) { console.log(e); }
+    } catch (e) { 
+        console.log("Erreur boutiques", e); 
+    }
 }
 
 // --- GPS & TRAJET ---
 
 window.locateUser = () => {
-    if (!navigator.geolocation) return alert("Pas de GPS.");
+    if (!navigator.geolocation) return alert("GPS non dispo.");
     const btn = document.querySelector('.btn-primary');
     if(btn) btn.textContent = "⏳ ...";
 
@@ -138,7 +139,7 @@ function renderDistanceList(user) {
             let timeTxt = min > 60 ? `${Math.floor(min/60)}h ${min%60}min` : `${min} min`;
 
             list.innerHTML += `
-                <div class="distance-item" onclick="map.setView([${s.lat}, ${s.lng}], 16)">
+                <div class="distance-item" onclick="window.scrollTo(0,0); map.setView([${s.lat}, ${s.lng}], 16);">
                     <img src="${s.logo}" style="width:40px;height:40px;border-radius:50%;margin-right:10px;object-fit:cover;border:1px solid #eee;">
                     <div style="flex:1;">
                         <div style="font-weight:bold">${s.name}</div>
