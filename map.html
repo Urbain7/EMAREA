@@ -3,119 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Test Carte - EM AREA</title>
+    <title>Carte - EM AREA</title>
     
-    <!-- 1. STYLE BASIQUE INTEGRE -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- 1. CHARGEMENT CARTE (CRITIQUE : NE PAS DÉPLACER) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Routing (Itinéraire) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
     <style>
-        /* On met une bordure rouge temporaire pour prouver que la boite est là */
+        /* On garde la hauteur forcée qui a sauvé la mise */
         #map {
+            width: 100%;
             height: 60vh;
             min-height: 400px;
-            width: 100%;
-            background-color: #e5e5e5; /* Gris si la carte ne charge pas */
-            border: 2px solid red; /* TEST VISUEL */
+            background-color: #e5e5e5;
             border-radius: 12px;
-            margin-top: 20px;
+            margin-top: 15px;
+            z-index: 1;
         }
+        /* Cache les instructions texte du GPS */
+        .leaflet-routing-container { display: none !important; }
     </style>
-
-    <!-- 2. LEAFLET CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 </head>
 <body>
 
     <header class="app-header">
         <a href="index.html" class="logo">EM <span>AREA</span></a>
-        <span>TEST GPS</span>
+        <span>GPS</span>
     </header>
 
     <div class="container">
-        <div class="hero" style="background:#333; color:white; padding:15px; border-radius:12px; margin-top:15px;">
-            <p style="margin:0;">Si vous voyez un cadre rouge ci-dessous, le code fonctionne.</p>
-            <button class="btn btn-primary" onclick="locateUser()" style="margin-top:10px;">📍 Me Localiser</button>
+        <!-- Bannière Info -->
+        <div class="hero" style="background:linear-gradient(45deg, #FF9F1C, #e67e22); padding:15px; color:white; border-radius:12px; margin-top:15px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h1 style="font-size:1rem; margin:0;">GPS Moto</h1>
+                    <p style="font-size:0.75rem; opacity:0.9; margin:0;">Voir le temps de trajet.</p>
+                </div>
+                <button class="btn btn-primary" onclick="locateUser()" style="background:white; color:#FF9F1C; border:none; padding:8px 15px; font-size:0.8rem;">📍 Activer</button>
+            </div>
         </div>
 
         <!-- LA CARTE -->
         <div id="map"></div>
-        
-        <div id="status" style="margin-top:10px; color:blue;">Chargement...</div>
+
+        <!-- Liste des boutiques -->
+        <div class="section-title">Boutiques à proximité</div>
+        <div id="distance-list" class="distance-list"></div>
     </div>
 
+    <!-- Menu du Bas -->
     <nav class="bottom-nav">
-        <a href="index.html" class="nav-item">Accueil</a>
-        <a href="map.html" class="nav-item active">Carte</a>
+        <a href="index.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            Accueil
+        </a>
+        <a href="jobs.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            Jobs
+        </a>
+        <a href="map.html" class="nav-item active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+            Carte
+        </a>
     </nav>
 
-    <!-- 3. SCRIPTS LEAFLET -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <div class="theme-toggle" onclick="toggleDarkMode()">🌓</div>
 
-    <!-- 4. SCRIPT DE CARTE INTÉGRÉ (Pas de fichier externe) -->
-    <script>
-        // DONNÉES EN DUR (Pour éviter le blocage du fichier JSON)
-        const fakeShops = [
-            { name: "Sandy'Shop", lat: 6.1866, lng: 1.1884, loc: "Agoè" },
-            { name: "Koffi Tech", lat: 6.1328, lng: 1.2246, loc: "Déckon" }
-        ];
-
-        let map, userPos, routingControl;
-
-        // On lance la carte dès que la page est prête
-        window.addEventListener('load', () => {
-            document.getElementById('status').innerText = "Initialisation carte...";
-            initMap();
-        });
-
-        function initMap() {
-            // Création de la carte
-            map = L.map('map').setView([6.172, 1.23], 13); // Lomé
-
-            // Tuiles (Fond de carte)
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: 'EM AREA',
-                maxZoom: 19
-            }).addTo(map);
-
-            document.getElementById('status').innerText = "Carte chargée !";
-
-            // Ajout des marqueurs (Données en dur)
-            fakeShops.forEach(shop => {
-                const popup = `<b>${shop.name}</b><br>${shop.loc}<br>
-                               <button onclick="drawRoute(${shop.lat}, ${shop.lng})">🏍️ Y aller</button>`;
-                L.marker([shop.lat, shop.lng]).addTo(map).bindPopup(popup);
-            });
-            
-            // Forcer l'affichage (Bug gris)
-            setTimeout(() => { map.invalidateSize(); }, 500);
-        }
-
-        function locateUser() {
-            if(!navigator.geolocation) return alert("Pas de GPS");
-            document.getElementById('status').innerText = "Recherche GPS...";
-            
-            navigator.geolocation.getCurrentPosition(pos => {
-                userPos = [pos.coords.latitude, pos.coords.longitude];
-                map.setView(userPos, 14);
-                L.marker(userPos).addTo(map).bindPopup("Vous").openPopup();
-                document.getElementById('status').innerText = "Position trouvée !";
-            }, () => alert("Activez le GPS"));
-        }
-
-        // Fonction simplifiée pour le test
-        window.drawRoute = (lat, lng) => {
-            if(!userPos) { locateUser(); return; }
-            if(routingControl) map.removeControl(routingControl);
-            
-            if(L.Routing) {
-                routingControl = L.Routing.control({
-                    waypoints: [L.latLng(userPos[0], userPos[1]), L.latLng(lat, lng)],
-                    routeWhileDragging: false, show: false,
-                    createMarker: () => null
-                }).addTo(map);
-                map.closePopup();
-            }
-        }
-    </script>
+    <script src="js/app.js"></script>
+    <script src="js/map.js"></script>
 </body>
 </html>
