@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EM AREA</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f68b1e">
+<link rel="apple-touch-icon" href="https://img.icons8.com/color/192/shopping-basket-2.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+    
+</head>
+<body>
+
+    <header class="app-header">
+        <a href="index.html" class="logo">EM <span>AREA</span></a>
+        <a href="vendre.html" style="font-size:0.8rem; font-weight:600;">Devenir Vendeur</a>
+    </header>
+
+    <div class="container">
+        <!-- Recherche -->
+        <div style="margin-top: 20px;">
+            <input type="text" id="search-input" placeholder="🔍 Rechercher un produit..." style="width:100%; padding:12px 20px; border-radius:50px; border:1px solid #ddd; outline:none;">
+        </div>
+
+        <!-- Boutiques -->
+        <div class="section-title">
+            <span>Boutiques Officielles</span>
+            <span style="font-size:0.8rem; color:#888;" id="shop-count">0 actifs</span>
+        </div>
+        <div class="shops-slider" id="shops-container"></div>
+
+        <!-- NOUVEAU : SLIDER PROMOS & TENDANCES -->
+        <!-- Algorithme spécial : Affiche les produits avec réduction ou Stars -->
+        <div class="section-title">
+            <span>⚡ Offres Flash & Promos</span>
+            <span class="scroll-hint-text">Glisser ↔</span>
+        </div>
+        
+        <!-- Conteneur horizontal (Slider) -->
+        <div class="promo-slider-container" id="promo-container">
+            <!-- Rempli par JS -->
+            <div class="loader-mini">Recherche des promos...</div>
+        </div>
+
+        <!-- Grille Produits Classique -->
+        <div class="section-title">
+            <span>🔥 Tout le catalogue</span>
+        </div>
+        <div id="loader" style="text-align:center; padding:40px; color:#888;">Chargement...</div>
+        <div class="product-grid" id="products-container"></div>
+        
+        <button id="load-more-btn" class="btn btn-outline" style="display:none;">Voir plus d'offres ↓</button>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="install-box">
+            <h3 style="color:white; margin:0 0 10px;">Installez l'Application</h3>
+            <p>Accédez au marché plus rapidement.</p>
+            <button class="btn btn-primary" onclick="alert('Ajoutez ce site à votre écran d\'accueil !')">📲 Installer</button>
+        </div>
+        <p>&copy; 2025 EM AREA.</p>
+    </footer>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            Accueil
+        </a>
+        <a href="map.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+            Carte
+        </a>
+    </nav>
+<!-- Le bouton caché par défaut -->
+    <button id="pwa-install-btn" style="display: none;">📲 Installer l'App</button>
+    
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init();
+    // --- GESTION PWA ---
+let deferredPrompt;
+const installBtn = document.getElementById('pwa-install-btn');
+
+// 1. Enregistrement du Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('Service Worker enregistré'))
+            .catch(err => console.log('Erreur SW:', err));
+    });
+}
+
+// 2. Détection de la possibilité d'installation (Android/Chrome)
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Empêche la barre automatique de Google
+    e.preventDefault();
+    deferredPrompt = e;
+    // Affiche notre beau bouton
+    installBtn.style.display = 'flex';
+});
+
+// 3. Clic sur le bouton
+installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`Résultat: ${outcome}`);
+        deferredPrompt = null;
+        installBtn.style.display = 'none'; // Cache le bouton après
+    }
+});
+
+// 4. Si déjà installé
+window.addEventListener('appinstalled', () => {
+    installBtn.style.display = 'none';
+    console.log('Application installée !');
+});
+    </script>
+    <script src="js/app.js"></script>
+    
+</body>
+</html>
