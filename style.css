@@ -1,27 +1,41 @@
-/* --- 1. VARIABLES & RESET --- */
+/* ========================================= */
+/* 1. VARIABLES & RESET                      */
+/* ========================================= */
 :root {
-    --primary: #FF9F1C; /* Orange dynamique */
+    --primary: #FF9F1C;   /* Orange dynamique */
     --secondary: #2EC4B6; /* Turquoise pour les actions */
-    --dark: #011627;
-    --light: #F8F9FA;
+    --dark: #011627;      /* Bleu nuit très sombre */
+    --light: #F8F9FA;     /* Blanc cassé pour le fond */
     --white: #FFFFFF;
-    --verified: #3a86ff; /* Bleu certification */
+    --verified: #3a86ff;  /* Bleu certification */
     --shadow: 0 4px 15px rgba(0,0,0,0.05);
     --radius: 12px;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { font-family: 'Poppins', sans-serif; background: var(--light); color: var(--dark); margin: 0; padding-bottom: 90px; /* Espace pour le menu bas */ }
+body { 
+    font-family: 'Poppins', sans-serif; 
+    background: var(--light); 
+    color: var(--dark); 
+    margin: 0; 
+    padding-bottom: 90px; /* Espace pour le menu bas */
+    transition: background 0.3s, color 0.3s;
+}
+
 a { text-decoration: none; color: inherit; }
 img { max-width: 100%; display: block; }
+button, input { font-family: 'Poppins', sans-serif; }
 
-/* --- 2. HEADER & NAVIGATION --- */
+/* ========================================= */
+/* 2. HEADER & NAVIGATION                    */
+/* ========================================= */
 .app-header {
     background: var(--white);
     position: sticky; top: 0; z-index: 1000;
     padding: 15px 20px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     display: flex; justify-content: space-between; align-items: center;
+    transition: background 0.3s;
 }
 .logo { font-size: 1.4rem; font-weight: 800; color: var(--dark); }
 .logo span { color: var(--primary); }
@@ -32,215 +46,33 @@ img { max-width: 100%; display: block; }
     background: var(--white); border-top: 1px solid #eee;
     display: flex; justify-content: space-around; padding: 10px 0;
     z-index: 2000;
+    transition: background 0.3s, border 0.3s;
 }
-.nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; color: #999; }
+.nav-item { 
+    display: flex; flex-direction: column; align-items: center; 
+    font-size: 0.7rem; color: #999; 
+}
 .nav-item.active { color: var(--primary); font-weight: 600; }
 .nav-item svg { width: 24px; height: 24px; margin-bottom: 2px; }
 
-/* --- 3. COMPOSANTS UI --- */
+/* ========================================= */
+/* 3. COMPOSANTS UI                          */
+/* ========================================= */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
 
-/* Badge Certifié */
-.badge-verified {
-    display: inline-flex; align-items: center; gap: 3px;
-    background: #e3f2fd; color: var(--verified);
-    border: 1px solid var(--verified); border-radius: 4px;
-    font-size: 0.6rem; padding: 1px 5px; font-weight: 800;
-    text-transform: uppercase; letter-spacing: 0.5px;
-}
-
 /* Boutons */
-.btn { display: inline-block; padding: 10px 20px; border-radius: 50px; font-weight: 600; transition: 0.2s; border: none; cursor: pointer; }
+.btn { 
+    display: inline-block; padding: 10px 20px; 
+    border-radius: 50px; font-weight: 600; 
+    transition: 0.2s; border: none; cursor: pointer; 
+}
 .btn-primary { background: var(--primary); color: white; }
-.btn-outline { border: 1px solid #ddd; background: white; color: var(--dark); width: 100%; margin-top: 10px; }
-
-/* --- 4. ACCUEIL (Index) --- */
-.hero { background: var(--dark); color: white; padding: 30px 20px; border-radius: 20px; margin: 20px 0; text-align: center; }
-.hero h1 { margin: 0 0 10px; font-size: 1.5rem; }
-
-/* Slider Boutiques */
-.shops-slider { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
-.shop-card { min-width: 80px; display: flex; flex-direction: column; align-items: center; }
-.shop-logo { width: 70px; height: 70px; border-radius: 18px; border: 1px solid #eee; object-fit: cover; background: white; box-shadow: var(--shadow); position: relative; }
-.shop-name { font-size: 0.75rem; margin-top: 5px; font-weight: 600; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-
-/* Grille Produits */
-.section-title { font-size: 1.1rem; font-weight: 800; margin: 30px 0 15px; display: flex; justify-content: space-between; align-items: center; }
-.product-grid { 
-    display: grid; 
-    grid-template-columns: repeat(2, 1fr); /* 2 par ligne sur mobile */
-    gap: 15px; 
-}
-@media (min-width: 768px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
-
-.product-card { background: var(--white); border-radius: var(--radius); overflow: hidden; border: 1px solid #f0f0f0; position: relative; }
-.product-img { width: 100%; height: 160px; object-fit: cover; background: #eee; }
-.product-info { padding: 10px; }
-.product-shop { font-size: 0.65rem; color: #888; text-transform: uppercase; margin-bottom: 2px; }
-.product-title { font-size: 0.85rem; font-weight: 600; margin: 0 0 5px; line-height: 1.3; height: 2.6em; overflow: hidden; }
-.product-price { color: var(--primary); font-weight: 800; font-size: 1rem; }
-
-/* Badge Nouveau (Algorithme) */
-.tag-new { position: absolute; top: 8px; left: 8px; background: #27ae60; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-
-/* --- 5. PAGE CARTE (Map) --- */
-#map { height: 60vh; width: 100%; border-radius: var(--radius); margin-top: 20px; z-index: 1; }
-.distance-list { margin-top: 20px; }
-.distance-item { display: flex; align-items: center; background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #eee; }
-.dist-val { font-weight: bold; color: var(--secondary); margin-left: auto; }
-
-/* --- 6. FOOTER --- */
-footer { background: var(--dark); color: #888; padding: 40px 20px 80px; text-align: center; margin-top: 50px; font-size: 0.8rem; }
-.install-box { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin-bottom: 30px; }
-
-/* --- NOUVEAU : STYLE SLIDER PROMO --- */
-.promo-slider-container {
-    display: flex;
-    overflow-x: auto;
-    gap: 15px;
-    padding-bottom: 20px; /* Espace pour l'ombre */
-    scroll-snap-type: x mandatory; /* Effet magnétique */
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-}
-.promo-slider-container::-webkit-scrollbar { display: none; }
-
-.promo-card {
-    min-width: 260px; /* Carte large */
-    background: white;
-    border-radius: 16px;
-    padding: 10px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    border: 2px solid var(--primary); /* Bordure Orange */
-    scroll-snap-align: start;
-    box-shadow: 0 4px 10px rgba(246, 139, 30, 0.2);
-    position: relative;
+.btn-outline { 
+    border: 1px solid #ddd; background: white; 
+    color: var(--dark); width: 100%; margin-top: 10px; 
 }
 
-.promo-card img {
-    width: 80px; height: 80px;
-    border-radius: 10px;
-    object-fit: cover;
-}
-
-.promo-info { flex: 1; }
-.promo-title { font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; line-height: 1.2; }
-.promo-price { color: #e74c3c; font-weight: 800; font-size: 1rem; }
-.old-price { text-decoration: line-through; color: #999; font-size: 0.7rem; margin-right: 5px; }
-
-.scroll-hint-text { font-size: 0.7rem; color: #999; animation: bounceX 1.5s infinite; }
-@keyframes bounceX { 0%, 100% {transform: translateX(0);} 50% {transform: translateX(5px);} }
-
-/* BOUTON INSTALLATION FLOTTANT */
-#pwa-install-btn {
-    display: none; /* Caché par défaut */
-    position: fixed;
-    bottom: 80px; /* Au dessus du menu du bas */
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--dark);
-    color: white;
-    padding: 12px 25px;
-    border-radius: 50px;
-    font-weight: bold;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    z-index: 9999;
-    border: 1px solid white;
-    animation: popUp 0.5s ease-out;
-    cursor: pointer;
-    font-size: 0.9rem;
-    align-items: center;
-    gap: 10px;
-}
-@keyframes popUp { from{transform:translate(-50%, 100px);} to{transform:translate(-50%, 0);} }
-/* --- START OF FILE style.css (Ajouts à la fin) --- */
-
-/* 1. FILTRES (Catégories) */
-.filter-scroll {
-    display: flex; gap: 10px; overflow-x: auto; padding: 10px 0;
-    scrollbar-width: none; margin-bottom: 15px;
-}
-.filter-btn {
-    white-space: nowrap; padding: 8px 16px; 
-    border-radius: 20px; border: 1px solid #ddd;
-    background: white; color: #666; font-size: 0.8rem; font-weight: 600;
-    transition: 0.3s; cursor: pointer;
-}
-.filter-btn.active {
-    background: var(--dark); color: white; border-color: var(--dark);
-}
-
-/* SKELETON LOADING (Animation de chargement) */
-/* C'est l'effet de vague grise qui bouge pendant le chargement */
-.skeleton {
-    background: #eee;
-    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-    border-radius: 5px;
-    background-size: 200% 100%;
-    animation: 1.5s shine linear infinite;
-}
-
-/* On force une hauteur pour que ça ressemble à une carte produit vide */
-.skeleton-card {
-    height: 240px; 
-    border-radius: 12px; 
-    background: white; 
-    padding: 10px;
-    border: 1px solid #f0f0f0;
-}
-.skeleton-img { height: 140px; width: 100%; margin-bottom: 10px; border-radius: 8px; }
-.skeleton-line { height: 15px; margin-bottom: 8px; width: 80%; border-radius: 4px; }
-.skeleton-line.short { width: 40%; }
-
-@keyframes shine {
-    to { background-position-x: -200%; }
-}
-
-/* --- START OF FILE style.css (Ajouts) --- */
-
-/* 1. DARK MODE (Variables inversées) */
-body.dark-mode {
-    background: #121212;
-    color: #e0e0e0;
-}
-body.dark-mode .app-header, 
-body.dark-mode .bottom-nav,
-body.dark-mode .product-card,
-body.dark-mode .shop-card, /* Fond blanc des cartes devient noir */
-body.dark-mode .promo-card,
-body.dark-mode .distance-item,
-body.dark-mode .filter-btn {
-    background: #1e1e1e;
-    color: #fff;
-    border-color: #333;
-}
-body.dark-mode .logo span { color: #f39c12; }
-body.dark-mode .product-title { color: #fff; }
-body.dark-mode .product-shop { color: #aaa; }
-body.dark-mode input { background: #333; color: white; border-color: #444; }
-
-/* Bouton Flottant Dark Mode */
-.theme-toggle {
-    position: fixed; bottom: 85px; right: 20px;
-    width: 45px; height: 45px;
-    background: var(--dark); color: white;
-    border-radius: 50%; display: flex;
-    justify-content: center; align-items: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    z-index: 1900; cursor: pointer; border: 2px solid white;
-}
-body.dark-mode .theme-toggle { background: white; color: var(--dark); }
-
-/* 2. HISTORIQUE (Style slider bas) */
-.history-section { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
-.history-slider { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
-.history-card { min-width: 100px; width: 100px; }
-.history-card img { width: 100px; height: 100px; border-radius: 8px; object-fit: cover; }
-.history-card div { font-size: 0.7rem; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-/* 3. COPIER LIEN (Petit bouton sur la carte produit) */
+/* Bouton Copier Lien (Produit) */
 .btn-copy {
     position: absolute; top: 10px; right: 10px;
     background: rgba(255,255,255,0.9); padding: 5px;
@@ -249,79 +81,223 @@ body.dark-mode .theme-toggle { background: white; color: var(--dark); }
     cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     border: none; z-index: 2;
 }
-/* --- AJOUTS FINAUX style.css --- */
 
-/* 1. CORRECTION LOGO MODE SOMBRE */
-body.dark-mode .logo { 
-    color: #ffffff !important; /* Force le blanc */
+/* Bouton Mode Sombre (Flottant) */
+.theme-toggle {
+    position: fixed; bottom: 85px; right: 20px;
+    width: 45px; height: 45px;
+    background: var(--dark); color: white;
+    border-radius: 50%; display: flex;
+    justify-content: center; align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 1900; cursor: pointer; border: 2px solid white;
+    font-size: 1.2rem;
 }
-/* Le point orange reste orange grâce au span, pas besoin de toucher */
 
-/* 2. STYLE DATE DES JOBS */
-.job-time {
-    font-size: 0.7rem;
-    color: #999;
-    margin-top: 5px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
+/* ========================================= */
+/* 4. PAGE ACCUEIL (SHOPS & PRODUITS)        */
+/* ========================================= */
+.section-title { 
+    font-size: 1.1rem; font-weight: 800; 
+    margin: 30px 0 15px; display: flex; 
+    justify-content: space-between; align-items: center; 
 }
-body.dark-mode .job-time { color: #bbb; }
 
-/* 3. MODE SOMBRE CARTE (Boutons et Fond) */
-/* Rend les popups de la carte sombres aussi */
+/* Slider Boutiques */
+.shops-slider { 
+    display: flex; gap: 15px; overflow-x: auto; 
+    padding: 10px 0; scrollbar-width: none; 
+}
+.shop-card { 
+    min-width: 80px; display: flex; 
+    flex-direction: column; align-items: center; 
+}
+.shop-logo { 
+    width: 70px; height: 70px; border-radius: 18px; 
+    border: 1px solid #eee; object-fit: cover; 
+    background: white; box-shadow: var(--shadow); 
+}
+.shop-name { 
+    font-size: 0.75rem; margin-top: 5px; 
+    font-weight: 600; text-align: center; 
+    white-space: nowrap; overflow: hidden; 
+    text-overflow: ellipsis; width: 100%; 
+}
+
+/* Slider Promo */
+.promo-slider-container {
+    display: flex; overflow-x: auto; gap: 15px; 
+    padding-bottom: 20px; scroll-snap-type: x mandatory; 
+    scrollbar-width: none;
+}
+.promo-card {
+    min-width: 260px; background: white; 
+    border-radius: 16px; padding: 10px; display: flex; 
+    gap: 10px; align-items: center; border: 2px solid var(--primary); 
+    scroll-snap-align: start; box-shadow: 0 4px 10px rgba(246, 139, 30, 0.2); 
+}
+.promo-card img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; }
+.promo-info { flex: 1; }
+.promo-title { font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; line-height: 1.2; }
+.promo-price { color: #e74c3c; font-weight: 800; font-size: 1rem; }
+.old-price { text-decoration: line-through; color: #999; font-size: 0.7rem; margin-right: 5px; }
+
+/* Grille Produits */
+.product-grid { 
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; 
+}
+@media (min-width: 768px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.product-card { 
+    background: var(--white); border-radius: var(--radius); 
+    overflow: hidden; border: 1px solid #f0f0f0; position: relative; 
+}
+.product-img { width: 100%; height: 160px; object-fit: cover; background: #eee; }
+.product-info { padding: 10px; }
+.product-shop { font-size: 0.65rem; color: #888; text-transform: uppercase; margin-bottom: 2px; }
+.product-title { 
+    font-size: 0.85rem; font-weight: 600; margin: 0 0 5px; 
+    line-height: 1.3; height: 2.6em; overflow: hidden; 
+}
+.product-price { color: var(--primary); font-weight: 800; font-size: 1rem; }
+
+/* ========================================= */
+/* 5. PAGE CARTE (MAP)                       */
+/* ========================================= */
+#map {
+    width: 100%;
+    height: 60vh;
+    min-height: 400px;
+    background-color: #e5e5e5;
+    border-radius: 12px;
+    margin-top: 15px;
+    z-index: 1;
+}
+
+.distance-list { margin-top: 20px; }
+.distance-item { 
+    display: flex; align-items: center; background: white; 
+    padding: 15px; border-radius: 12px; margin-bottom: 10px; 
+    border: 1px solid #eee; cursor: pointer;
+}
+.dist-val { font-weight: bold; color: var(--secondary); margin-left: auto; }
+
+/* ========================================= */
+/* 6. PAGE JOBS (EMPLOI)                     */
+/* ========================================= */
+.job-card { 
+    background: white; padding: 20px; border-radius: 12px; 
+    margin-bottom: 15px; border: 1px solid #eee; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+    transition: transform 0.1s;
+}
+.job-card:active { transform: scale(0.98); }
+
+.job-tag { 
+    display: inline-block; background: #e3f2fd; color: #2196f3; 
+    padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; 
+    font-weight: bold; 
+}
+.job-salary { color: #27ae60; font-weight: bold; font-size: 0.9rem; }
+
+/* NOUVEAU : Alignement Vues & Date */
+.job-top-row {
+    display: flex; justify-content: space-between; 
+    align-items: center; margin-bottom: 8px;
+}
+.job-meta-info {
+    display: flex; gap: 15px; font-size: 0.75rem; 
+    color: #999; align-items: center;
+}
+.view-container {
+    display: flex; align-items: baseline; gap: 4px;
+}
+.view-count-num { font-weight: 800; color: var(--dark); font-size: 0.9rem; }
+.view-label { 
+    font-size: 0.65rem; text-transform: uppercase; 
+    font-weight: 600; letter-spacing: 0.5px; opacity: 0.8; 
+}
+
+/* ========================================= */
+/* 7. ANIMATION (SKELETON LOADING)           */
+/* ========================================= */
+.skeleton {
+    background: #eee;
+    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+    border-radius: 5px; background-size: 200% 100%;
+    animation: 1.5s shine linear infinite;
+}
+.skeleton-card { height: 240px; border-radius: 12px; background: white; padding: 10px; border: 1px solid #f0f0f0; }
+.skeleton-img { height: 140px; width: 100%; margin-bottom: 10px; border-radius: 8px; }
+.skeleton-line { height: 15px; margin-bottom: 8px; width: 80%; border-radius: 4px; }
+.skeleton-line.short { width: 40%; }
+@keyframes shine { to { background-position-x: -200%; } }
+
+/* ========================================= */
+/* 8. MODE SOMBRE (DARK MODE)                */
+/* ========================================= */
+body.dark-mode {
+    background: #121212;
+    color: #e0e0e0;
+}
+
+/* Fond des composants */
+body.dark-mode .app-header, 
+body.dark-mode .bottom-nav,
+body.dark-mode .product-card,
+body.dark-mode .shop-card,
+body.dark-mode .job-card,
+body.dark-mode .promo-card,
+body.dark-mode .distance-item,
+body.dark-mode .skeleton-card,
+body.dark-mode .history-section {
+    background: #1e1e1e;
+    border-color: #333;
+    color: #fff;
+}
+
+/* Textes Importants (Force le Blanc) */
+body.dark-mode h1, 
+body.dark-mode h2, 
+body.dark-mode h3,
+body.dark-mode .product-title,
+body.dark-mode .shop-name,
+body.dark-mode .logo,
+body.dark-mode .view-count-num {
+    color: #ffffff !important;
+}
+
+/* Textes Secondaires (Gris clair) */
+body.dark-mode .product-shop,
+body.dark-mode .job-card p,
+body.dark-mode .distance-item div,
+body.dark-mode .job-meta-info {
+    color: #b0b0b0 !important;
+}
+
+/* CORRECTION LOGOS (Fond blanc obligatoire) */
+body.dark-mode .shop-logo,
+body.dark-mode .product-img,
+body.dark-mode .promo-card img,
+body.dark-mode .distance-item img,
+body.dark-mode .leaflet-popup-content img,
+body.dark-mode .history-card img {
+    background-color: #ffffff;
+    border: 1px solid #444;
+}
+
+/* Inputs & Boutons */
+body.dark-mode input { background: #2c2c2c; color: white; border-color: #444; }
+body.dark-mode .btn-copy { background: #333; color: white; }
+body.dark-mode .theme-toggle { background: #fff; color: var(--dark); }
+
+/* CARTE & POPUPS (Leaflet) */
+body.dark-mode #map { opacity: 0.9; } /* Réduit un peu l'éclat de la carte */
 body.dark-mode .leaflet-popup-content-wrapper,
 body.dark-mode .leaflet-popup-tip {
-    background: #1e1e1e;
-    color: white;
+    background: #252525;
+    color: #fff;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.6);
 }
-body.dark-mode .leaflet-popup-content h3 { color: white; }
-body.dark-mode .leaflet-popup-content p { color: #ccc !important; }
-
-/* Ajustement bouton toggle sur la map (pour qu'il soit au dessus de la carte) */
-body .theme-toggle { z-index: 9999; }
-
-/* --- AJOUTS POUR LES JOBS (style.css) --- */
-
-/* Ligne du haut (Tag à gauche, Infos à droite) */
-.job-top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-/* Conteneur Date + Vues */
-.job-meta-info {
-    display: flex;
-    gap: 15px; /* Espace entre la date et les vues */
-    font-size: 0.75rem;
-    color: #999;
-    align-items: center;
-}
-
-/* Le bloc "Vues" spécifique */
-.view-container {
-    display: flex;
-    align-items: baseline; /* Aligne le texte sur la ligne d'écriture */
-    gap: 4px; /* Petit espace entre le chiffre et le mot */
-}
-
-/* Le Chiffre (Gras) */
-.view-count-num {
-    font-weight: 800;
-    color: var(--dark);
-    font-size: 0.9rem;
-}
-
-/* Le Mot "Vues" (Petit et majuscule) */
-.view-label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    opacity: 0.8;
-}
-
-/* Ajustement Mode Sombre */
-body.dark-mode .view-count-num { color: white; }
+body.dark-mode .leaflet-popup-content h3 { color: #ff9f1c !important; } /* Titre Orange */
+body.dark-mode .leaflet-popup-content p { color: #ddd !important; }
