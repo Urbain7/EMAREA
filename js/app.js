@@ -1,7 +1,5 @@
-/* --- START OF FILE js/app.js --- */
-
 /* =============================== */
-/* MOTEUR D'AGRÉGATION EM AREA V2.2 (Version Sécurisée) */
+/* MOTEUR D'AGRÉGATION EM AREA V2.2 */
 /* =============================== */
 
 let allProducts = [];
@@ -12,19 +10,19 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function initApp() {
-    // 1. On affiche l'animation de chargement tout de suite
+    // 1. Affiche l'animation de chargement
     showSkeletonLoader();
 
     try {
-        // 2. Charger la liste des boutiques
+        // 2. Charger les boutiques
         const res = await fetch('shops.json');
         if (!res.ok) throw new Error("Impossible de charger les boutiques");
         allShops = await res.json();
         
-        renderShops(); // Affiche les logos en haut
+        renderShops();
         
-        // 3. Aspirer les produits de manière sécurisée
-        // On utilise Promise.allSettled : Si une boutique plante, les autres continuent de charger !
+        // 3. Charger les produits (Méthode robuste)
+        // Promise.allSettled permet de continuer même si une boutique plante
         const promises = allShops.map(shop => fetchShopProducts(shop));
         const results = await Promise.allSettled(promises);
         
@@ -35,7 +33,7 @@ async function initApp() {
             if (result.status === 'fulfilled') {
                 const items = result.value;
                 items.forEach(p => {
-                    // Algorithme Promo : Si "Star" ou "Réduction"
+                    // Logique Promo : Produit Star OU Prix barré
                     if (p.is_star === true || (p.prix_original && p.prix_original > p.prix)) {
                         promoItems.push(p);
                     } else {
@@ -45,56 +43,53 @@ async function initApp() {
             }
         });
 
-        // Mélange aléatoire des produits (Shuffle) pour varier l'affichage
+        // Mélange aléatoire
         promoItems.sort(() => 0.5 - Math.random());
         standardItems.sort(() => 0.5 - Math.random());
         
-        // Stockage global pour la recherche
+        // Stockage global
         allProducts = [...promoItems, ...standardItems];
 
-        // 4. Nettoyage et Affichage Final
-        // On vide le loader (le skeleton) avant d'afficher les vrais produits
+        // 4. Nettoyage et Affichage
         document.getElementById('products-container').innerHTML = ''; 
-        document.getElementById('loader').style.display = 'none';
         
         renderPromos(promoItems);
         renderProducts(standardItems);
 
-        // Active la barre de recherche
+        // Active la recherche
         setupSearch();
 
     } catch (e) {
         console.error("Erreur critique:", e);
         document.getElementById('products-container').innerHTML = 
-            `<div style="text-align:center; col-span:2;">Erreur de connexion au marché.</div>`;
+            `<div style="text-align:center; padding:20px;">Erreur de connexion au marché.</div>`;
     }
 }
 
-// Fonction sécurisée avec "Timeout" (Si une boutique met + de 5s, on annule)
 async function fetchShopProducts(shop) {
     try {
+        // Timeout de 5 secondes pour ne pas bloquer le site
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 secondes max
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
 
         const res = await fetch(`${shop.url}/data/produits.json`, { signal: controller.signal });
-        clearTimeout(timeoutId); // On annule le timer si c'est bon
+        clearTimeout(timeoutId);
 
         if(!res.ok) return [];
         const data = await res.json();
         const items = data.items ? data.items : data;
         
-        // Normalisation des données (Ajout des infos de la boutique sur chaque produit)
+        // Normalisation
         return items.map(p => ({
             ...p,
             shopName: shop.name,
             shopUrl: shop.url,
             isVerified: shop.verified,
-            // Gestion de l'image : si lien absolu on garde, sinon on colle l'url de la boutique
+            // Si l'image n'est pas un lien complet, on ajoute l'URL de la boutique
             image: p.image.startsWith('http') ? p.image : `${shop.url}/${p.image}`
         }));
     } catch (err) { 
-        // Si ça échoue, on log juste l'erreur dans la console, on ne bloque pas le site
-        console.warn(`Boutique ${shop.name} inaccessible ou lente.`);
+        console.warn(`Boutique ${shop.name} inaccessible.`);
         return []; 
     }
 }
@@ -120,7 +115,7 @@ function renderPromos(promos) {
     container.innerHTML = '';
 
     if (promos.length === 0) {
-        container.style.display = 'none'; // Cache le slider s'il est vide
+        container.style.display = 'none';
         return;
     }
 
@@ -150,8 +145,6 @@ function renderPromos(promos) {
 function renderProducts(products) {
     const container = document.getElementById('products-container');
     
-    // Si c'est pour afficher les résultats de recherche, on vide d'abord
-    // Sinon (au chargement initial), on a déjà vidé dans initApp
     if(container.innerHTML.includes('skeleton')) container.innerHTML = ''; 
 
     if(products.length === 0) {
@@ -159,19 +152,18 @@ function renderProducts(products) {
         return;
     }
 
-    // On limite à 30 produits pour ne pas faire laguer le téléphone
     products.slice(0, 30).forEach(p => {
         const price = Number(p.prix).toLocaleString() + ' F';
-        const certif = p.isVerified ? '<span class="badge-verified">✓</span>' : '';
-
-        // On ajoute data-aos pour l'animation d'apparition
+        
+        // PAS DE BADGE CERTIFIÉ ICI
+        
         container.innerHTML += `
             <div class="product-card" data-aos="fade-up">
                 <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank">
                     <img src="${p.image}" class="product-img" loading="lazy" onerror="this.src='https://via.placeholder.com/150?text=Image+Error'">
                 </a>
                 <div class="product-info">
-                    <div class="product-shop">${p.shopName} ${certif}</div>
+                    <div class="product-shop">${p.shopName}</div>
                     <div class="product-title">${p.nom}</div>
                     <div class="product-price">${price}</div>
                     <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank" class="btn btn-outline" style="font-size:0.8rem; padding:5px;">Voir</a>
@@ -181,42 +173,33 @@ function renderProducts(products) {
     });
 }
 
-// Fonction Recherche
 function setupSearch() {
     const input = document.getElementById('search-input');
-    
     input.addEventListener('input', (e) => {
         const term = e.target.value.toLowerCase();
         const promoContainer = document.getElementById('promo-container');
         const container = document.getElementById('products-container');
 
         if(term.length === 0) {
-            // Si recherche vide, on remet l'affichage normal
             promoContainer.style.display = 'flex';
-            container.innerHTML = ''; // On clean
-            // On retrouve nos produits standards dans allProducts (il faudrait idéalement séparer, mais ici on recharge tout simple)
-            // Pour faire simple sans re-trier, on relance l'init ou on filtre malin.
-            // Le plus simple ici : on réaffiche tout ce qui n'est pas promo dans la grille
+            container.innerHTML = '';
+            // On réaffiche les produits standards (simplifié)
             const standards = allProducts.filter(p => !p.prix_original || p.prix_original <= p.prix);
             renderProducts(standards);
             return;
         }
 
-        // Si on cherche, on cache les promos pour éviter la confusion
         promoContainer.style.display = 'none';
-        
-        // On vide la grille et on affiche les résultats
         container.innerHTML = '';
         const filtered = allProducts.filter(p => p.nom.toLowerCase().includes(term));
         renderProducts(filtered);
     });
 }
 
-// Affiche les rectangles gris animés
 function showSkeletonLoader() {
     const container = document.getElementById('products-container');
     container.innerHTML = '';
-    // On génère 4 fausses cartes
+    // Génère 4 fausses cartes de chargement
     for(let i=0; i<4; i++) {
         container.innerHTML += `
             <div class="skeleton-card skeleton">
