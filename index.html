@@ -80,9 +80,51 @@
             Carte
         </a>
     </nav>
-
+<!-- Le bouton caché par défaut -->
+    <button id="pwa-install-btn" style="display: none;">📲 Installer l'App</button>
+    
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>AOS.init();</script>
+    <script>AOS.init();
+    // --- GESTION PWA ---
+let deferredPrompt;
+const installBtn = document.getElementById('pwa-install-btn');
+
+// 1. Enregistrement du Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('Service Worker enregistré'))
+            .catch(err => console.log('Erreur SW:', err));
+    });
+}
+
+// 2. Détection de la possibilité d'installation (Android/Chrome)
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Empêche la barre automatique de Google
+    e.preventDefault();
+    deferredPrompt = e;
+    // Affiche notre beau bouton
+    installBtn.style.display = 'flex';
+});
+
+// 3. Clic sur le bouton
+installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`Résultat: ${outcome}`);
+        deferredPrompt = null;
+        installBtn.style.display = 'none'; // Cache le bouton après
+    }
+});
+
+// 4. Si déjà installé
+window.addEventListener('appinstalled', () => {
+    installBtn.style.display = 'none';
+    console.log('Application installée !');
+});
+    </script>
     <script src="js/app.js"></script>
+    
 </body>
 </html>
