@@ -172,7 +172,8 @@ footer { background: var(--dark); color: #888; padding: 40px 20px 80px; text-ali
     background: var(--dark); color: white; border-color: var(--dark);
 }
 
-/* 2. SKELETON LOADING (Animation de chargement) */
+/* SKELETON LOADING (Animation de chargement) */
+/* C'est l'effet de vague grise qui bouge pendant le chargement */
 .skeleton {
     background: #eee;
     background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
@@ -180,13 +181,20 @@ footer { background: var(--dark); color: #888; padding: 40px 20px 80px; text-ali
     background-size: 200% 100%;
     animation: 1.5s shine linear infinite;
 }
+
+/* On force une hauteur pour que ça ressemble à une carte produit vide */
 .skeleton-card {
-    height: 250px; border-radius: 12px; background: white; padding: 10px;
+    height: 240px; 
+    border-radius: 12px; 
+    background: white; 
+    padding: 10px;
+    border: 1px solid #f0f0f0;
 }
-.skeleton-img { height: 140px; width: 100%; margin-bottom: 10px; }
-.skeleton-line { height: 15px; margin-bottom: 8px; width: 80%; }
+.skeleton-img { height: 140px; width: 100%; margin-bottom: 10px; border-radius: 8px; }
+.skeleton-line { height: 15px; margin-bottom: 8px; width: 80%; border-radius: 4px; }
 .skeleton-line.short { width: 40%; }
 
 @keyframes shine {
     to { background-position-x: -200%; }
 }
+
