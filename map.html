@@ -5,31 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carte - EM AREA</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <!-- Routing Machine CSS (Pour le tracé) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+
+    <style>
+        /* Style spécifique pour cacher les instructions textuelles moches du GPS */
+        .leaflet-routing-container { display: none !important; }
+    </style>
 </head>
 <body>
 
     <header class="app-header">
         <a href="index.html" class="logo">EM <span>AREA</span></a>
-        <span>Localisation</span>
+        <span>GPS</span>
     </header>
 
     <div class="container">
-        <div class="hero" style="background:linear-gradient(45deg, #3a86ff, #000);">
-            <h1>Trouvez les vendeurs proches</h1>
-            <button class="btn btn-primary" onclick="locateUser()">📍 Autour de moi</button>
+        <div class="hero" style="background:linear-gradient(45deg, #3a86ff, #000); padding:20px;">
+            <h1 style="font-size:1.2rem;">Trouvez votre chemin</h1>
+            <p style="font-size:0.8rem; opacity:0.8;">Activez votre GPS pour voir le tracé vers les boutiques.</p>
+            <button class="btn btn-primary" onclick="locateUser()">📍 Activer mon GPS</button>
         </div>
 
         <div id="map"></div>
 
-        <div class="section-title">Distance des boutiques</div>
-        <div id="distance-list" class="distance-list">
-            <p style="text-align:center; color:#888;">Activez la localisation pour voir les distances.</p>
-        </div>
+        <div class="section-title">Boutiques à proximité</div>
+        <div id="distance-list" class="distance-list"></div>
     </div>
 
-    <!-- Bottom Nav -->
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
@@ -42,6 +48,8 @@
     </nav>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Script de tracé -->
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     <script src="js/map.js"></script>
 </body>
 </html>
