@@ -5,7 +5,7 @@ let allShops = [];
 let userPos = null;
 let routingControl = null;
 
-// Icônes personnalisées
+// Icônes personnalisées Leaflet
 const iconUser = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -19,7 +19,6 @@ const iconShop = new L.Icon({
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Chargement des données
     try {
         const res = await fetch('shops.json');
         allShops = await res.json();
@@ -34,21 +33,21 @@ function initMap() {
     map = L.map('map').setView([6.172, 1.23], 13);
     
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap | EM AREA'
+        attribution: 'EM AREA'
     }).addTo(map);
 
-    // 2. IDÉE 5.4 : HEATMAP (Zones Chaudes)
-    // On simule des zones d'activité intense (ex: Grand Marché, Déckon)
+    // 2. HEATMAP (Zones Chaudes - Idée 5.4)
+    // Cercles rouges transparents sur zones commerciales
     const hotZones = [
-        { lat: 6.1328, lng: 1.2246, radius: 800 }, // Zone Déckon
-        { lat: 6.1866, lng: 1.1884, radius: 600 }  // Zone Agoè
+        { lat: 6.1328, lng: 1.2246, radius: 800 }, // Déckon
+        { lat: 6.1866, lng: 1.1884, radius: 600 }  // Agoè
     ];
 
     hotZones.forEach(zone => {
         L.circle([zone.lat, zone.lng], {
             color: 'red',
             fillColor: '#f03',
-            fillOpacity: 0.1, // Très léger pour ne pas gêner
+            fillOpacity: 0.1, 
             radius: zone.radius,
             stroke: false
         }).addTo(map);
@@ -57,16 +56,15 @@ function initMap() {
     // 3. Placement des boutiques
     allShops.forEach(shop => {
         if(shop.lat && shop.lng) {
-            // IDÉE 2 (Carte) : Photo de devanture dans la Popup
-            // On utilise une image placeholder si pas de photo définie
-            const shopImg = shop.cover || "https://via.placeholder.com/300x150?text=Façade+Boutique";
+            // Photo Devanture ou Placeholder
+            const shopImg = shop.cover || "https://via.placeholder.com/300x150?text=Boutique";
             
+            // NOTE : Badge vérifié RETIRÉ (Premium)
             const popupContent = `
                 <div style="text-align:center; min-width:200px;">
                     <img src="${shopImg}" style="width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:5px;">
                     <h3 style="margin:0; font-size:1rem;">${shop.name}</h3>
                     <p style="margin:5px 0; font-size:0.8rem; color:#666;">${shop.location}</p>
-                    ${shop.verified ? '<span style="color:#2ecc71; font-weight:bold; font-size:0.7rem;">✓ Vérifié</span>' : ''}
                     <br>
                     <button onclick="drawRoute(${shop.lat}, ${shop.lng})" 
                         style="background:#FF9F1C; color:white; border:none; padding:8px 15px; border-radius:20px; margin-top:8px; cursor:pointer; font-weight:bold;">
@@ -81,7 +79,7 @@ function initMap() {
         }
     });
 
-    // 4. IDÉE 5.5 : BOUTON BOUSSOLE / RADAR
+    // 4. BOUSSOLE (Idée 5.5)
     addCompassControl();
 }
 
@@ -90,24 +88,23 @@ window.locateUser = () => {
     if (!navigator.geolocation) return alert("GPS non supporté");
 
     const btn = document.querySelector('.btn-primary');
-    btn.textContent = "⏳ Localisation...";
+    if(btn) btn.textContent = "⏳ Localisation...";
 
     navigator.geolocation.getCurrentPosition(
         (position) => {
             userPos = [position.coords.latitude, position.coords.longitude];
             
-            // Zoom sur l'utilisateur
             map.setView(userPos, 14);
             L.marker(userPos, {icon: iconUser}).addTo(map).bindPopup("<b>Vous êtes ici</b>").openPopup();
             
-            btn.textContent = "📍 Ma Position (Mise à jour)";
+            if(btn) btn.textContent = "📍 Ma Position (OK)";
             
-            // Calculer les distances et Prix Zem
+            // Calculer distances et Prix Zem
             renderDistanceList(userPos);
         },
         () => {
-            alert("Impossible de vous localiser. Vérifiez votre GPS.");
-            btn.textContent = "📍 Activer mon GPS";
+            alert("Erreur GPS. Vérifiez vos paramètres.");
+            if(btn) btn.textContent = "📍 Activer mon GPS";
         },
         { enableHighAccuracy: true }
     );
@@ -116,20 +113,16 @@ window.locateUser = () => {
 // Fonction Tracé Itinéraire
 window.drawRoute = (destLat, destLng) => {
     if (!userPos) {
-        // Si on ne sait pas où est l'utilisateur, on essaie de le localiser d'abord
         locateUser();
-        setTimeout(() => {
-            if(userPos) drawRoute(destLat, destLng);
-        }, 2000);
+        // Petite attente pour voir si le GPS répond vite
+        setTimeout(() => { if(userPos) drawRoute(destLat, destLng); }, 2000);
         return;
     }
 
     // Nettoyage ancien tracé
-    if (routingControl) {
-        map.removeControl(routingControl);
-    }
+    if (routingControl) map.removeControl(routingControl);
 
-    // Création du tracé (Routing Machine)
+    // Création du tracé
     if (typeof L.Routing !== 'undefined') {
         routingControl = L.Routing.control({
             waypoints: [
@@ -137,23 +130,18 @@ window.drawRoute = (destLat, destLng) => {
                 L.latLng(destLat, destLng)
             ],
             routeWhileDragging: false,
-            show: false, // Cache les instructions textuelles (moches)
-            lineOptions: {
-                styles: [{color: '#2EC4B6', opacity: 0.8, weight: 6}] // Ligne Turquoise
-            },
-            createMarker: function() { return null; } // Pas de nouveaux marqueurs
+            show: false, // Pas d'instructions écrites
+            lineOptions: { styles: [{color: '#2EC4B6', opacity: 0.8, weight: 6}] },
+            createMarker: function() { return null; }
         }).addTo(map);
-        
-        // Ferme la popup pour voir le chemin
         map.closePopup();
-    } else {
-        alert("Erreur: Module de carte non chargé.");
     }
 };
 
-// Calcul des distances et Prix Zem (Idée 1 Carte)
 function renderDistanceList(user) {
     const list = document.getElementById('distance-list');
+    if(!list) return;
+
     list.innerHTML = '';
     
     // Calcul distances
@@ -162,15 +150,14 @@ function renderDistanceList(user) {
         else s.dist = 9999;
     });
     
-    // Tri du plus proche au plus loin
     allShops.sort((a,b) => a.dist - b.dist);
 
     allShops.forEach(s => {
-        if(s.dist < 50) { // Rayon max 50km
-            // Formule Prix Zem : Base 150F + 75F/km (Arrondi à 50F près)
+        if(s.dist < 50) { 
+            // Formule Prix Zem : 150F base + 75F/km
             let priceZem = 150 + (s.dist * 75);
             priceZem = Math.ceil(priceZem / 50) * 50; 
-            if(priceZem < 200) priceZem = 200; // Minimum syndical
+            if(priceZem < 200) priceZem = 200;
 
             list.innerHTML += `
                 <div class="distance-item" onclick="map.setView([${s.lat}, ${s.lng}], 16)">
@@ -186,12 +173,12 @@ function renderDistanceList(user) {
     });
 }
 
-// Ajout du contrôle Boussole (Idée 5.5)
+// Contrôle Boussole
 function addCompassControl() {
     const CompassControl = L.Control.extend({
         options: { position: 'topright' },
         onAdd: function (map) {
-            const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control compass-ctrl');
+            const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
             container.innerHTML = '🧭';
             container.style.backgroundColor = 'white';
             container.style.width = '35px';
@@ -200,12 +187,8 @@ function addCompassControl() {
             container.style.textAlign = 'center';
             container.style.cursor = 'pointer';
             container.style.fontSize = '20px';
-            container.title = "Recentrer / Nord";
-            
             container.onclick = function(){
-                map.setBearing(0); // Nécessite plugin rotate, sinon fait juste un reset vue
-                if(userPos) map.setView(userPos, 14);
-                else map.setView([6.172, 1.23], 13);
+                map.setView(userPos || [6.172, 1.23], 13);
             }
             return container;
         }
@@ -213,9 +196,8 @@ function addCompassControl() {
     map.addControl(new CompassControl());
 }
 
-// Formule mathématique distance (Haversine)
 function getDist(lat1,lon1,lat2,lon2) {
-  var R = 6371; // Rayon terre km
+  var R = 6371; 
   var dLat = (lat2-lat1)*(Math.PI/180); 
   var dLon = (lon2-lon1)*(Math.PI/180); 
   var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*(Math.PI/180))*Math.cos(lat2*(Math.PI/180))*Math.sin(dLon/2)*Math.sin(dLon/2); 
