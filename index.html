@@ -1,130 +1,220 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EM AREA</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>EM AREA - Le Grand Marché Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <!-- PWA -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-
-    <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#f68b1e">
-<link rel="apple-touch-icon" href="https://img.icons8.com/color/192/shopping-basket-2.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-    
+    <script>
+        // Init Dark Mode
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
 </head>
 <body>
 
-    <header class="app-header">
-        <a href="index.html" class="logo">EM <span>AREA</span></a>
-        <a href="vendre.html" style="font-size:0.8rem; font-weight:600;">Devenir Vendeur</a>
+    <header>
+        <div class="header-content">
+            <div class="top-bar-mobile">
+                <a href="#" class="logo">EM <span>AREA</span></a>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button class="theme-btn" id="theme-toggle">🌙</button>
+                    <a href="#" id="fav-btn-mobile" class="seller-link" style="border:none;background:none;font-size:1.5rem;padding:0;">❤️</a>
+                    <a href="vendre.html" class="seller-link">Vendre</a>
+                </div>
+            </div>
+
+            <a href="#" class="logo desktop-only">EM <span>AREA</span></a>
+
+            <div class="search-container">
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Je cherche...">
+                    <button>🔍</button>
+                </div>
+                <select id="sort-select" class="sort-select">
+                    <option value="random">Aléatoire</option>
+                    <option value="new">Nouveautés</option>
+                    <option value="price-asc">Prix Croissant</option>
+                    <option value="dist">📍 Proximité (GPS)</option> <!-- NOUVEAU OPTION 10 -->
+                </select>
+                <button class="theme-btn desktop-only" id="theme-toggle-desktop">🌙</button>
+            </div>
+            
+            <a href="vendre.html" class="seller-link desktop-only">Devenir Vendeur</a>
+        </div>
     </header>
 
-    <div class="container">
-        <!-- Recherche -->
-        <div style="margin-top: 20px;">
-            <input type="text" id="search-input" placeholder="🔍 Rechercher un produit..." style="width:100%; padding:12px 20px; border-radius:50px; border:1px solid #ddd; outline:none;">
+    <div class="hero-section" data-aos="fade-down">
+        <div class="hero-banner">
+            <div class="hero-text">
+                <h1>Le Plus Grand Marché Digital</h1>
+                <p>Vos boutiques préférées au même endroit.</p>
+                <a href="#market-grid" class="hero-btn">Commencer</a>
+            </div>
         </div>
-
-        <!-- Boutiques -->
-        <div class="section-title">
-            <span>Boutiques Officielles</span>
-            <span style="font-size:0.8rem; color:#888;" id="shop-count">0 actifs</span>
-        </div>
-        <div class="shops-slider" id="shops-container"></div>
-
-        <!-- NOUVEAU : SLIDER PROMOS & TENDANCES -->
-        <!-- Algorithme spécial : Affiche les produits avec réduction ou Stars -->
-        <div class="section-title">
-            <span>⚡ Offres Flash & Promos</span>
-            <span class="scroll-hint-text">Glisser ↔</span>
-        </div>
-        
-        <!-- Conteneur horizontal (Slider) -->
-        <div class="promo-slider-container" id="promo-container">
-            <!-- Rempli par JS -->
-            <div class="loader-mini">Recherche des promos...</div>
-        </div>
-
-        <!-- Grille Produits Classique -->
-        <div class="section-title">
-            <span>🔥 Tout le catalogue</span>
-        </div>
-        <div id="loader" style="text-align:center; padding:40px; color:#888;">Chargement...</div>
-        <div class="product-grid" id="products-container"></div>
-        
-        <button id="load-more-btn" class="btn btn-outline" style="display:none;">Voir plus d'offres ↓</button>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="install-box">
-            <h3 style="color:white; margin:0 0 10px;">Installez l'Application</h3>
-            <p>Accédez au marché plus rapidement.</p>
-            <button class="btn btn-primary" onclick="alert('Ajoutez ce site à votre écran d\'accueil !')">📲 Installer</button>
+    <!-- BOUTIQUES -->
+    <div class="shops-container-wrapper" data-aos="fade-up">
+        <div class="shops-title">🏪 Boutiques Officielles</div>
+        <div class="shops-section" id="shops-slider"></div>
+    </div>
+
+    <!-- COLLECTIONS (OPTION 1) -->
+    <div class="container" style="max-width:1300px; margin:0 auto; padding:0 20px;" data-aos="fade-up">
+        <div class="shops-title">✨ Univers</div>
+        <div class="collections-grid">
+            <div class="collection-card" onclick="filterByCategory('Mode')">
+                <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=400" alt="Mode">
+                <div class="collection-text">Mode & Style</div>
+            </div>
+            <div class="collection-card" onclick="filterByCategory('Électronique')">
+                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400" alt="Tech">
+                <div class="collection-text">High-Tech</div>
+            </div>
+            <div class="collection-card" onclick="filterByCategory('Gastronomie')">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400" alt="Food">
+                <div class="collection-text">Miam Miam</div>
+            </div>
+             <div class="collection-card" onclick="filterByCategory('Beauté')">
+                <img src="https://images.unsplash.com/photo-1596462502278-27bfdd403cc2?auto=format&fit=crop&w=400" alt="Beauté">
+                <div class="collection-text">Beauté</div>
+            </div>
         </div>
-        <p>&copy; 2025 EM AREA.</p>
+    </div>
+
+    <!-- CARTE (OPTION 10 PREPARED) -->
+    <div class="map-section" data-aos="fade-up">
+        <div class="shops-title">🗺️ Carte des Vendeurs</div>
+        <div class="map-wrapper" id="map-wrapper">
+            <div id="map-container"></div>
+            <div class="map-overlay" onclick="enableMap()">
+                <div class="map-btn">👆 Toucher pour explorer</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-layout">
+        <!-- Sidebar Filtres -->
+        <aside class="sidebar" id="sidebar-filters">
+            <div class="close-filter" id="close-filter-btn">&times;</div>
+            <div class="filter-group">
+                <span class="filter-head">Boutiques</span>
+                <div id="shop-filters"></div>
+            </div>
+            <div class="filter-group">
+                <span class="filter-head">Catégories</span>
+                <div id="category-filters"></div>
+            </div>
+        </aside>
+
+        <!-- Contenu -->
+        <main>
+            <button id="toggle-filters" class="mobile-filter-btn">🌪️ Filtrer</button>
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+            <div id="flash-sales-container"></div>
+
+            <div id="loader" style="text-align:center; padding:50px; color:#888;">Chargement...</div>
+            <div id="market-grid" class="grid"></div>
+            
+            <div id="load-more-container" style="text-align:center; margin-top:30px; display:none;">
+                <button id="load-more-btn" class="seller-link" style="border:none; cursor:pointer;">Voir plus ↓</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <a href="#" class="logo" style="color:white; margin-bottom:15px; display:block;">EM <span>AREA</span></a>
+                <p>La première plateforme digitale qui connecte commerçants et acheteurs.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Stats</h3>
+                <div class="footer-stats">
+                    <div class="stat-pill">🛍️ <span id="shop-count">0</span> Boutiques</div>
+                    <div class="stat-pill">👥 <span id="smart_uv">...</span> Visiteurs</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 EM AREA - Tous droits réservés.
+        </div>
     </footer>
 
-    <!-- Bottom Nav -->
-    <nav class="bottom-nav">
-        <a href="index.html" class="nav-item active">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-            Accueil
-        </a>
-        <a href="map.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
-            Carte
-        </a>
-    </nav>
-<!-- Le bouton caché par défaut -->
-    <button id="pwa-install-btn" style="display: none;">📲 Installer l'App</button>
-    
+    <!-- Scripts -->
+    <script src="aggregator.js"></script>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>AOS.init();
-    // --- GESTION PWA ---
-let deferredPrompt;
-const installBtn = document.getElementById('pwa-install-btn');
-
-// 1. Enregistrement du Service Worker
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('Service Worker enregistré'))
-            .catch(err => console.log('Erreur SW:', err));
-    });
-}
-
-// 2. Détection de la possibilité d'installation (Android/Chrome)
-window.addEventListener('beforeinstallprompt', (e) => {
-    // Empêche la barre automatique de Google
-    e.preventDefault();
-    deferredPrompt = e;
-    // Affiche notre beau bouton
-    installBtn.style.display = 'flex';
-});
-
-// 3. Clic sur le bouton
-installBtn.addEventListener('click', async () => {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(`Résultat: ${outcome}`);
-        deferredPrompt = null;
-        installBtn.style.display = 'none'; // Cache le bouton après
-    }
-});
-
-// 4. Si déjà installé
-window.addEventListener('appinstalled', () => {
-    installBtn.style.display = 'none';
-    console.log('Application installée !');
-});
-    </script>
-    <script src="js/app.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
+    <script>
+        AOS.init();
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js')); }
+
+        // Dark Mode Logic
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const target = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', target);
+            localStorage.setItem('theme', target);
+        }
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+        document.getElementById('theme-toggle-desktop').addEventListener('click', toggleTheme);
+
+        // Map Logic
+        function initMap() {
+            const el = document.getElementById('map-container');
+            if(!el) return;
+            const map = L.map('map-container').setView([6.172, 1.23], 12);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            setTimeout(() => {
+                if(window.allShops) {
+                    window.allShops.forEach(s => {
+                        if(s.lat) L.marker([s.lat, s.lng]).addTo(map).bindPopup(`<b>${s.name}</b><br>${s.location}`);
+                    });
+                }
+            }, 2000);
+        }
+        initMap();
+        function enableMap() { document.getElementById('map-wrapper').classList.add('map-active'); }
+
+        // Mobile Filters
+        const fBtn = document.getElementById('toggle-filters');
+        const fClose = document.getElementById('close-filter-btn');
+        const sidebar = document.getElementById('sidebar-filters');
+        const overlay = document.getElementById('sidebar-overlay');
+        const toggleF = () => { sidebar.classList.toggle('active'); overlay.classList.toggle('active'); };
+        if(fBtn) fBtn.addEventListener('click', toggleF);
+        if(fClose) fClose.addEventListener('click', toggleF);
+        if(overlay) overlay.addEventListener('click', toggleF);
+        
+        // Clic sur Collection
+        window.filterByCategory = (cat) => {
+            const checkboxes = document.querySelectorAll('#category-filters input');
+            checkboxes.forEach(cb => {
+                cb.checked = (cb.value === cat);
+            });
+            window.filterData(); // Déclenche le filtre
+            document.getElementById('market-grid').scrollIntoView({behavior:'smooth'});
+        };
+        
+        // Stats
+        async function updateUniqueVisitors() {
+            const el = document.getElementById('smart_uv');
+            try {
+                const res = await fetch(`https://api.counterapi.dev/v1/em-area-market/visiteurs_uniques/up`);
+                const data = await res.json();
+                el.textContent = data.count;
+            } catch { el.textContent = "100+"; }
+        }
+        updateUniqueVisitors();
+    </script>
 </body>
 </html>
