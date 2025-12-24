@@ -198,3 +198,55 @@ footer { background: var(--dark); color: #888; padding: 40px 20px 80px; text-ali
     to { background-position-x: -200%; }
 }
 
+/* --- START OF FILE style.css (Ajouts) --- */
+
+/* 1. DARK MODE (Variables inversées) */
+body.dark-mode {
+    background: #121212;
+    color: #e0e0e0;
+}
+body.dark-mode .app-header, 
+body.dark-mode .bottom-nav,
+body.dark-mode .product-card,
+body.dark-mode .shop-card, /* Fond blanc des cartes devient noir */
+body.dark-mode .promo-card,
+body.dark-mode .distance-item,
+body.dark-mode .filter-btn {
+    background: #1e1e1e;
+    color: #fff;
+    border-color: #333;
+}
+body.dark-mode .logo span { color: #f39c12; }
+body.dark-mode .product-title { color: #fff; }
+body.dark-mode .product-shop { color: #aaa; }
+body.dark-mode input { background: #333; color: white; border-color: #444; }
+
+/* Bouton Flottant Dark Mode */
+.theme-toggle {
+    position: fixed; bottom: 85px; right: 20px;
+    width: 45px; height: 45px;
+    background: var(--dark); color: white;
+    border-radius: 50%; display: flex;
+    justify-content: center; align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 1900; cursor: pointer; border: 2px solid white;
+}
+body.dark-mode .theme-toggle { background: white; color: var(--dark); }
+
+/* 2. HISTORIQUE (Style slider bas) */
+.history-section { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
+.history-slider { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
+.history-card { min-width: 100px; width: 100px; }
+.history-card img { width: 100px; height: 100px; border-radius: 8px; object-fit: cover; }
+.history-card div { font-size: 0.7rem; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* 3. COPIER LIEN (Petit bouton sur la carte produit) */
+.btn-copy {
+    position: absolute; top: 10px; right: 10px;
+    background: rgba(255,255,255,0.9); padding: 5px;
+    border-radius: 50%; width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: none; z-index: 2;
+}
+body.dark-mode .btn-copy { background: #333; color: white; }
