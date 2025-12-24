@@ -1,5 +1,5 @@
 /* =============================== */
-/* MOTEUR EM AREA V3 (Full Features) */
+/* MOTEUR EM AREA V3.5 (COMPLET)   */
 /* =============================== */
 
 let allProducts = [];
@@ -7,22 +7,27 @@ let allShops = [];
 // Récupère l'historique ou crée un tableau vide
 let viewedProducts = JSON.parse(localStorage.getItem('em_history')) || [];
 
+// --- 1. DÉMARRAGE (DOMContentLoaded) ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Vérifie le thème sombre avant tout
+    // A. Vérifie le thème sombre immédiatement
     checkDarkMode();
     
-    // Si on est sur la page d'accueil (où il y a les produits)
+    // B. LOGIQUE ACCUEIL (Si on est sur la page index avec des produits)
     if(document.getElementById('products-container')) {
         initApp();
         renderHistory();
     } 
-    // Si on est sur une autre page mais qu'on a besoin des boutiques (ex: Jobs)
+    // C. LOGIQUE JOBS (Si on est sur la page jobs)
+    else if(document.querySelectorAll('.job-card').length > 0) {
+        initJobs();
+    }
+    // D. LOGIQUE SECONDAIRE (Si on a juste besoin des boutiques, ex: page Map)
     else if(document.getElementById('shops-container')) {
         loadShopsOnly();
     }
 });
 
-// --- 1. INITIALISATION ---
+// --- 2. INITIALISATION APP (ACCUEIL) ---
 async function initApp() {
     showSkeletonLoader();
 
@@ -33,7 +38,7 @@ async function initApp() {
         
         renderShops();
         
-        // Chargement sécurisé des produits
+        // Chargement sécurisé des produits (Promise.allSettled)
         const promises = allShops.map(shop => fetchShopProducts(shop));
         const results = await Promise.allSettled(promises);
         
@@ -77,7 +82,7 @@ async function initApp() {
     }
 }
 
-// Juste charger les logos (pour pages secondaires si besoin)
+// Juste charger les logos (pour pages secondaires)
 async function loadShopsOnly() {
     try {
         const res = await fetch('shops.json');
@@ -86,11 +91,11 @@ async function loadShopsOnly() {
     } catch(e) {}
 }
 
-// --- 2. FONCTIONS DE RENDU ---
+// --- 3. RENDU VISUEL (PRODUITS & BOUTIQUES) ---
 
 function renderProducts(products) {
     const container = document.getElementById('products-container');
-    if(!container) return; // Sécurité
+    if(!container) return; 
 
     if(container.innerHTML.includes('skeleton')) container.innerHTML = ''; 
 
@@ -101,8 +106,6 @@ function renderProducts(products) {
 
     products.slice(0, 30).forEach(p => {
         const price = Number(p.prix).toLocaleString() + ' F';
-        
-        // NOTE : Pas de badge vérifié ici (réservé Premium)
         
         container.innerHTML += `
             <div class="product-card" data-aos="fade-up">
@@ -132,7 +135,6 @@ function renderShops() {
     const c = document.getElementById('shops-container');
     if(!c) return;
     
-    // Mise à jour du compteur
     const count = document.getElementById('shop-count');
     if(count) count.textContent = `${allShops.length} actifs`;
     
@@ -144,7 +146,6 @@ function renderShops() {
                 <div class="shop-name">${s.name}</div>
             </a>`;
     });
-    // NOTE : On ne met plus le bouton "Jobs" ici, il est dans le menu du bas.
 }
 
 function renderPromos(promos) {
@@ -176,9 +177,55 @@ function renderPromos(promos) {
     });
 }
 
-// --- 3. FONCTIONS UTILITAIRES ---
+// --- 4. GESTION DES JOBS (Compteur de vues) ---
 
-// Fetch sécurisé avec Timeout
+function initJobs() {
+    const jobs = document.querySelectorAll('.job-card');
+    jobs.forEach(job => {
+        const id = job.id; 
+        const baseViews = parseInt(job.getAttribute('data-views'));
+        const viewText = document.getElementById(`view-txt-${id}`);
+        
+        // Vérifie si déjà vu
+        const hasSeen = localStorage.getItem(`seen_${id}`);
+        
+        if (hasSeen) {
+            viewText.textContent = formatViews(baseViews + 1);
+            viewText.style.color = "#FF9F1C"; // Orange = déjà vu
+        } else {
+            viewText.textContent = formatViews(baseViews);
+        }
+    });
+}
+
+// Fonction globale pour le onclick HTML
+window.registerView = (jobId) => {
+    // Si pas encore vu
+    if (!localStorage.getItem(`seen_${jobId}`)) {
+        localStorage.setItem(`seen_${jobId}`, 'true');
+        
+        // Mise à jour visuelle
+        const el = document.getElementById(`view-txt-${jobId}`);
+        const card = document.getElementById(jobId);
+        let currentCount = parseInt(card.getAttribute('data-views'));
+        
+        el.textContent = formatViews(currentCount + 1);
+        el.style.color = "#FF9F1C";
+        
+        vibratePhone(); // Petit feedback haptique
+    }
+};
+
+function formatViews(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+    return num.toString();
+}
+
+
+// --- 5. UTILITAIRES & FEATURES ---
+
+// Fetch sécurisé
 async function fetchShopProducts(shop) {
     try {
         const controller = new AbortController();
@@ -210,7 +257,7 @@ function setupSearch() {
         if(term.length === 0) {
             if(promoContainer) promoContainer.style.display = 'flex';
             c.innerHTML = '';
-            // Réaffiche les produits standards
+            // Réaffiche les standards
             const standards = allProducts.filter(p => !p.prix_original || p.prix_original <= p.prix);
             renderProducts(standards);
             return;
@@ -230,8 +277,6 @@ function showSkeletonLoader() {
     c.innerHTML = '';
     for(let i=0; i<4; i++) c.innerHTML += `<div class="skeleton-card skeleton"><div class="skeleton-img skeleton"></div><div class="skeleton-line skeleton"></div><div class="skeleton-line short skeleton"></div></div>`;
 }
-
-// --- 4. FEATURES "FOLLES" ---
 
 // Dark Mode
 function toggleDarkMode() {
@@ -283,65 +328,4 @@ function renderHistory() {
             </a>
         `;
     });
-}
-/* --- AJOUTS DANS js/app.js (Système de Vues Uniques) --- */
-
-// 1. Au chargement, on vérifie les vues déjà enregistrées
-document.addEventListener('DOMContentLoaded', () => {
-    // On sélectionne toutes les cartes Job
-    const jobs = document.querySelectorAll('.job-card');
-    
-    jobs.forEach(job => {
-        const id = job.id; // ex: 'job-1'
-        const baseViews = parseInt(job.getAttribute('data-views'));
-        const viewText = document.getElementById(`view-txt-${id}`);
-        
-        // On regarde dans la mémoire du téléphone si c'est déjà vu
-        const hasSeen = localStorage.getItem(`seen_${id}`);
-        
-        if (hasSeen) {
-            // Si déjà vu, on affiche le nombre + 1
-            viewText.textContent = formatViews(baseViews + 1);
-            // On ajoute une petite classe visuelle (optionnel)
-            viewText.style.color = "#FF9F1C"; // Orange pour dire "Vu"
-        } else {
-            // Sinon on affiche le nombre de base
-            viewText.textContent = formatViews(baseViews);
-        }
-    });
-});
-
-// 2. Fonction déclenchée au clic (Utilisateur Unique)
-window.registerView = (jobId) => {
-    // Vérifie si déjà compté
-    if (!localStorage.getItem(`seen_${jobId}`)) {
-        
-        // 1. Marquer comme vu dans le téléphone
-        localStorage.setItem(`seen_${jobId}`, 'true');
-        
-        // 2. Mettre à jour l'affichage visuel (+1)
-        const el = document.getElementById(`view-txt-${jobId}`);
-        const card = document.getElementById(jobId);
-        
-        // Récupère le nombre actuel non-formaté depuis l'attribut HTML
-        let currentCount = parseInt(card.getAttribute('data-views'));
-        let newCount = currentCount + 1;
-        
-        // Animation simple du chiffre
-        el.textContent = formatViews(newCount);
-        el.style.color = "#FF9F1C"; // Change la couleur
-        
-        console.log(`Vue unique comptabilisée pour ${jobId}`);
-    }
-};
-
-// 3. Formatteur style YouTube (1200 -> 1.2k)
-function formatViews(num) {
-    if (num >= 1000000) {
-        return (num / 1000000).toFixed(1) + 'M';
-    }
-    if (num >= 1000) {
-        return (num / 1000).toFixed(1) + 'k';
-    }
-    return num.toString();
 }
