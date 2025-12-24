@@ -155,3 +155,38 @@ footer { background: var(--dark); color: #888; padding: 40px 20px 80px; text-ali
     gap: 10px;
 }
 @keyframes popUp { from{transform:translate(-50%, 100px);} to{transform:translate(-50%, 0);} }
+/* --- START OF FILE style.css (Ajouts à la fin) --- */
+
+/* 1. FILTRES (Catégories) */
+.filter-scroll {
+    display: flex; gap: 10px; overflow-x: auto; padding: 10px 0;
+    scrollbar-width: none; margin-bottom: 15px;
+}
+.filter-btn {
+    white-space: nowrap; padding: 8px 16px; 
+    border-radius: 20px; border: 1px solid #ddd;
+    background: white; color: #666; font-size: 0.8rem; font-weight: 600;
+    transition: 0.3s; cursor: pointer;
+}
+.filter-btn.active {
+    background: var(--dark); color: white; border-color: var(--dark);
+}
+
+/* 2. SKELETON LOADING (Animation de chargement) */
+.skeleton {
+    background: #eee;
+    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+    border-radius: 5px;
+    background-size: 200% 100%;
+    animation: 1.5s shine linear infinite;
+}
+.skeleton-card {
+    height: 250px; border-radius: 12px; background: white; padding: 10px;
+}
+.skeleton-img { height: 140px; width: 100%; margin-bottom: 10px; }
+.skeleton-line { height: 15px; margin-bottom: 8px; width: 80%; }
+.skeleton-line.short { width: 40%; }
+
+@keyframes shine {
+    to { background-position-x: -200%; }
+}
