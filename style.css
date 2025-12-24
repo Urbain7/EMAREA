@@ -92,3 +92,43 @@ img { max-width: 100%; display: block; }
 /* --- 6. FOOTER --- */
 footer { background: var(--dark); color: #888; padding: 40px 20px 80px; text-align: center; margin-top: 50px; font-size: 0.8rem; }
 .install-box { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin-bottom: 30px; }
+
+/* --- NOUVEAU : STYLE SLIDER PROMO --- */
+.promo-slider-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding-bottom: 20px; /* Espace pour l'ombre */
+    scroll-snap-type: x mandatory; /* Effet magnétique */
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+.promo-slider-container::-webkit-scrollbar { display: none; }
+
+.promo-card {
+    min-width: 260px; /* Carte large */
+    background: white;
+    border-radius: 16px;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    border: 2px solid var(--primary); /* Bordure Orange */
+    scroll-snap-align: start;
+    box-shadow: 0 4px 10px rgba(246, 139, 30, 0.2);
+    position: relative;
+}
+
+.promo-card img {
+    width: 80px; height: 80px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.promo-info { flex: 1; }
+.promo-title { font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; line-height: 1.2; }
+.promo-price { color: #e74c3c; font-weight: 800; font-size: 1rem; }
+.old-price { text-decoration: line-through; color: #999; font-size: 0.7rem; margin-right: 5px; }
+
+.scroll-hint-text { font-size: 0.7rem; color: #999; animation: bounceX 1.5s infinite; }
+@keyframes bounceX { 0%, 100% {transform: translateX(0);} 50% {transform: translateX(5px);} }
