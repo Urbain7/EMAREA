@@ -51,7 +51,12 @@ async function initApp() {
         allProducts = [...promoItems, ...standardItems];
 
         // 4. Nettoyage et Affichage
+         // A. On vide le conteneur des produits (on enlève l'animation Skeleton)
         document.getElementById('products-container').innerHTML = ''; 
+        
+        // B. CORRECTION : On force la disparition du texte "Chargement..." s'il est là
+        const textLoader = document.getElementById('loader');
+        if(textLoader) textLoader.style.display = 'none';
         
         renderPromos(promoItems);
         renderProducts(standardItems);
