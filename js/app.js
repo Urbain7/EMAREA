@@ -4,12 +4,22 @@
 
 let allProducts = [];
 let allShops = [];
+// Récupère l'historique ou crée un tableau vide
 let viewedProducts = JSON.parse(localStorage.getItem('em_history')) || [];
 
 document.addEventListener('DOMContentLoaded', () => {
-    initApp();
-    checkDarkMode(); // Vérifie le thème
-    renderHistory(); // Affiche l'historique
+    // Vérifie le thème sombre avant tout
+    checkDarkMode();
+    
+    // Si on est sur la page d'accueil (où il y a les produits)
+    if(document.getElementById('products-container')) {
+        initApp();
+        renderHistory();
+    } 
+    // Si on est sur une autre page mais qu'on a besoin des boutiques (ex: Jobs)
+    else if(document.getElementById('shops-container')) {
+        loadShopsOnly();
+    }
 });
 
 // --- 1. INITIALISATION ---
@@ -23,6 +33,7 @@ async function initApp() {
         
         renderShops();
         
+        // Chargement sécurisé des produits
         const promises = allShops.map(shop => fetchShopProducts(shop));
         const results = await Promise.allSettled(promises);
         
@@ -32,6 +43,7 @@ async function initApp() {
         results.forEach(result => {
             if (result.status === 'fulfilled') {
                 result.value.forEach(p => {
+                    // Algorithme Promo : Produit Star OU Prix barré
                     if (p.is_star === true || (p.prix_original && p.prix_original > p.prix)) {
                         promoItems.push(p);
                     } else {
@@ -41,13 +53,16 @@ async function initApp() {
             }
         });
 
+        // Mélange aléatoire
         promoItems.sort(() => 0.5 - Math.random());
         standardItems.sort(() => 0.5 - Math.random());
         
         allProducts = [...promoItems, ...standardItems];
 
-        // Nettoyage
-        document.getElementById('products-container').innerHTML = ''; 
+        // Nettoyage Loader
+        const pContainer = document.getElementById('products-container');
+        if(pContainer) pContainer.innerHTML = ''; 
+        
         const loader = document.getElementById('loader');
         if(loader) loader.style.display = 'none';
         
@@ -57,26 +72,41 @@ async function initApp() {
 
     } catch (e) {
         console.error(e);
-        document.getElementById('products-container').innerHTML = `<div style="text-align:center;">Erreur connexion.</div>`;
+        const pContainer = document.getElementById('products-container');
+        if(pContainer) pContainer.innerHTML = `<div style="text-align:center; padding:20px;">Erreur connexion au marché.</div>`;
     }
 }
 
-// --- 2. FONCTIONS DE RENDU (Modifiées pour Copie Lien & Historique) ---
+// Juste charger les logos (pour pages secondaires si besoin)
+async function loadShopsOnly() {
+    try {
+        const res = await fetch('shops.json');
+        allShops = await res.json();
+        renderShops();
+    } catch(e) {}
+}
+
+// --- 2. FONCTIONS DE RENDU ---
+
 function renderProducts(products) {
     const container = document.getElementById('products-container');
+    if(!container) return; // Sécurité
+
     if(container.innerHTML.includes('skeleton')) container.innerHTML = ''; 
 
     if(products.length === 0) {
-        container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:20px; color:#999;">Rien trouvé.</div>`;
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:20px; color:#999;">Aucun produit trouvé.</div>`;
         return;
     }
 
     products.slice(0, 30).forEach(p => {
         const price = Number(p.prix).toLocaleString() + ' F';
         
+        // NOTE : Pas de badge vérifié ici (réservé Premium)
+        
         container.innerHTML += `
             <div class="product-card" data-aos="fade-up">
-                <!-- Bouton Copier Lien (Idée 6.55) -->
+                <!-- Bouton Copier Lien -->
                 <button class="btn-copy" onclick="copyLink('${p.shopUrl}/produit.html?id=${p.id}')">🔗</button>
                 
                 <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank" onclick="addToHistory('${p.id}', '${p.nom}', '${p.image}', '${p.shopUrl}')">
@@ -86,7 +116,7 @@ function renderProducts(products) {
                     <div class="product-shop">${p.shopName}</div>
                     <div class="product-title">${p.nom}</div>
                     <div class="product-price">${price}</div>
-                    <!-- Bouton avec Vibration (Idée 2.2) -->
+                    <!-- Bouton avec Vibration -->
                     <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank" 
                        onclick="vibratePhone(); addToHistory('${p.id}', '${p.nom}', '${p.image}', '${p.shopUrl}')" 
                        class="btn btn-outline" style="font-size:0.8rem; padding:5px;">
@@ -98,18 +128,68 @@ function renderProducts(products) {
     });
 }
 
+function renderShops() {
+    const c = document.getElementById('shops-container');
+    if(!c) return;
+    
+    // Mise à jour du compteur
+    const count = document.getElementById('shop-count');
+    if(count) count.textContent = `${allShops.length} actifs`;
+    
+    c.innerHTML = '';
+    allShops.forEach(s => {
+        c.innerHTML += `
+            <a href="${s.url}" class="shop-card" target="_blank">
+                <img src="${s.logo}" class="shop-logo" onerror="this.src='https://via.placeholder.com/70'">
+                <div class="shop-name">${s.name}</div>
+            </a>`;
+    });
+    // NOTE : On ne met plus le bouton "Jobs" ici, il est dans le menu du bas.
+}
+
+function renderPromos(promos) {
+    const c = document.getElementById('promo-container');
+    if(!c) return;
+
+    if(promos.length===0) { c.style.display='none'; return; }
+    
+    c.innerHTML = '';
+    promos.forEach(p => {
+        const price = Number(p.prix).toLocaleString() + ' F';
+        const oldPrice = p.prix_original ? `<span class="old-price">${Number(p.prix_original).toLocaleString()} F</span>` : '';
+
+        c.innerHTML += `
+            <div class="promo-card">
+                <a href="${p.shopUrl}/produit.html?id=${p.id}" onclick="addToHistory('${p.id}', '${p.nom}', '${p.image}', '${p.shopUrl}')" target="_blank">
+                    <img src="${p.image}" onerror="this.src='https://via.placeholder.com/80'">
+                </a>
+                <div class="promo-info">
+                    <div class="product-shop" style="color:#e67e22;">🔥 PROMO FLASH</div>
+                    <div class="promo-title">${p.nom}</div>
+                    <div>
+                        ${oldPrice}
+                        <span class="promo-price">${price}</span>
+                    </div>
+                    <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank" class="btn btn-primary" style="font-size:0.7rem; padding:5px 15px; margin-top:5px;">Voir</a>
+                </div>
+            </div>`;
+    });
+}
+
 // --- 3. FONCTIONS UTILITAIRES ---
 
-// Fetch sécurisé
+// Fetch sécurisé avec Timeout
 async function fetchShopProducts(shop) {
     try {
         const controller = new AbortController();
-        const id = setTimeout(() => controller.abort(), 5000);
+        const id = setTimeout(() => controller.abort(), 5000); // 5 sec max
         const res = await fetch(`${shop.url}/data/produits.json`, { signal: controller.signal });
         clearTimeout(id);
+        
         if(!res.ok) return [];
         const data = await res.json();
         const items = data.items ? data.items : data;
+        
         return items.map(p => ({
             ...p, shopName: shop.name, shopUrl: shop.url, isVerified: shop.verified,
             image: p.image.startsWith('http') ? p.image : `${shop.url}/${p.image}`
@@ -117,104 +197,90 @@ async function fetchShopProducts(shop) {
     } catch { return []; }
 }
 
-// Rendering Promos & Shops (Identique avant, résumé pour gain de place)
-function renderShops() {
-    const c = document.getElementById('shops-container');
-    c.innerHTML = '';
-    allShops.forEach(s => {
-        c.innerHTML += `<a href="${s.url}" class="shop-card"><img src="${s.logo}" class="shop-logo"><div class="shop-name">${s.name}</div></a>`;
+// Recherche
+function setupSearch() {
+    const input = document.getElementById('search-input');
+    if(!input) return;
+
+    input.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const promoContainer = document.getElementById('promo-container');
+        const c = document.getElementById('products-container');
+
+        if(term.length === 0) {
+            if(promoContainer) promoContainer.style.display = 'flex';
+            c.innerHTML = '';
+            // Réaffiche les produits standards
+            const standards = allProducts.filter(p => !p.prix_original || p.prix_original <= p.prix);
+            renderProducts(standards);
+            return;
+        }
+
+        if(promoContainer) promoContainer.style.display = 'none';
+        c.innerHTML = '';
+        const f = allProducts.filter(p => p.nom.toLowerCase().includes(term));
+        renderProducts(f);
     });
-    // Ajout du lien vers Jobs dans la liste des shops (Optionnel)
-    c.innerHTML += `<a href="jobs.html" class="shop-card"><div class="shop-logo" style="display:flex;align-items:center;justify-content:center;background:#333;color:white;">💼</div><div class="shop-name">Jobs</div></a>`;
 }
 
-function renderPromos(promos) {
-    const c = document.getElementById('promo-container');
-    if(promos.length===0) { c.style.display='none'; return; }
+// Loader Visuel
+function showSkeletonLoader() {
+    const c = document.getElementById('products-container');
+    if(!c) return;
     c.innerHTML = '';
-    promos.forEach(p => {
-        c.innerHTML += `<div class="promo-card"><a href="${p.shopUrl}" onclick="addToHistory('${p.id}', '${p.nom}', '${p.image}', '${p.shopUrl}')"><img src="${p.image}"></a><div class="promo-info"><div class="product-shop" style="color:#e67e22;">🔥 PROMO</div><div class="promo-title">${p.nom}</div><span class="promo-price">${Number(p.prix).toLocaleString()} F</span></div></div>`;
-    });
+    for(let i=0; i<4; i++) c.innerHTML += `<div class="skeleton-card skeleton"><div class="skeleton-img skeleton"></div><div class="skeleton-line skeleton"></div><div class="skeleton-line short skeleton"></div></div>`;
 }
 
-// --- 4. NOUVELLES FONCTIONNALITÉS ---
+// --- 4. FEATURES "FOLLES" ---
 
 // Dark Mode
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     vibratePhone();
-    // Sauvegarde
-    if(document.body.classList.contains('dark-mode')) {
-        localStorage.setItem('em_theme', 'dark');
-    } else {
-        localStorage.setItem('em_theme', 'light');
-    }
+    localStorage.setItem('em_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
 }
 
 function checkDarkMode() {
-    const theme = localStorage.getItem('em_theme');
-    if(theme === 'dark') {
+    if(localStorage.getItem('em_theme') === 'dark') {
         document.body.classList.add('dark-mode');
     }
 }
 
-// Vibration (Haptique)
+// Vibration
 window.vibratePhone = () => {
-    if (navigator.vibrate) {
-        navigator.vibrate(50); // Vibre 50ms
-    }
+    if (navigator.vibrate) navigator.vibrate(50);
 };
 
 // Copier Lien
 window.copyLink = (url) => {
     vibratePhone();
-    navigator.clipboard.writeText(url).then(() => {
-        alert("Lien copié !");
-    });
+    navigator.clipboard.writeText(url).then(() => alert("Lien copié !"));
 };
 
 // Historique
 window.addToHistory = (id, name, img, url) => {
-    // Évite les doublons
     viewedProducts = viewedProducts.filter(p => p.id !== id);
-    // Ajoute au début
     viewedProducts.unshift({ id, name, img, url });
-    // Garde max 10
     if(viewedProducts.length > 10) viewedProducts.pop();
-    // Sauvegarde
     localStorage.setItem('em_history', JSON.stringify(viewedProducts));
 };
 
 function renderHistory() {
     const container = document.getElementById('history-container');
-    if(!container || viewedProducts.length === 0) return;
+    const section = document.getElementById('history-section');
+    if(!container || !section) return;
+
+    if(viewedProducts.length === 0) return;
     
-    document.getElementById('history-section').style.display = 'block';
+    section.style.display = 'block';
     container.innerHTML = '';
     
     viewedProducts.forEach(p => {
         container.innerHTML += `
-            <a href="${p.url}/produit.html?id=${p.id}" class="history-card">
-                <img src="${p.img}">
-                <div>${p.name}</div>
+            <a href="${p.url}/produit.html?id=${p.id}" class="history-card" style="display:block; margin-right:10px;">
+                <img src="${p.img}" onerror="this.src='https://via.placeholder.com/100'">
+                <div style="font-size:0.7rem;overflow:hidden;text-overflow:ellipsis;">${p.name}</div>
             </a>
         `;
     });
-}
-
-// Search et Loader (Déjà vus)
-function setupSearch() {
-    document.getElementById('search-input').addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        const c = document.getElementById('products-container');
-        c.innerHTML = '';
-        const f = allProducts.filter(p => p.nom.toLowerCase().includes(term));
-        if(f.length>0) renderProducts(f);
-        else c.innerHTML = '<div style="text-align:center;width:100%;">Rien trouvé</div>';
-    });
-}
-function showSkeletonLoader() {
-    const c = document.getElementById('products-container');
-    c.innerHTML = '';
-    for(let i=0; i<4; i++) c.innerHTML += `<div class="skeleton-card skeleton"><div class="skeleton-img skeleton"></div><div class="skeleton-line skeleton"></div></div>`;
 }
