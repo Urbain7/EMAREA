@@ -6,21 +6,24 @@
     <title>Carte - EM AREA</title>
     <link rel="stylesheet" href="style.css">
     
-    <!-- Leaflet CSS -->
+    <!-- 1. IMPORTATION DE LEAFLET (DANS LE HEAD = SÉCURITÉ) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Routing Machine -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
     <style>
-        /* On s'assure que la carte a une taille ! */
+        /* On force l'affichage ici pour être sûr */
         #map { 
-            height: 60vh; 
+            height: 65vh !important; /* Force la hauteur */
             width: 100%; 
             border-radius: 12px; 
-            margin-top: 20px; 
-            z-index: 1; 
-            background: #eee; /* Couleur de fond si la carte charge mal */
+            margin-top: 15px; 
+            z-index: 0; /* Bas pour ne pas passer au dessus du menu */
+            background: #e0e0e0; /* Gris clair en attendant */
         }
-        /* Cache les instructions moches du GPS */
         .leaflet-routing-container { display: none !important; }
     </style>
 </head>
@@ -32,13 +35,18 @@
     </header>
 
     <div class="container">
-        <div class="hero" style="background:linear-gradient(45deg, #FF9F1C, #FF0000); padding:20px; color:white; border-radius:12px; margin-top:15px;">
-            <h1 style="font-size:1.2rem; margin:0;">Trouvez votre chemin</h1>
-            <p style="font-size:0.8rem; opacity:0.9;">Activez votre GPS pour voir le temps de trajet.</p>
-            <button class="btn btn-primary" onclick="locateUser()" style="background:white; color:#FF9F1C; border:none; margin-top:10px;">📍 Activer mon GPS</button>
+        <!-- Bannière GPS -->
+        <div class="hero" style="background:linear-gradient(45deg, #FF9F1C, #FF0000); padding:15px; color:white; border-radius:12px; margin-top:15px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h1 style="font-size:1rem; margin:0;">GPS Moto</h1>
+                    <p style="font-size:0.75rem; opacity:0.9; margin:0;">Voir le temps de trajet.</p>
+                </div>
+                <button class="btn btn-primary" onclick="locateUser()" style="background:white; color:#FF9F1C; border:none; padding:8px 15px; font-size:0.8rem;">📍 Activer</button>
+            </div>
         </div>
 
-        <!-- ICI C'EST LA CARTE (Ne pas supprimer) -->
+        <!-- LA CARTE -->
         <div id="map"></div>
 
         <div class="section-title">Boutiques à proximité</div>
@@ -61,14 +69,9 @@
         </a>
     </nav>
 
-    <!-- Bouton Dark Mode -->
     <div class="theme-toggle" onclick="toggleDarkMode()">🌓</div>
 
-    <!-- SCRIPTS (Dans le bon ordre !) -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
-    
-    <!-- App d'abord, Map ensuite -->
+    <!-- NOS SCRIPTS (A LA FIN) -->
     <script src="js/app.js"></script>
     <script src="js/map.js"></script>
 </body>
