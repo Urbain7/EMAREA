@@ -343,3 +343,108 @@ footer {
     margin-bottom: 20px; 
 }
 
+/* --- START OF FILE style.css (AJOUT À LA FIN) --- */
+
+/* Nouveau Footer Professionnel */
+footer {
+    background: var(--dark);
+    color: #b0b0b0; /* Gris clair pour le texte */
+    padding: 60px 20px 110px; /* Espace bas conservé pour le menu */
+    text-align: left; /* Plus pro que centré partout */
+    margin-top: 50px;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Grille du footer */
+.footer-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .footer-content {
+        grid-template-columns: repeat(3, 1fr); /* 3 colonnes sur PC */
+        text-align: left;
+    }
+}
+
+/* Colonnes */
+.footer-col h3 {
+    color: var(--white);
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: #b0b0b0;
+    transition: 0.3s;
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.footer-links a:hover {
+    color: var(--primary);
+    padding-left: 5px; /* Petit effet de glissement */
+}
+
+/* Boîte d'installation améliorée */
+.install-box {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    margin-bottom: 30px;
+    backdrop-filter: blur(10px);
+}
+
+.install-box p {
+    font-size: 0.8rem;
+    margin-bottom: 15px;
+    color: #ccc;
+}
+
+/* Copyright Bar */
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 40px;
+    padding-top: 20px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #666;
+}
+
+/* Réseaux Sociaux */
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+.social-icon {
+    width: 35px; height: 35px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.3s;
+    color: white;
+}
+.social-icon:hover {
+    background: var(--primary);
+    transform: translateY(-3px);
+}
