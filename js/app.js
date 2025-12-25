@@ -327,12 +327,13 @@ function setupSearch() {
 
 // Loader Visuel
 // --- LOADER VISUEL UNIFIÉ (Boutiques + Promos + Produits) ---
+// --- LOADER VISUEL UNIFIÉ (TOUT LE SITE) ---
 function showSkeletonLoader() {
-    // 1. Loader pour les Boutiques (Ronds)
+    
+    // A. PAGE ACCUEIL : Boutiques (Ronds)
     const shopContainer = document.getElementById('shops-container');
     if(shopContainer) {
         shopContainer.innerHTML = '';
-        // On affiche 5 faux ronds
         for(let i=0; i<5; i++) {
             shopContainer.innerHTML += `
                 <div class="skeleton-shop-wrapper">
@@ -342,12 +343,11 @@ function showSkeletonLoader() {
         }
     }
 
-    // 2. Loader pour les Promos (Cartes rectangulaires)
+    // B. PAGE ACCUEIL : Promos (Rectangles)
     const promoContainer = document.getElementById('promo-container');
     if(promoContainer) {
-        promoContainer.style.display = 'flex'; // S'assure qu'il est visible
+        promoContainer.style.display = 'flex';
         promoContainer.innerHTML = '';
-        // On affiche 3 fausses cartes promo
         for(let i=0; i<3; i++) {
             promoContainer.innerHTML += `
                 <div class="skeleton-promo-card">
@@ -361,7 +361,7 @@ function showSkeletonLoader() {
         }
     }
 
-    // 3. Loader pour les Produits (Grille verticale - inchangé)
+    // C. PAGE ACCUEIL : Produits (Grille)
     const prodContainer = document.getElementById('products-container');
     if(prodContainer) {
         prodContainer.innerHTML = '';
@@ -371,6 +371,42 @@ function showSkeletonLoader() {
                     <div class="skeleton-img skeleton"></div>
                     <div class="skeleton-line skeleton"></div>
                     <div class="skeleton-line short skeleton"></div>
+                </div>`;
+        }
+    }
+
+    // D. PAGE JOBS : Liste des emplois
+    const jobsContainer = document.getElementById('jobs-container');
+    if(jobsContainer) {
+        jobsContainer.innerHTML = '';
+        // On affiche 4 faux jobs
+        for(let i=0; i<4; i++) {
+            jobsContainer.innerHTML += `
+                <div class="skeleton-job">
+                    <div class="skeleton-job-top">
+                        <span class="skeleton-tag"></span>
+                        <span class="skeleton-date"></span>
+                    </div>
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-desc"></div>
+                    <div class="skeleton-desc" style="width:60%"></div>
+                </div>`;
+        }
+    }
+
+    // E. PAGE MAP : Liste des distances (en bas)
+    const mapList = document.getElementById('distance-list');
+    if(mapList) {
+        mapList.innerHTML = '';
+        // On affiche 5 fausses lignes de distance
+        for(let i=0; i<5; i++) {
+            mapList.innerHTML += `
+                <div class="skeleton-map-item">
+                    <div class="skeleton-map-avatar"></div>
+                    <div class="skeleton-map-lines">
+                        <div class="skeleton-title" style="width:50%; margin:0;"></div>
+                        <div class="skeleton-desc" style="width:30%; margin:0;"></div>
+                    </div>
                 </div>`;
         }
     }
