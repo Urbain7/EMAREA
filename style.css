@@ -540,3 +540,83 @@ body.dark-mode .skeleton-map-avatar {
     background: linear-gradient(110deg, #2a2a2a 8%, #333 18%, #2a2a2a 33%);
     background-size: 200% 100%;
 }
+/* ========================================= */
+/* CORRECTIF CARTE (MAP)                     */
+/* ========================================= */
+#map {
+    width: 100%;
+    height: 60vh;       /* 60% de la hauteur de l'écran */
+    min-height: 400px;  /* Minimum 400px sur petit écran */
+    background-color: #e5e5e5; /* Fond gris pendant le chargement */
+    border-radius: 12px;
+    margin-top: 15px;
+    z-index: 1;
+    display: block !important; /* Force l'affichage */
+}
+/* Cache les instructions écrites du GPS (on veut juste la ligne) */
+.leaflet-routing-container { display: none !important; }
+
+/* ========================================= */
+/* PAGE MARKET (ANNONCES) - DESIGN UNIFIÉ    */
+/* ========================================= */
+.market-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #f0f0f0;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    transition: transform 0.2s;
+}
+.market-card:active { transform: scale(0.98); }
+
+.market-img {
+    width: 80px; height: 80px;
+    border-radius: 10px;
+    object-fit: cover;
+    background: #f9f9f9;
+    border: 1px solid #eee;
+}
+
+.market-info { flex: 1; }
+.market-info h4 { color: var(--dark); margin: 5px 0; font-size: 0.95rem; }
+
+.market-price {
+    color: var(--secondary); /* Turquoise */
+    font-weight: 800;
+    font-size: 1rem;
+}
+
+.market-tag {
+    font-size: 0.65rem;
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #666;
+    font-weight: bold;
+}
+
+/* Bouton Flottant "Vendre" */
+.fab-btn {
+    position: fixed; bottom: 85px; right: 20px;
+    background: #27ae60; color: white;
+    padding: 12px 20px; border-radius: 50px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+    display: flex; align-items: center; gap: 8px;
+    z-index: 900;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+.fab-btn:active { transform: scale(0.95); }
+
+/* SUPPORT DARK MODE POUR MARKET */
+body.dark-mode .market-card { background: #1e1e1e; border-color: #333; }
+body.dark-mode .market-info h4 { color: white; }
+body.dark-mode .market-tag { background: #333; color: #ccc; }
+body.dark-mode .market-img { border-color: #444; background: #333; }
+body.dark-mode .market-price { color: #2ecc71; }
