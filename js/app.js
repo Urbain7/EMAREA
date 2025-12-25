@@ -1,5 +1,5 @@
 /* =============================== */
-/* MOTEUR EM AREA V5.0 (FINAL)     */
+/* MOTEUR EM AREA V6.0 (FINAL)     */
 /* =============================== */
 
 let allProducts = [];
@@ -17,12 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
         initApp();
         renderHistory();
     } 
-    // C. LOGIQUE SECONDAIRE (Si on a juste besoin des boutiques, ex: page Map ou Jobs)
+    // C. LOGIQUE JOBS (Si on est sur la page jobs avec le conteneur vide)
+    else if(document.getElementById('jobs-container')) {
+        loadJobs();
+    }
+    // D. LOGIQUE SECONDAIRE (Si on a juste besoin des boutiques, ex: page Map)
     else if(document.getElementById('shops-container')) {
         loadShopsOnly();
     }
 
-    // D. LISTENER FERMETURE MODALE (Si on clique en dehors)
+    // E. LISTENER FERMETURE MODALE PHARMACIE (Si on clique en dehors)
     window.addEventListener('click', (e) => {
         const modal = document.getElementById('pharma-modal');
         if (e.target === modal) {
@@ -62,7 +66,7 @@ async function initApp() {
             }
         });
 
-        // Mélange aléatoire pour que ça change à chaque visite
+        // Mélange aléatoire
         promoItems.sort(() => 0.5 - Math.random());
         standardItems.sort(() => 0.5 - Math.random());
         
@@ -95,7 +99,100 @@ async function loadShopsOnly() {
     } catch(e) {}
 }
 
-// --- 3. RENDU VISUEL (PRODUITS & BOUTIQUES) ---
+// --- 3. GESTION DES JOBS (NOUVEAU via jobs.json) ---
+function loadJobs() {
+    const container = document.getElementById('jobs-container');
+    if(!container) return;
+
+    fetch('jobs.json')
+        .then(res => res.json())
+        .then(jobs => {
+            container.innerHTML = ''; // Vide le loader
+            
+            if(jobs.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:20px;">Aucune offre pour le moment.</div>';
+                return;
+            }
+
+            jobs.forEach(job => {
+                // Création du lien WhatsApp pré-rempli
+                const msg = `Bonjour, je souhaite postuler pour l'offre *${job.title}* chez ${job.company}.`;
+                const waLink = `https://wa.me/${job.whatsapp}?text=${encodeURIComponent(msg)}`;
+
+                container.innerHTML += `
+                <div class="job-card" data-aos="fade-up">
+                    <div class="job-top-row">
+                        <span class="job-tag">${job.tag}</span>
+                        <div class="job-meta-info">
+                            <span>${job.date}</span>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin:5px 0;">${job.title}</h3>
+                    <p style="font-size:0.8rem; color:#888;">${job.company} - ${job.location}</p>
+                    <p style="font-size:0.85rem; margin-top:10px;">${job.desc}</p>
+                    
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px; border-top:1px solid #eee; padding-top:10px;">
+                        <span class="job-salary">${job.salary}</span>
+                        <a href="${waLink}" class="btn btn-primary" style="font-size:0.7rem; padding:8px 15px;">
+                            Postuler 
+                        </a>
+                    </div>
+                </div>`;
+            });
+        })
+        .catch(e => {
+            console.error(e);
+            container.innerHTML = '<div style="text-align:center; color:red;">Erreur de chargement des jobs.</div>';
+        });
+}
+
+// --- 4. GESTION PHARMACIES (NOUVEAU) ---
+function openPharmaModal() {
+    const modal = document.getElementById('pharma-modal');
+    const list = document.getElementById('pharma-list');
+    
+    if(!modal) return;
+
+    // Affiche la modale
+    modal.classList.add('active');
+    vibratePhone();
+
+    // Charge les données
+    list.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">Chargement des gardes...</div>';
+    
+    fetch('pharmacies.json')
+        .then(res => res.json())
+        .then(data => {
+            list.innerHTML = '';
+            if(data.length === 0) {
+                 list.innerHTML = '<div style="text-align:center; padding:20px;">Aucune info pour cette semaine.</div>';
+                 return;
+            }
+            data.forEach(p => {
+                list.innerHTML += `
+                    <div class="pharma-item">
+                        <div class="pharma-info">
+                            <span class="pharma-tag">${p.quartier}</span>
+                            <h4>${p.nom}</h4>
+                            <p>📍 ${p.loc}</p>
+                        </div>
+                        <a href="tel:${p.tel.replace(/\s/g, '')}" class="btn-call">📞</a>
+                    </div>
+                `;
+            });
+        })
+        .catch(() => {
+            list.innerHTML = '<div style="color:#e74c3c; text-align:center; padding:20px;">Impossible de charger la liste.</div>';
+        });
+}
+
+function closePharmaModal() {
+    const modal = document.getElementById('pharma-modal');
+    if(modal) modal.classList.remove('active');
+}
+
+// --- 5. RENDU VISUEL (PRODUITS & BOUTIQUES) ---
 
 function renderProducts(products) {
     const container = document.getElementById('products-container');
@@ -181,53 +278,7 @@ function renderPromos(promos) {
     });
 }
 
-// --- 4. GESTION PHARMACIES (NOUVEAU) ---
-
-function openPharmaModal() {
-    const modal = document.getElementById('pharma-modal');
-    const list = document.getElementById('pharma-list');
-    
-    if(!modal) return;
-
-    // Affiche la modale
-    modal.classList.add('active');
-    vibratePhone();
-
-    // Charge les données
-    list.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">Chargement des gardes...</div>';
-    
-    fetch('pharmacies.json')
-        .then(res => res.json())
-        .then(data => {
-            list.innerHTML = '';
-            if(data.length === 0) {
-                 list.innerHTML = '<div style="text-align:center; padding:20px;">Aucune info pour cette semaine.</div>';
-                 return;
-            }
-            data.forEach(p => {
-                list.innerHTML += `
-                    <div class="pharma-item">
-                        <div class="pharma-info">
-                            <span class="pharma-tag">${p.quartier}</span>
-                            <h4>${p.nom}</h4>
-                            <p>📍 ${p.loc}</p>
-                        </div>
-                        <a href="tel:${p.tel.replace(/\s/g, '')}" class="btn-call">📞</a>
-                    </div>
-                `;
-            });
-        })
-        .catch(() => {
-            list.innerHTML = '<div style="color:#e74c3c; text-align:center; padding:20px;">Impossible de charger la liste. Vérifiez votre connexion.</div>';
-        });
-}
-
-function closePharmaModal() {
-    const modal = document.getElementById('pharma-modal');
-    if(modal) modal.classList.remove('active');
-}
-
-// --- 5. UTILITAIRES & FEATURES ---
+// --- 6. UTILITAIRES & FEATURES ---
 
 // Fetch sécurisé
 async function fetchShopProducts(shop) {
