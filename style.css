@@ -216,23 +216,6 @@ ul { list-style: none; padding: 0; margin: 0; }
 }
 .dist-val { font-weight: bold; color: var(--secondary); margin-left: auto; }
 
-/* Jobs */
-.job-card { 
-    background: white; padding: 20px; border-radius: 12px; 
-    margin-bottom: 15px; border: 1px solid #eee; 
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-    transition: transform 0.1s;
-}
-.job-card:active { transform: scale(0.98); }
-.job-tag { 
-    display: inline-block; background: #e3f2fd; color: #2196f3; 
-    padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; 
-    font-weight: bold; 
-}
-.job-salary { color: #27ae60; font-weight: bold; font-size: 0.9rem; }
-.job-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.job-meta-info { display: flex; gap: 15px; font-size: 0.75rem; color: #999; align-items: center; }
-
 /* ========================================= */
 /* 6. ANIMATION & HISTORIQUE                 */
 /* ========================================= */
@@ -556,4 +539,103 @@ body.dark-mode .skeleton-map-avatar {
 /* Cache les instructions écrites du GPS (on veut juste la ligne) */
 .leaflet-routing-container { display: none !important; }
 
+/* ========================================= */
+/* JOBS DESIGN PRO (LinkedIn Style)          */
+/* ========================================= */
 
+.job-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03); /* Ombre très douce */
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.job-card:active { transform: scale(0.98); }
+
+/* En-tête de la carte (Logo + Titre) */
+.job-header {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* Avatar généré avec la lettre */
+.job-avatar {
+    width: 50px; height: 50px;
+    border-radius: 12px;
+    background: #eee;
+    color: var(--dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 800;
+    flex-shrink: 0; /* Empêche l'écrasement */
+}
+
+/* Infos principales */
+.job-main-info h3 {
+    margin: 0 0 2px;
+    font-size: 1rem;
+    color: var(--dark);
+}
+.job-company {
+    font-size: 0.8rem;
+    color: #888;
+    display: flex; align-items: center; gap: 5px;
+}
+
+/* Tags et Description */
+.job-tags-row {
+    display: flex; gap: 8px; margin-bottom: 12px;
+}
+.job-pill {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #f4f6f8;
+    color: #555;
+    font-weight: 600;
+}
+.job-pill.highlight { background: #e3f2fd; color: #2196f3; }
+
+.job-desc {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limite à 2 lignes */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Pied de page (Salaire + Bouton) */
+.job-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px dashed #eee; /* Ligne pointillée style ticket */
+}
+
+.job-salary {
+    color: #27ae60;
+    font-weight: 800;
+    font-size: 0.95rem;
+    background: #e8f8f5;
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+/* DARK MODE SUPPORT */
+body.dark-mode .job-card { background: #1e1e1e; border-color: #333; }
+body.dark-mode .job-main-info h3 { color: white; }
+body.dark-mode .job-pill { background: #333; color: #ccc; }
+body.dark-mode .job-pill.highlight { background: rgba(33, 150, 243, 0.2); color: #64b5f6; }
+body.dark-mode .job-footer { border-color: #333; }
+body.dark-mode .job-salary { background: rgba(39, 174, 96, 0.2); color: #2ecc71; }
