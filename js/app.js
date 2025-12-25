@@ -326,11 +326,54 @@ function setupSearch() {
 }
 
 // Loader Visuel
+// --- LOADER VISUEL UNIFIÉ (Boutiques + Promos + Produits) ---
 function showSkeletonLoader() {
-    const c = document.getElementById('products-container');
-    if(!c) return;
-    c.innerHTML = '';
-    for(let i=0; i<4; i++) c.innerHTML += `<div class="skeleton-card skeleton"><div class="skeleton-img skeleton"></div><div class="skeleton-line skeleton"></div><div class="skeleton-line short skeleton"></div></div>`;
+    // 1. Loader pour les Boutiques (Ronds)
+    const shopContainer = document.getElementById('shops-container');
+    if(shopContainer) {
+        shopContainer.innerHTML = '';
+        // On affiche 5 faux ronds
+        for(let i=0; i<5; i++) {
+            shopContainer.innerHTML += `
+                <div class="skeleton-shop-wrapper">
+                    <div class="skeleton-shop-circle"></div>
+                    <div class="skeleton-shop-text"></div>
+                </div>`;
+        }
+    }
+
+    // 2. Loader pour les Promos (Cartes rectangulaires)
+    const promoContainer = document.getElementById('promo-container');
+    if(promoContainer) {
+        promoContainer.style.display = 'flex'; // S'assure qu'il est visible
+        promoContainer.innerHTML = '';
+        // On affiche 3 fausses cartes promo
+        for(let i=0; i<3; i++) {
+            promoContainer.innerHTML += `
+                <div class="skeleton-promo-card">
+                    <div class="skeleton-promo-img"></div>
+                    <div class="skeleton-promo-content">
+                        <div class="skeleton-text-lg"></div>
+                        <div class="skeleton-text-sm"></div>
+                        <div class="skeleton-text-sm" style="width:30%"></div>
+                    </div>
+                </div>`;
+        }
+    }
+
+    // 3. Loader pour les Produits (Grille verticale - inchangé)
+    const prodContainer = document.getElementById('products-container');
+    if(prodContainer) {
+        prodContainer.innerHTML = '';
+        for(let i=0; i<4; i++) {
+            prodContainer.innerHTML += `
+                <div class="skeleton-card skeleton">
+                    <div class="skeleton-img skeleton"></div>
+                    <div class="skeleton-line skeleton"></div>
+                    <div class="skeleton-line short skeleton"></div>
+                </div>`;
+        }
+    }
 }
 
 // Dark Mode
