@@ -312,3 +312,34 @@ body.dark-mode .leaflet-popup-tip {
 body.dark-mode .leaflet-popup-content h3 { color: #ff9f1c !important; }
 body.dark-mode .leaflet-popup-content p { color: #ddd !important; }
 
+/* ========================================= */
+/* SECTION FOOTER (MANQUANTE)                */
+/* ========================================= */
+footer { 
+    background: var(--dark); 
+    color: #888; 
+    padding: 40px 20px 100px; /* Espace en bas pour le menu */
+    text-align: center; 
+    margin-top: 50px; 
+    font-size: 0.8rem; 
+}
+
+.install-box { 
+    background: rgba(255,255,255,0.1); 
+    padding: 25px; 
+    border-radius: 15px; 
+    margin-bottom: 30px; 
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.install-box h3 { 
+    color: white; 
+    margin: 0 0 10px; 
+    font-size: 1.1rem;
+}
+
+.install-box p { 
+    color: #ccc; 
+    margin-bottom: 20px; 
+}
+
