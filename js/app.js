@@ -1,5 +1,5 @@
 /* =============================== */
-/* MOTEUR EM AREA V3.5 (COMPLET)   */
+/* MOTEUR EM AREA V4.0 (FINAL)     */
 /* =============================== */
 
 let allProducts = [];
@@ -17,14 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
         initApp();
         renderHistory();
     } 
-    // C. LOGIQUE JOBS (Si on est sur la page jobs)
-    else if(document.querySelectorAll('.job-card').length > 0) {
-        initJobs();
-    }
-    // D. LOGIQUE SECONDAIRE (Si on a juste besoin des boutiques, ex: page Map)
+    // C. LOGIQUE SECONDAIRE (Si on a juste besoin des boutiques, ex: page Map ou Jobs)
     else if(document.getElementById('shops-container')) {
         loadShopsOnly();
     }
+    
+    // Note: La logique Jobs JS a été supprimée pour alléger le site.
 });
 
 // --- 2. INITIALISATION APP (ACCUEIL) ---
@@ -177,53 +175,7 @@ function renderPromos(promos) {
     });
 }
 
-// --- 4. GESTION DES JOBS (Compteur de vues) ---
-
-function initJobs() {
-    const jobs = document.querySelectorAll('.job-card');
-    jobs.forEach(job => {
-        const id = job.id; 
-        const baseViews = parseInt(job.getAttribute('data-views'));
-        const viewText = document.getElementById(`view-txt-${id}`);
-        
-        // Vérifie si déjà vu
-        const hasSeen = localStorage.getItem(`seen_${id}`);
-        
-        if (hasSeen) {
-            viewText.textContent = formatViews(baseViews + 1);
-            viewText.style.color = "#FF9F1C"; // Orange = déjà vu
-        } else {
-            viewText.textContent = formatViews(baseViews);
-        }
-    });
-}
-
-// Fonction globale pour le onclick HTML
-window.registerView = (jobId) => {
-    // Si pas encore vu
-    if (!localStorage.getItem(`seen_${jobId}`)) {
-        localStorage.setItem(`seen_${jobId}`, 'true');
-        
-        // Mise à jour visuelle
-        const el = document.getElementById(`view-txt-${jobId}`);
-        const card = document.getElementById(jobId);
-        let currentCount = parseInt(card.getAttribute('data-views'));
-        
-        el.textContent = formatViews(currentCount + 1);
-        el.style.color = "#FF9F1C";
-        
-        vibratePhone(); // Petit feedback haptique
-    }
-};
-
-function formatViews(num) {
-    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
-    return num.toString();
-}
-
-
-// --- 5. UTILITAIRES & FEATURES ---
+// --- 4. UTILITAIRES & FEATURES ---
 
 // Fetch sécurisé
 async function fetchShopProducts(shop) {
