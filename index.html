@@ -208,6 +208,23 @@ window.addEventListener('appinstalled', () => {
 <div class="theme-toggle" onclick="toggleDarkMode()">
     🌓
 </div>
+    <!-- MODALE PHARMACIES -->
+<div id="pharma-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3> Pharmacies de Garde</h3>
+            <button class="close-btn" onclick="closePharmaModal()">&times;</button>
+        </div>
+        <p style="font-size:0.8rem; color:#666; margin-bottom:15px;">Semaine en cours à Lomé.</p>
+        
+        <!-- Liste générée par JS -->
+        <div id="pharma-list" class="pharma-list">Chargement...</div>
+        
+        <a href="tel:118" class="btn btn-primary" style="width:100%; text-align:center; margin-top:15px; background:#27ae60;">
+            📞 Appeler Urgences (118)
+        </a>
+    </div>
+</div>
     
 </body>
 </html>
