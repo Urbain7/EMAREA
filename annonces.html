@@ -5,71 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Annonces - EM AREA</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Style spécifique aux petites annonces */
-        .market-card {
-            background: white; border-radius: 12px; padding: 15px;
-            margin-bottom: 15px; border: 1px solid #eee; display: flex; gap: 15px;
-            align-items: center; position: relative;
-        }
-        .market-img {
-            width: 80px; height: 80px; border-radius: 10px; object-fit: cover;
-            background: #f9f9f9; border: 1px solid #eee;
-        }
-        .market-info { flex: 1; }
-        .market-price { color: #27ae60; font-weight: 800; font-size: 1rem; }
-        .market-tag { 
-            font-size: 0.65rem; background: #eee; padding: 2px 8px; 
-            border-radius: 4px; color: #666; font-weight: bold;
-        }
-        
-        /* Bouton Flottant "Vendre" */
-        .fab-btn {
-            position: fixed; bottom: 85px; right: 20px;
-            background: #27ae60; color: white;
-            padding: 12px 20px; border-radius: 50px;
-            font-weight: bold; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
-            display: flex; align-items: center; gap: 8px; z-index: 900;
-            text-decoration: none;
-        }
-    </style>
 </head>
 <body>
     <header class="app-header">
-        <a href="index.html" class="logo">EM <span>MARKET</span></a>
-        <!-- Bouton Filtre (Optionnel) -->
+        <a href="index.html" class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            EM <span>MARKET</span>
+        </a>
         <div style="font-size:0.8rem; font-weight:600; color:#888;">Particuliers</div>
     </header>
 
     <div class="container">
+        <!-- Bannière verte spécifique au Market -->
         <div class="hero-banner" style="background: linear-gradient(45deg, #27ae60, #2ecc71); margin-top:15px; padding:20px;">
             <div class="hero-content">
-                <h2>Bazar & Occasions</h2>
-                <p>Achetez et vendez entre particuliers à Lomé.</p>
+                <span class="hero-tag" style="background:rgba(255,255,255,0.2);">Occasions</span>
+                <h2>Vendez & Achetez</h2>
+                <p>Le coin des bonnes affaires à Lomé.</p>
             </div>
         </div>
 
-        <div class="section-title">Annonces récentes</div>
+        <div class="section-title">Dernières annonces</div>
         
+        <!-- Le JS va remplir ceci -->
         <div id="market-container">
-            <div style="text-align:center; padding:20px;">Chargement...</div>
+            <div style="text-align:center; padding:30px; color:#999;">Chargement...</div>
         </div>
     </div>
 
-    <!-- BOUTON FLOTTANT : VENDRE -->
-    <!-- Remplace le numéro par le TIEN (Admin) -->
+    <!-- BOUTON FLOTTANT -->
     <a href="https://wa.me/22890000000?text=Bonjour%20Admin,%20je%20veux%20publier%20une%20annonce%20sur%20EM%20AREA." 
        class="fab-btn">
-        <span>➕ Vendre un truc</span>
+       <span>➕ Vendre un truc</span>
     </a>
 
-    <!-- Menu du bas -->
+    <!-- MENU DU BAS -->
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
             Accueil
         </a>
-        <a href="annonces.html" class="nav-item active" style="color:#27ae60;"> <!-- Actif ici -->
+        <a href="annonces.html" class="nav-item active" style="color:#27ae60;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
             Market
         </a>
