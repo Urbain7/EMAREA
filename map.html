@@ -5,17 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Carte - EM AREA</title>
     
-    <!-- 1. STYLE GÉNÉRAL -->
     <link rel="stylesheet" href="style.css">
-    
-    <!-- 2. LEAFLET MAP (Indispensable) -->
+    <!-- LEAFLET -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 </head>
 <body>
-
-    <!-- Header -->
     <header class="app-header">
         <a href="index.html" class="logo">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF9F1C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
@@ -27,35 +23,21 @@
     </header>
 
     <div class="container">
-        <!-- FILTRES CARTE -->
-        <div class="map-filters">
-            <button class="filter-btn active" onclick="filterMap('all', this)">Tout</button>
-            <button class="filter-btn" onclick="filterMap('mode', this)">👗 Mode</button>
-            <button class="filter-btn" onclick="filterMap('tech', this)">📱 Tech</button>
-            <button class="filter-btn" onclick="filterMap('miam', this)">🍔 Miam</button>
-        </div>
-
-        <!-- LA CARTE (Doit avoir une hauteur définie dans CSS) -->
+        <!-- CARTE (Affichage forcé) -->
         <div id="map"></div>
 
-        <!-- LISTE DES BOUTIQUES -->
         <div class="section-title">Boutiques à proximité</div>
         
-        <!-- Squelette de chargement par défaut -->
         <div id="distance-list" class="distance-list">
-            <div style="padding:20px; text-align:center; color:#999;">Chargement du GPS...</div>
+            <div style="padding:20px; text-align:center; color:#999;">Chargement de la localisation...</div>
         </div>
     </div>
 
-    <!-- MENU DU BAS -->
+    <!-- MENU DU BAS (3 Éléments, sans Market) -->
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
             Accueil
-        </a>
-        <a href="annonces.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-            Market
         </a>
         <a href="jobs.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
@@ -69,8 +51,8 @@
 
     <div class="theme-toggle" onclick="toggleDarkMode()">🌓</div>
 
-    <!-- SCRIPTS : Ordre Important -->
-    <script src="js/app.js"></script> <!-- Skeletons & Dark Mode -->
-    <script src="js/map.js"></script> <!-- Logique Carte -->
+    <!-- SCRIPTS -->
+    <script src="js/app.js"></script>
+    <script src="js/map.js"></script>
 </body>
 </html>
