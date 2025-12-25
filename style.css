@@ -25,12 +25,10 @@ body {
 a { text-decoration: none; color: inherit; }
 img { max-width: 100%; display: block; }
 button, input { font-family: 'Poppins', sans-serif; }
+ul { list-style: none; padding: 0; margin: 0; }
 
 /* ========================================= */
-/* 2. HEADER & NAVIGATION                    */
-/* ========================================= */
-/* ========================================= */
-/* HEADER MODERNE (Glassmorphism)            */
+/* 2. HEADER MODERNE (Glassmorphism)         */
 /* ========================================= */
 .app-header {
     background: rgba(255, 255, 255, 0.95); /* Très légèrement transparent */
@@ -40,14 +38,14 @@ button, input { font-family: 'Poppins', sans-serif; }
     top: 0; 
     z-index: 1000;
     padding: 12px 20px;
-    box-shadow: 0 1px 15px rgba(0,0,0,0.04); /* Ombre plus douce */
+    box-shadow: 0 1px 15px rgba(0,0,0,0.04);
     display: flex; 
     justify-content: space-between; 
     align-items: center;
     transition: background 0.3s;
 }
 
-/* Ajustement Logo */
+/* Logo */
 .logo { 
     font-size: 1.3rem; 
     font-weight: 800; 
@@ -55,10 +53,11 @@ button, input { font-family: 'Poppins', sans-serif; }
     letter-spacing: -0.5px;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
 }
+.logo span { color: var(--primary); }
 
-/* Bouton icône (Cloche / User) */
+/* Bouton icône (Header) */
 .header-icon-btn {
     width: 40px; height: 40px;
     border-radius: 50%;
@@ -67,6 +66,7 @@ button, input { font-family: 'Poppins', sans-serif; }
     color: var(--dark);
     transition: 0.2s;
     position: relative;
+    cursor: pointer;
 }
 .header-icon-btn:active { transform: scale(0.95); background: #eee; }
 
@@ -79,9 +79,20 @@ button, input { font-family: 'Poppins', sans-serif; }
     border: 1px solid white;
 }
 
-/* Dark mode adjust */
-body.dark-mode .app-header { background: rgba(30, 30, 30, 0.95); border-bottom: 1px solid #333; box-shadow: none; }
-body.dark-mode .header-icon-btn { background: #333; color: white; }
+/* Menu du Bas (App Style) */
+.bottom-nav {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: var(--white); border-top: 1px solid #eee;
+    display: flex; justify-content: space-around; padding: 10px 0;
+    z-index: 2000;
+    transition: background 0.3s, border 0.3s;
+}
+.nav-item { 
+    display: flex; flex-direction: column; align-items: center; 
+    font-size: 0.7rem; color: #999; 
+}
+.nav-item.active { color: var(--primary); font-weight: 600; }
+.nav-item svg { width: 24px; height: 24px; margin-bottom: 2px; }
 
 /* ========================================= */
 /* 3. COMPOSANTS UI                          */
@@ -100,7 +111,7 @@ body.dark-mode .header-icon-btn { background: #333; color: white; }
     color: var(--dark); width: 100%; margin-top: 10px; 
 }
 
-/* Bouton Copier Lien (Produit) */
+/* Bouton Copier Lien */
 .btn-copy {
     position: absolute; top: 10px; right: 10px;
     background: rgba(255,255,255,0.9); padding: 5px;
@@ -130,6 +141,7 @@ body.dark-mode .header-icon-btn { background: #333; color: white; }
     margin: 30px 0 15px; display: flex; 
     justify-content: space-between; align-items: center; 
 }
+.scroll-hint-text { font-size: 0.75rem; color: #888; font-weight: normal; }
 
 /* Slider Boutiques */
 .shops-slider { 
@@ -190,19 +202,13 @@ body.dark-mode .header-icon-btn { background: #333; color: white; }
 .product-price { color: var(--primary); font-weight: 800; font-size: 1rem; }
 
 /* ========================================= */
-/* 5. PAGE CARTE (MAP)                       */
+/* 5. PAGE CARTE & JOBS                      */
 /* ========================================= */
 #map {
-    width: 100%;
-    height: 60vh;
-    min-height: 400px;
-    background-color: #e5e5e5;
-    border-radius: 12px;
-    margin-top: 15px;
-    z-index: 1;
+    width: 100%; height: 60vh; min-height: 400px;
+    background-color: #e5e5e5; border-radius: 12px;
+    margin-top: 15px; z-index: 1;
 }
-
-.distance-list { margin-top: 20px; }
 .distance-item { 
     display: flex; align-items: center; background: white; 
     padding: 15px; border-radius: 12px; margin-bottom: 10px; 
@@ -210,9 +216,7 @@ body.dark-mode .header-icon-btn { background: #333; color: white; }
 }
 .dist-val { font-weight: bold; color: var(--secondary); margin-left: auto; }
 
-/* ========================================= */
-/* 6. PAGE JOBS (EMPLOI)                     */
-/* ========================================= */
+/* Jobs */
 .job-card { 
     background: white; padding: 20px; border-radius: 12px; 
     margin-bottom: 15px; border: 1px solid #eee; 
@@ -220,26 +224,19 @@ body.dark-mode .header-icon-btn { background: #333; color: white; }
     transition: transform 0.1s;
 }
 .job-card:active { transform: scale(0.98); }
-
 .job-tag { 
     display: inline-block; background: #e3f2fd; color: #2196f3; 
     padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; 
     font-weight: bold; 
 }
 .job-salary { color: #27ae60; font-weight: bold; font-size: 0.9rem; }
-
-/* Alignement Vues & Date */
 .job-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .job-meta-info { display: flex; gap: 15px; font-size: 0.75rem; color: #999; align-items: center; }
-.view-container { display: flex; align-items: baseline; gap: 4px; }
-.view-count-num { font-weight: 800; color: var(--dark); font-size: 0.9rem; }
-.view-label { font-size: 0.65rem; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; opacity: 0.8; }
 
 /* ========================================= */
-/* 7. ANIMATION (SKELETON LOADING)           */
+/* 6. ANIMATION & HISTORIQUE                 */
 /* ========================================= */
 .skeleton {
-    background: #eee;
     background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
     border-radius: 5px; background-size: 200% 100%;
     animation: 1.5s shine linear infinite;
@@ -250,142 +247,26 @@ body.dark-mode .header-icon-btn { background: #333; color: white; }
 .skeleton-line.short { width: 40%; }
 @keyframes shine { to { background-position-x: -200%; } }
 
-/* ========================================= */
-/* 8. HISTORIQUE (C'EST CE QUI MANQUAIT !)   */
-/* ========================================= */
-.history-section {
-    margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;
-}
-.history-slider {
-    display: flex; gap: 10px; overflow-x: auto; 
-    padding: 10px 0; scrollbar-width: none;
-}
-.history-card {
-    min-width: 110px; width: 110px; 
-    display: flex; flex-direction: column; align-items: center;
-}
-.history-card img {
-    width: 100px; height: 100px; border-radius: 12px; 
-    object-fit: cover; margin-bottom: 5px; border: 1px solid #eee;
-}
-.history-card div {
-    font-size: 0.7rem; text-align: center;
-    white-space: nowrap; overflow: hidden; 
-    text-overflow: ellipsis; width: 100%;
-}
+.history-section { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
+.history-slider { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
+.history-card { min-width: 110px; width: 110px; display: flex; flex-direction: column; align-items: center; }
+.history-card img { width: 100px; height: 100px; border-radius: 12px; object-fit: cover; margin-bottom: 5px; border: 1px solid #eee; }
+.history-card div { font-size: 0.7rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
 /* ========================================= */
-/* 9. MODE SOMBRE (DARK MODE)                */
+/* 7. NOUVEAU FOOTER PROFESSIONNEL           */
 /* ========================================= */
-body.dark-mode {
-    background: #121212;
-    color: #e0e0e0;
-}
-
-/* Fond des composants */
-body.dark-mode .app-header, 
-body.dark-mode .bottom-nav,
-body.dark-mode .product-card,
-body.dark-mode .shop-card,
-body.dark-mode .job-card,
-body.dark-mode .promo-card,
-body.dark-mode .distance-item,
-body.dark-mode .skeleton-card,
-body.dark-mode .history-section {
-    background: #1e1e1e;
-    border-color: #333;
-    color: #fff;
-}
-
-/* Textes Importants (Force le Blanc) */
-body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
-body.dark-mode .product-title,
-body.dark-mode .shop-name,
-body.dark-mode .logo,
-body.dark-mode .view-count-num {
-    color: #ffffff !important;
-}
-
-/* Textes Secondaires (Gris clair) */
-body.dark-mode .product-shop,
-body.dark-mode .job-card p,
-body.dark-mode .distance-item div,
-body.dark-mode .job-meta-info {
-    color: #b0b0b0 !important;
-}
-
-/* CORRECTION LOGOS & IMAGES */
-body.dark-mode .shop-logo,
-body.dark-mode .product-img,
-body.dark-mode .promo-card img,
-body.dark-mode .distance-item img,
-body.dark-mode .leaflet-popup-content img,
-body.dark-mode .history-card img {
-    background-color: #ffffff;
-    border: 1px solid #444;
-}
-
-/* Inputs & Boutons */
-body.dark-mode input { background: #2c2c2c; color: white; border-color: #444; }
-body.dark-mode .btn-copy { background: #333; color: white; }
-body.dark-mode .theme-toggle { background: #fff; color: var(--dark); }
-
-/* CARTE */
-body.dark-mode #map { opacity: 0.9; }
-body.dark-mode .leaflet-popup-content-wrapper,
-body.dark-mode .leaflet-popup-tip {
-    background: #252525; color: #fff;
-    box-shadow: 0 3px 14px rgba(0,0,0,0.6);
-}
-body.dark-mode .leaflet-popup-content h3 { color: #ff9f1c !important; }
-body.dark-mode .leaflet-popup-content p { color: #ddd !important; }
-
-/* ========================================= */
-/* SECTION FOOTER (MANQUANTE)                */
-/* ========================================= */
-footer { 
-    background: var(--dark); 
-    color: #888; 
-    padding: 40px 20px 100px; /* Espace en bas pour le menu */
-    text-align: center; 
-    margin-top: 50px; 
-    font-size: 0.8rem; 
-}
-
-.install-box { 
-    background: rgba(255,255,255,0.1); 
-    padding: 25px; 
-    border-radius: 15px; 
-    margin-bottom: 30px; 
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.install-box h3 { 
-    color: white; 
-    margin: 0 0 10px; 
-    font-size: 1.1rem;
-}
-
-.install-box p { 
-    color: #ccc; 
-    margin-bottom: 20px; 
-}
-
-/* --- START OF FILE style.css (AJOUT À LA FIN) --- */
-
-/* Nouveau Footer Professionnel */
 footer {
     background: var(--dark);
-    color: #b0b0b0; /* Gris clair pour le texte */
-    padding: 60px 20px 110px; /* Espace bas conservé pour le menu */
-    text-align: left; /* Plus pro que centré partout */
+    color: #b0b0b0;
+    padding: 60px 20px 110px;
+    text-align: left;
     margin-top: 50px;
     font-size: 0.9rem;
     position: relative;
     overflow: hidden;
 }
 
-/* Grille du footer */
 .footer-content {
     display: grid;
     grid-template-columns: 1fr;
@@ -395,84 +276,71 @@ footer {
 }
 
 @media (min-width: 768px) {
-    .footer-content {
-        grid-template-columns: repeat(3, 1fr); /* 3 colonnes sur PC */
-        text-align: left;
-    }
+    .footer-content { grid-template-columns: repeat(3, 1fr); }
 }
 
-/* Colonnes */
-.footer-col h3 {
-    color: var(--white);
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-    font-weight: 700;
-}
+.footer-col h3 { color: var(--white); font-size: 1.1rem; margin-bottom: 15px; font-weight: 700; }
+.footer-links li { margin-bottom: 10px; }
+.footer-links a { color: #b0b0b0; transition: 0.3s; font-size: 0.85rem; }
+.footer-links a:hover { color: var(--primary); padding-left: 5px; }
 
-.footer-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.footer-links li {
-    margin-bottom: 10px;
-}
-
-.footer-links a {
-    color: #b0b0b0;
-    transition: 0.3s;
-    text-decoration: none;
-    font-size: 0.85rem;
-}
-
-.footer-links a:hover {
-    color: var(--primary);
-    padding-left: 5px; /* Petit effet de glissement */
-}
-
-/* Boîte d'installation améliorée */
 .install-box {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
-    padding: 20px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    text-align: center;
-    margin-bottom: 30px;
-    backdrop-filter: blur(10px);
+    padding: 20px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center; margin-bottom: 30px; backdrop-filter: blur(10px);
 }
+.install-box p { font-size: 0.8rem; margin-bottom: 15px; color: #ccc; }
 
-.install-box p {
-    font-size: 0.8rem;
-    margin-bottom: 15px;
-    color: #ccc;
-}
-
-/* Copyright Bar */
 .footer-bottom {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    margin-top: 40px;
-    padding-top: 20px;
-    text-align: center;
-    font-size: 0.75rem;
-    color: #666;
+    margin-top: 40px; padding-top: 20px;
+    text-align: center; font-size: 0.75rem; color: #666;
 }
 
-/* Réseaux Sociaux */
-.social-links {
-    display: flex;
-    gap: 15px;
-    margin-top: 15px;
-}
+.social-links { display: flex; gap: 15px; margin-top: 15px; }
 .social-icon {
-    width: 35px; height: 35px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    transition: 0.3s;
-    color: white;
+    width: 35px; height: 35px; background: rgba(255,255,255,0.1);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    transition: 0.3s; color: white;
 }
-.social-icon:hover {
-    background: var(--primary);
-    transform: translateY(-3px);
+.social-icon:hover { background: var(--primary); transform: translateY(-3px); }
+
+/* ========================================= */
+/* 8. MODE SOMBRE (DARK MODE)                */
+/* ========================================= */
+body.dark-mode { background: #121212; color: #e0e0e0; }
+
+body.dark-mode .app-header { background: rgba(30, 30, 30, 0.95); border-bottom: 1px solid #333; box-shadow: none; }
+body.dark-mode .header-icon-btn { background: #333; color: white; }
+
+body.dark-mode .bottom-nav,
+body.dark-mode .product-card,
+body.dark-mode .shop-card,
+body.dark-mode .job-card,
+body.dark-mode .promo-card,
+body.dark-mode .distance-item,
+body.dark-mode .skeleton-card,
+body.dark-mode .history-section {
+    background: #1e1e1e; border-color: #333; color: #fff;
 }
+
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
+body.dark-mode .product-title,
+body.dark-mode .shop-name,
+body.dark-mode .logo { color: #ffffff !important; }
+
+body.dark-mode .product-shop,
+body.dark-mode .job-card p,
+body.dark-mode .distance-item div,
+body.dark-mode .job-meta-info { color: #b0b0b0 !important; }
+
+body.dark-mode .shop-logo,
+body.dark-mode .product-img,
+body.dark-mode .promo-card img,
+body.dark-mode .distance-item img,
+body.dark-mode .leaflet-popup-content img,
+body.dark-mode .history-card img { background-color: #ffffff; border: 1px solid #444; }
+
+body.dark-mode input { background: #2c2c2c; color: white; border-color: #444; }
+body.dark-mode .btn-copy { background: #333; color: white; }
+body.dark-mode .theme-toggle { background: #fff; color: var(--dark); }
