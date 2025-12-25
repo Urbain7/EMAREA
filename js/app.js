@@ -1,5 +1,5 @@
 /* =============================== */
-/* MOTEUR EM AREA V4.0 (FINAL)     */
+/* MOTEUR EM AREA V5.0 (FINAL)     */
 /* =============================== */
 
 let allProducts = [];
@@ -21,8 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
     else if(document.getElementById('shops-container')) {
         loadShopsOnly();
     }
-    
-    // Note: La logique Jobs JS a été supprimée pour alléger le site.
+
+    // D. LISTENER FERMETURE MODALE (Si on clique en dehors)
+    window.addEventListener('click', (e) => {
+        const modal = document.getElementById('pharma-modal');
+        if (e.target === modal) {
+            closePharmaModal();
+        }
+    });
 });
 
 // --- 2. INITIALISATION APP (ACCUEIL) ---
@@ -56,7 +62,7 @@ async function initApp() {
             }
         });
 
-        // Mélange aléatoire
+        // Mélange aléatoire pour que ça change à chaque visite
         promoItems.sort(() => 0.5 - Math.random());
         standardItems.sort(() => 0.5 - Math.random());
         
@@ -175,7 +181,53 @@ function renderPromos(promos) {
     });
 }
 
-// --- 4. UTILITAIRES & FEATURES ---
+// --- 4. GESTION PHARMACIES (NOUVEAU) ---
+
+function openPharmaModal() {
+    const modal = document.getElementById('pharma-modal');
+    const list = document.getElementById('pharma-list');
+    
+    if(!modal) return;
+
+    // Affiche la modale
+    modal.classList.add('active');
+    vibratePhone();
+
+    // Charge les données
+    list.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">Chargement des gardes...</div>';
+    
+    fetch('pharmacies.json')
+        .then(res => res.json())
+        .then(data => {
+            list.innerHTML = '';
+            if(data.length === 0) {
+                 list.innerHTML = '<div style="text-align:center; padding:20px;">Aucune info pour cette semaine.</div>';
+                 return;
+            }
+            data.forEach(p => {
+                list.innerHTML += `
+                    <div class="pharma-item">
+                        <div class="pharma-info">
+                            <span class="pharma-tag">${p.quartier}</span>
+                            <h4>${p.nom}</h4>
+                            <p>📍 ${p.loc}</p>
+                        </div>
+                        <a href="tel:${p.tel.replace(/\s/g, '')}" class="btn-call">📞</a>
+                    </div>
+                `;
+            });
+        })
+        .catch(() => {
+            list.innerHTML = '<div style="color:#e74c3c; text-align:center; padding:20px;">Impossible de charger la liste. Vérifiez votre connexion.</div>';
+        });
+}
+
+function closePharmaModal() {
+    const modal = document.getElementById('pharma-modal');
+    if(modal) modal.classList.remove('active');
+}
+
+// --- 5. UTILITAIRES & FEATURES ---
 
 // Fetch sécurisé
 async function fetchShopProducts(shop) {
