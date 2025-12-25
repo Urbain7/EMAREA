@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "title": "Vendeuse Boutique",
+    "company": "Sandy'Shop",
+    "location": "Agoè, Lomé",
+    "tag": "Vente",
+    "date": "25/12",
+    "desc": "Cherche jeune dame dynamique pour gérer les ventes et l'accueil client. Habiter près d'Agoè est un plus.",
+    "salary": "40.000F / mois",
+    "whatsapp": "22890000000"
+  },
+  {
+    "id": 2,
+    "title": "Livreurs Moto (Zem)",
+    "company": "EM AREA Logistics",
+    "location": "Toute la ville",
+    "tag": "Logistique",
+    "date": "24/12",
+    "desc": "Nous recrutons 5 livreurs avec moto personnelle. Paiement à la course + bonus hebdomadaire.",
+    "salary": "Commission",
+    "whatsapp": "22891000000"
+  },
+  {
+    "id": 3,
+    "title": "Réparateur Smartphones",
+    "company": "Koffi Tech",
+    "location": "Déckon",
+    "tag": "Technique",
+    "date": "23/12",
+    "desc": "Besoin d'un technicien expérimenté en changement d'écrans iPhone et Samsung.",
+    "salary": "À discuter",
+    "whatsapp": "22892000000"
+  },
+  {
+    "id": 4,
+    "title": "Aide Cuisinière",
+    "company": "Maman Cuisine",
+    "location": "Bè-Kpota",
+    "tag": "Resto",
+    "date": "22/12",
+    "desc": "Recherche aide pour la préparation du Fufu le midi. Horaires : 8h - 15h.",
+    "salary": "25.000F + Repas",
+    "whatsapp": "22893000000"
+  }
+]
