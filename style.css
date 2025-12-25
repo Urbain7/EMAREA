@@ -438,3 +438,58 @@ body.dark-mode .header-pill-btn {
     color: #2ecc71;
     border-color: transparent;
 }
+
+/* --- SKELETONS AVANCÉS (Promos & Boutiques) --- */
+
+/* 1. Skeleton Boutiques (Rond + Petit texte) */
+.skeleton-shop-wrapper {
+    min-width: 80px;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 5px;
+}
+.skeleton-shop-circle {
+    width: 70px; height: 70px; border-radius: 18px;
+    background: #eee;
+}
+.skeleton-shop-text {
+    width: 50px; height: 10px; border-radius: 4px;
+    background: #eee;
+}
+
+/* 2. Skeleton Promos (Rectangle large) */
+.skeleton-promo-card {
+    min-width: 260px; height: 110px;
+    background: #fff; border-radius: 16px;
+    border: 1px solid #f0f0f0;
+    padding: 10px; display: flex; gap: 10px; align-items: center;
+}
+.skeleton-promo-img {
+    width: 80px; height: 80px; border-radius: 10px;
+    background: #eee;
+}
+.skeleton-promo-content {
+    flex: 1; display: flex; flex-direction: column; gap: 8px;
+}
+.skeleton-text-lg { height: 12px; width: 80%; background: #eee; border-radius: 4px; }
+.skeleton-text-sm { height: 10px; width: 50%; background: #eee; border-radius: 4px; }
+
+/* Animation commune (Shine) */
+.skeleton-shop-circle, .skeleton-shop-text, 
+.skeleton-promo-img, .skeleton-text-lg, .skeleton-text-sm {
+    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+    background-size: 200% 100%;
+    animation: 1.5s shine linear infinite;
+}
+
+/* Dark Mode Support */
+body.dark-mode .skeleton-shop-circle, 
+body.dark-mode .skeleton-shop-text,
+body.dark-mode .skeleton-promo-img,
+body.dark-mode .skeleton-text-lg,
+body.dark-mode .skeleton-text-sm {
+    background: linear-gradient(110deg, #2a2a2a 8%, #333 18%, #2a2a2a 33%);
+    background-size: 200% 100%;
+}
+body.dark-mode .skeleton-promo-card {
+    background: #1e1e1e; border-color: #333;
+}
