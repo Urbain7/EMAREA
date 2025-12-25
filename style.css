@@ -344,3 +344,51 @@ body.dark-mode .history-card img { background-color: #ffffff; border: 1px solid 
 body.dark-mode input { background: #2c2c2c; color: white; border-color: #444; }
 body.dark-mode .btn-copy { background: #333; color: white; }
 body.dark-mode .theme-toggle { background: #fff; color: var(--dark); }
+
+/* --- MODALE PHARMACIE --- */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 3000;
+    display: none; justify-content: center; align-items: flex-end; /* Alignement en bas */
+    opacity: 0; transition: opacity 0.3s;
+}
+
+.modal-overlay.active { display: flex; opacity: 1; }
+
+.modal-content {
+    background: white; width: 100%; max-width: 500px;
+    border-radius: 20px 20px 0 0; padding: 25px;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+    transform: translateY(100%); transition: transform 0.3s;
+    max-height: 80vh; overflow-y: auto;
+}
+
+.modal-overlay.active .modal-content { transform: translateY(0); }
+
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.modal-header h3 { margin: 0; color: #27ae60; }
+.close-btn { background: none; border: none; font-size: 2rem; color: #999; cursor: pointer; }
+
+/* Liste des Pharmacies */
+.pharma-item {
+    padding: 15px; border-bottom: 1px solid #eee;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.pharma-info h4 { margin: 0 0 5px; font-size: 0.95rem; color: var(--dark); }
+.pharma-info p { margin: 0; font-size: 0.8rem; color: #777; }
+.pharma-tag { 
+    background: #e8f8f5; color: #27ae60; font-size: 0.7rem; 
+    padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 5px; font-weight: bold;
+}
+.btn-call {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: #27ae60; color: white; border: none;
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none; box-shadow: 0 2px 5px rgba(39, 174, 96, 0.3);
+}
+
+/* Dark Mode support */
+body.dark-mode .modal-content { background: #1e1e1e; color: white; }
+body.dark-mode .pharma-item { border-color: #333; }
+body.dark-mode .pharma-info h4 { color: white; }
+body.dark-mode .pharma-info p { color: #aaa; }
