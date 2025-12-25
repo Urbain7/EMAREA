@@ -15,9 +15,18 @@
 </head>
 <body>
     <header class="app-header">
-        <a href="index.html" class="logo">EM <span>JOBS</span></a>
-        <!-- Plus besoin de lien retour, on a le menu du bas -->
-    </header>
+    <a href="index.html" class="logo">
+        <!-- Petit logo SVG intégré pour faire pro -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF9F1C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+        EM <span>AREA</span>
+    </a>
+    
+    <!-- Bouton Notifications -->
+    <div class="header-icon-btn" onclick="alert('Aucune nouvelle notification.')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <span class="notif-dot"></span> <!-- Le petit point rouge -->
+    </div>
+</header>
 
     <div class="container">
         <div class="section-title">Offres d'emploi disponibles</div>
