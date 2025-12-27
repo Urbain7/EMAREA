@@ -169,7 +169,7 @@ function loadHomeMarket() {
                             <div class="promo-title" style="margin:2px 0;">${ad.titre}</div>
                             <div class="promo-price" style="color:#27ae60;">${prix}</div>
                             <a href="${waLink}" class="btn btn-outline" style="width:100%; margin-top:5px; padding:4px; font-size:0.75rem; border-color:#27ae60; color:#27ae60;">
-                                Contacter 
+                                Contacter 
                             </a>
                         </div>
                     </div>`;
