@@ -110,7 +110,20 @@
     </nav>
 
     <div class="theme-toggle" onclick="toggleDarkMode()">🌓</div>
-
+    
+  <!-- MODALE D'ALERTE PERSONNALISÉE -->
+<div id="custom-alert" class="modal-overlay" style="z-index: 4000;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="alert-title">Notification</h3>
+            <button class="close-btn" onclick="closeAlert()">&times;</button>
+        </div>
+        <!-- Le message s'affichera ici -->
+        <div id="alert-message" style="font-size:0.9rem; line-height:1.6; color:#666; margin-bottom:20px;"></div>
+        
+        <button class="btn btn-primary" onclick="closeAlert()" style="width:100%;">C'est compris</button>
+    </div>
+</div>
     <!-- SCRIPTS -->
     <script src="js/app.js"></script>
     <script src="js/map.js"></script>
