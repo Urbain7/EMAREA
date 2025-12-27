@@ -363,9 +363,20 @@ function renderProducts(products) {
 
 function renderShops() {
     const c = document.getElementById('shops-container');
+    const countLabel = document.getElementById('shop-count'); // Cible le texte "0 actifs"
+
     if(c) {
+        // CORRECTIF : Mise à jour du chiffre
+        if(countLabel) countLabel.textContent = `${allShops.length} actifs`;
+
         c.innerHTML = '';
-        allShops.forEach(s => c.innerHTML += `<a href="${s.url}" class="shop-card" target="_blank"><img src="${s.logo}" class="shop-logo"><div class="shop-name">${s.name}</div></a>`);
+        allShops.forEach(s => {
+            c.innerHTML += `
+            <a href="${s.url}" class="shop-card" target="_blank">
+                <img src="${s.logo}" class="shop-logo" onerror="this.src='https://via.placeholder.com/70'">
+                <div class="shop-name">${s.name}</div>
+            </a>`;
+        });
     }
 }
 
