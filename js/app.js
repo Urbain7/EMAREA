@@ -211,7 +211,7 @@ function loadJobs() {
                     <div class="job-footer">
                         <span class="job-salary">${job.salary}</span>
                         <a href="${waLink}" class="btn btn-primary" style="font-size:0.8rem; padding:8px 20px; border-radius:8px;">
-                            Postuler 
+                            Postuler 
                         </a>
                     </div>
                 </div>`;
