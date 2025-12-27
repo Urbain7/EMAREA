@@ -639,3 +639,37 @@ body.dark-mode .job-pill { background: #333; color: #ccc; }
 body.dark-mode .job-pill.highlight { background: rgba(33, 150, 243, 0.2); color: #64b5f6; }
 body.dark-mode .job-footer { border-color: #333; }
 body.dark-mode .job-salary { background: rgba(39, 174, 96, 0.2); color: #2ecc71; }
+
+/* ========================================= */
+/* CORRECTIFS UX (Popup & Loading)           */
+/* ========================================= */
+
+/* 1. Correction Popup Carte en Mode Sombre */
+body.dark-mode .leaflet-popup-content-wrapper,
+body.dark-mode .leaflet-popup-tip {
+    background-color: #1e1e1e !important; /* Fond sombre */
+    color: #ffffff !important; /* Texte blanc */
+    box-shadow: 0 3px 14px rgba(0,0,0,0.6);
+}
+
+/* Force le titre en blanc et description en gris clair */
+body.dark-mode .leaflet-popup-content h3 { color: #ffffff !important; }
+body.dark-mode .leaflet-popup-content p { color: #cccccc !important; }
+
+/* 2. Animation de chargement pour le bouton GPS */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinning {
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}
+
+/* Style quand le bouton est désactivé (pendant la recherche) */
+.btn-disabled {
+    opacity: 0.7;
+    pointer-events: none; /* Empêche de recliquer */
+    cursor: wait;
+}
