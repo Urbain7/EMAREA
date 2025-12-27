@@ -200,44 +200,51 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>AOS.init();
     // --- GESTION PWA ---
-let deferredPrompt;
-const installBtn = document.getElementById('pwa-install-btn');
-
 // 1. Enregistrement du Service Worker
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('Service Worker enregistré'))
-            .catch(err => console.log('Erreur SW:', err));
-    });
-}
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker OK'))
+                    .catch(err => console.log('Erreur SW:', err));
+            });
+        }
 
-// 2. Détection de la possibilité d'installation (Android/Chrome)
-window.addEventListener('beforeinstallprompt', (e) => {
-    // Empêche la barre automatique de Google
-    e.preventDefault();
-    deferredPrompt = e;
-    // Affiche notre beau bouton
-    installBtn.style.display = 'flex';
-});
+        // 2. Gestion de l'installation
+        let deferredPrompt; // Stocke l'événement d'installation
 
-// 3. Clic sur le bouton
-installBtn.addEventListener('click', async () => {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(`Résultat: ${outcome}`);
-        deferredPrompt = null;
-        installBtn.style.display = 'none'; // Cache le bouton après
-    }
-});
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Empêche la mini-barre automatique de Google
+            e.preventDefault();
+            // Sauvegarde l'événement pour plus tard
+            deferredPrompt = e;
+            console.log("L'application peut être installée !");
+        });
 
-// 4. Si déjà installé
-window.addEventListener('appinstalled', () => {
-    installBtn.style.display = 'none';
-    console.log('Application installée !');
-});
-    </script>
+        // 3. Fonction appelée par le bouton du Footer
+        async function installPWA() {
+            if (deferredPrompt) {
+                // Cas 1 : L'installation est possible techniquement
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`Résultat : ${outcome}`);
+                deferredPrompt = null; // On ne peut l'utiliser qu'une fois
+            } else {
+                // Cas 2 : Ce n'est pas possible (iPhone, Déjà installé, ou Navigateur incompatible)
+                const isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
+                
+                if (isIos) {
+                    alert("🍎 Sur iPhone/iPad :\n1. Appuyez sur le bouton 'Partager' (carré avec flèche)\n2. Cherchez 'Sur l'écran d'accueil' [+]\n3. Cliquez sur 'Ajouter'");
+                } else {
+                    alert("⚠️ Installation impossible ici.\n\nRaisons possibles :\n1. L'application est DÉJÀ installée (vérifiez vos applis).\n2. Vous n'utilisez pas Chrome/Edge.\n3. Vous êtes en navigation privée.");
+                }
+            }
+        }
+
+        // 4. Détection si l'app est lancée en mode "App"
+        window.addEventListener('appinstalled', () => {
+            alert("Merci d'avoir installé EM AREA ! 🎉");
+            deferredPrompt = null;
+        });
     <script src="js/app.js"></script>
 
     <!-- Le bouton flottant Dark Mode -->
