@@ -1,30 +1,41 @@
 /* =============================== */
-/* MOTEUR EM AREA V9.0 (FINAL)     */
+/* MOTEUR EM AREA V10.0 (FINAL)    */
 /* =============================== */
 
 let allProducts = [];
 let allShops = [];
 let viewedProducts = JSON.parse(localStorage.getItem('em_history')) || [];
 
-// --- 1. DÉMARRAGE (ROUTING) ---
+// --- 1. DÉMARRAGE & ROUTING ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Vérification thème
     checkDarkMode();
     
-    // A. PAGE ACCUEIL (Produits présents)
+    // 1.1 SPLASH SCREEN (Disparition progressive)
+    setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if(splash) {
+            splash.style.opacity = '0';
+            setTimeout(() => splash.style.visibility = 'hidden', 500);
+        }
+    }, 1500); // 1.5 secondes min
+
+    // 1.2 PULL TO REFRESH (Initialisation)
+    initPullToRefresh();
+
+    // A. PAGE ACCUEIL
     if(document.getElementById('products-container')) {
         initApp();
         renderHistory();
     } 
-    // B. PAGE JOBS (Conteneur jobs présent)
+    // B. PAGE JOBS
     else if(document.getElementById('jobs-container')) {
         showSkeletonLoader();
         loadJobs();
     }
-    // C. PAGE CARTE (Liste distances présente)
-    else if(document.getElementById('distance-list')) {
-        // La carte est gérée par map.js, mais on peut charger les logos si besoin
-        // Ici on laisse map.js faire le travail principal
+    // C. PAGE CARTE (Liste seulement, la map est gérée par map.js)
+    else if(document.getElementById('distance-list') && !document.getElementById('map')) {
+        // Cas rare où on voudrait juste la liste sans la map
+        showSkeletonLoader();
     }
     // D. SECONDAIRE (Juste les boutiques)
     else if(document.getElementById('shops-container')) {
@@ -39,7 +50,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// --- 2. LOGIQUE ACCUEIL ---
+// --- 1.2 LOGIQUE PULL TO REFRESH ---
+function initPullToRefresh() {
+    let startY = 0;
+    const ptr = document.getElementById('ptr-indicator');
+    
+    // Début du toucher
+    window.addEventListener('touchstart', e => {
+        if(window.scrollY === 0) startY = e.touches[0].clientY;
+    }, {passive: true});
+
+    // Mouvement
+    window.addEventListener('touchmove', e => {
+        const y = e.touches[0].clientY;
+        // Si on est en haut de page et qu'on tire vers le bas
+        if(window.scrollY === 0 && y > startY + 60) { 
+            if(ptr) ptr.classList.add('visible');
+        }
+    }, {passive: true});
+
+    // Fin du toucher
+    window.addEventListener('touchend', e => {
+        if(ptr && ptr.classList.contains('visible')) {
+            // Animation de chargement
+            ptr.innerHTML = '<div class="splash-loader" style="width:20px;height:20px;border-width:2px;"></div>';
+            ptr.classList.add('ptr-rotate');
+            
+            // Rechargement de la page après 0.8s
+            setTimeout(() => {
+                window.location.reload();
+            }, 800);
+        }
+    });
+}
+
+// --- 2. LOGIQUE ACCUEIL (MOTEUR PRINCIPAL) ---
 async function initApp() {
     showSkeletonLoader();
 
@@ -51,7 +96,7 @@ async function initApp() {
         
         renderShops();
         
-        // 2. Récupérer les produits de chaque boutique
+        // 2. Récupérer les produits
         const promises = allShops.map(shop => fetchShopProducts(shop));
         const results = await Promise.allSettled(promises);
         
@@ -61,7 +106,12 @@ async function initApp() {
         results.forEach(result => {
             if (result.status === 'fulfilled') {
                 result.value.forEach(p => {
-                    // Algo Promo : Star ou Prix Barré
+                    
+                    // 2.3 LOGIQUE BADGE "NOUVEAU" (Simulation)
+                    // Si ce n'est pas une star, 20% de chance d'être "Nouveau"
+                    if(!p.is_star && Math.random() > 0.8) p.is_new = true;
+
+                    // Algorithme Promo
                     if (p.is_star === true || (p.prix_original && p.prix_original > p.prix)) {
                         promoItems.push(p);
                     } else {
@@ -71,13 +121,13 @@ async function initApp() {
             }
         });
 
-        // 3. Mélanger pour la variété
+        // 3. Mélange aléatoire
         promoItems.sort(() => 0.5 - Math.random());
         standardItems.sort(() => 0.5 - Math.random());
         
         allProducts = [...promoItems, ...standardItems];
 
-        // 4. Afficher
+        // 4. Nettoyage et Affichage
         const pContainer = document.getElementById('products-container');
         if(pContainer) pContainer.innerHTML = ''; 
         
@@ -95,7 +145,7 @@ async function initApp() {
     }
 }
 
-// Charge juste les logos (utilitaire)
+// Charge juste les logos (utilitaire pour map ou autres pages)
 async function loadShopsOnly() {
     try {
         const res = await fetch('shops.json');
@@ -104,12 +154,12 @@ async function loadShopsOnly() {
     } catch(e) {}
 }
 
-// --- 3. GESTION DES JOBS (DESIGN PRO) ---
+// --- 3. GESTION DES JOBS (DESIGN PRO LINKEDIN) ---
 function loadJobs() {
     const container = document.getElementById('jobs-container');
     if(!container) return;
 
-    // Palette de couleurs pastels pour les avatars
+    // Palette de couleurs pour les avatars
     const colors = ['#ffebee', '#e3f2fd', '#e8f5e9', '#fff3e0', '#f3e5f5', '#e0f2f1'];
     const textColors = ['#c62828', '#1565c0', '#2e7d32', '#ef6c00', '#6a1b9a', '#00695c'];
 
@@ -124,11 +174,11 @@ function loadJobs() {
             }
 
             jobs.forEach((job, index) => {
-                // Lien WhatsApp
+                // Lien WhatsApp pré-rempli
                 const msg = `Bonjour, je souhaite postuler pour l'offre *${job.title}* chez ${job.company}.`;
                 const waLink = `https://wa.me/${job.whatsapp}?text=${encodeURIComponent(msg)}`;
 
-                // Génération Avatar
+                // Génération Avatar (Initiale + Couleur)
                 const initial = job.company.charAt(0).toUpperCase();
                 const colorIndex = index % colors.length;
                 const bgStyle = `background:${colors[colorIndex]}; color:${textColors[colorIndex]};`;
@@ -176,7 +226,6 @@ function loadJobs() {
 function openPharmaModal() {
     const modal = document.getElementById('pharma-modal');
     const list = document.getElementById('pharma-list');
-    
     if(!modal) return;
 
     modal.classList.add('active');
@@ -201,8 +250,7 @@ function openPharmaModal() {
                             <p>📍 ${p.loc}</p>
                         </div>
                         <a href="tel:${p.tel.replace(/\s/g, '')}" class="btn-call">📞</a>
-                    </div>
-                `;
+                    </div>`;
             });
         })
         .catch(() => {
@@ -218,7 +266,7 @@ function closePharmaModal() {
 // --- 5. SKELETON LOADER (TOUTES PAGES) ---
 function showSkeletonLoader() {
     
-    // A. Boutiques
+    // A. Boutiques (Ronds)
     const shopContainer = document.getElementById('shops-container');
     if(shopContainer) {
         shopContainer.innerHTML = '';
@@ -227,7 +275,7 @@ function showSkeletonLoader() {
         }
     }
 
-    // B. Promos
+    // B. Promos (Rectangles)
     const promoContainer = document.getElementById('promo-container');
     if(promoContainer) {
         promoContainer.style.display = 'flex';
@@ -237,7 +285,7 @@ function showSkeletonLoader() {
         }
     }
 
-    // C. Produits
+    // C. Produits (Grille)
     const prodContainer = document.getElementById('products-container');
     if(prodContainer) {
         prodContainer.innerHTML = '';
@@ -246,22 +294,12 @@ function showSkeletonLoader() {
         }
     }
 
-    // D. Jobs
+    // D. Jobs (Liste)
     const jobsContainer = document.getElementById('jobs-container');
     if(jobsContainer) {
         jobsContainer.innerHTML = '';
         for(let i=0; i<4; i++) {
             jobsContainer.innerHTML += `<div class="skeleton-job"><div class="skeleton-job-top"><span class="skeleton-tag"></span><span class="skeleton-date"></span></div><div class="skeleton-title"></div><div class="skeleton-desc"></div><div class="skeleton-desc" style="width:60%"></div></div>`;
-        }
-    }
-    
-    // E. Map List (Optionnel, si géré ici)
-    const mapList = document.getElementById('distance-list');
-    if(mapList && !document.querySelector('script[src="js/map.js"]')) {
-        // Seulement si map.js n'est pas chargé (sinon conflit d'affichage)
-        mapList.innerHTML = '';
-        for(let i=0; i<5; i++) {
-             mapList.innerHTML += `<div class="skeleton-map-item"><div class="skeleton-map-avatar"></div><div class="skeleton-map-lines"><div class="skeleton-title" style="width:50%; margin:0;"></div><div class="skeleton-desc" style="width:30%; margin:0;"></div></div></div>`;
         }
     }
 }
@@ -282,9 +320,14 @@ function renderProducts(products) {
     products.slice(0, 30).forEach(p => {
         const price = Number(p.prix).toLocaleString() + ' F';
         
+        // 2.3 Rendu du Badge
+        const newBadgeHTML = p.is_new ? `<div class="badge-new">NOUVEAU</div>` : '';
+
         container.innerHTML += `
             <div class="product-card" data-aos="fade-up">
+                ${newBadgeHTML}
                 <button class="btn-copy" onclick="copyLink('${p.shopUrl}/produit.html?id=${p.id}')">🔗</button>
+                
                 <a href="${p.shopUrl}/produit.html?id=${p.id}" target="_blank" onclick="addToHistory('${p.id}', '${p.nom}', '${p.image}', '${p.shopUrl}')">
                     <img src="${p.image}" class="product-img" loading="lazy" onerror="this.src='https://via.placeholder.com/150'">
                 </a>
@@ -354,7 +397,7 @@ function renderPromos(promos) {
 async function fetchShopProducts(shop) {
     try {
         const controller = new AbortController();
-        const id = setTimeout(() => controller.abort(), 5000); // 5s timeout
+        const id = setTimeout(() => controller.abort(), 5000); 
         const res = await fetch(`${shop.url}/data/produits.json`, { signal: controller.signal });
         clearTimeout(id);
         
@@ -369,24 +412,18 @@ async function fetchShopProducts(shop) {
     } catch { return []; }
 }
 
-// Recherche
-/* --- RECHERCHE INTELLIGENTE --- */
+// Recherche Intelligente (Avec bouton X)
 function setupSearch() {
     const input = document.getElementById('search-input');
     const clearBtn = document.getElementById('search-clear');
     
     if(!input) return;
 
-    // Quand on écrit
     input.addEventListener('input', (e) => {
         const term = e.target.value.toLowerCase();
         
-        // 1. Gérer l'affichage du bouton X
-        if(clearBtn) {
-            clearBtn.style.display = term.length > 0 ? 'block' : 'none';
-        }
+        if(clearBtn) clearBtn.style.display = term.length > 0 ? 'block' : 'none';
 
-        // 2. Filtrer les produits
         const promoContainer = document.getElementById('promo-container');
         const c = document.getElementById('products-container');
 
@@ -401,31 +438,25 @@ function setupSearch() {
 
         if(promoContainer) promoContainer.style.display = 'none';
         c.innerHTML = '';
-        
-        // Recherche dans le nom ET la description (si elle existe)
         const f = allProducts.filter(p => p.nom.toLowerCase().includes(term));
         
         if(f.length === 0) {
-            c.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:#999;">
-                🤷‍♂️ Aucune offre trouvée pour "${term}"
-            </div>`;
+            c.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:#999;">🤷‍♂️ Aucune offre trouvée pour "${term}"</div>`;
         } else {
             renderProducts(f);
         }
     });
 }
-
-// Nouvelle fonction pour vider la recherche
 window.clearSearch = function() {
     const input = document.getElementById('search-input');
     if(input) {
         input.value = '';
-        input.dispatchEvent(new Event('input')); // Déclenche la remise à zéro
-        input.focus(); // Remet le curseur dedans
+        input.dispatchEvent(new Event('input'));
+        input.focus();
     }
 };
 
-// Mode Sombre
+// Dark Mode
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     vibratePhone();
@@ -438,7 +469,7 @@ function checkDarkMode() {
     }
 }
 
-// Utilitaires système
+// Helpers
 window.vibratePhone = () => { if (navigator.vibrate) navigator.vibrate(50); };
 window.copyLink = (url) => { vibratePhone(); navigator.clipboard.writeText(url).then(() => alert("Lien copié !")); };
 
