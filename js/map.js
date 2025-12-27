@@ -85,44 +85,66 @@ async function loadMapData() {
 
 // GPS Utilisateur
 // GPS Utilisateur avec Animation de chargement
+// GPS Utilisateur (Version Corrigée & Douce)
 window.locateUser = function() {
-    if (!navigator.geolocation) return alert("Le GPS n'est pas supporté par ce navigateur.");
+    if (!navigator.geolocation) {
+        showError("GPS non supporté", "Votre navigateur ne gère pas la géolocalisation.");
+        return;
+    }
     
-    // 1. On récupère le bouton
+    // 1. On récupère le bouton pour l'animer
     const btn = document.getElementById('loc-btn');
-    const originalContent = btn ? btn.innerHTML : ''; // On sauvegarde le texte original
+    const originalContent = btn ? btn.innerHTML : '';
 
-    // 2. On met le bouton en mode "Chargement"
+    // 2. On met le bouton en mode "Recherche"
     if(btn) {
         btn.innerHTML = '<span class="spinning">⏳</span> <span>Recherche...</span>';
-        btn.classList.add('btn-disabled'); // On grise le bouton
+        btn.classList.add('btn-disabled');
     }
 
-    // 3. On lance la recherche
+    // 3. On lance la recherche (avec un délai plus long : 20 secondes)
     navigator.geolocation.getCurrentPosition(
         (pos) => {
-            // SUCCÈS
+            // --- SUCCÈS ---
             userPos = [pos.coords.latitude, pos.coords.longitude];
-            myMap.setView(userPos, 15); // Zoom plus proche (15)
+            myMap.setView(userPos, 15);
             
-            // Marqueur "Vous êtes ici"
             L.marker(userPos, {icon: iconUser}).addTo(myMap)
              .bindPopup("<b>📍 Vous êtes ici</b>").openPopup();
             
             updateMapList(userPos);
 
-            // On remet le bouton normal
             if(btn) {
                 btn.innerHTML = '✅ <span>Trouvé !</span>';
                 btn.classList.remove('btn-disabled');
-                // Remet le texte d'origine après 2 secondes
                 setTimeout(() => { btn.innerHTML = originalContent; }, 2000);
             }
         },
         (err) => {
-            // ERREUR
+            // --- GESTION DES ERREURS ---
             console.error(err);
-            alert("Impossible d'avoir votre position. Vérifiez que le GPS est activé.");
+            
+            let titre = "Erreur GPS";
+            let msg = "Impossible de vous localiser.";
+
+            // On personnalise le message selon l'erreur
+            if (err.code === 1) {
+                titre = "Accès Refusé";
+                msg = "Vous avez refusé la géolocalisation.\nPour l'activer, cliquez sur le cadenas 🔒 dans la barre d'adresse.";
+            } else if (err.code === 2) {
+                titre = "Position Indisponible";
+                msg = "Votre GPS semble éteint ou ne capte pas de signal.";
+            } else if (err.code === 3) {
+                titre = "Trop long";
+                msg = "La recherche a pris trop de temps. Réessayez.";
+            }
+
+            // On utilise NOTRE belle alerte (si disponible), sinon alert() classique
+            if (typeof showCustomAlert === 'function') {
+                showCustomAlert(titre, msg);
+            } else {
+                alert(msg);
+            }
             
             // On remet le bouton normal
             if(btn) {
@@ -130,9 +152,19 @@ window.locateUser = function() {
                 btn.classList.remove('btn-disabled');
             }
         },
-        { enableHighAccuracy: true, timeout: 10000 } // Timeout 10s max
+        { 
+            enableHighAccuracy: true, 
+            timeout: 20000, // On laisse 20 secondes à l'utilisateur pour cliquer
+            maximumAge: 0 
+        }
     );
 };
+
+// Petite fonction utilitaire pour éviter les erreurs si showCustomAlert n'est pas chargé
+function showError(t, m) {
+    if (typeof showCustomAlert === 'function') showCustomAlert(t, m);
+    else alert(m);
+}
 
 // Itinéraire
 window.drawRoute = function(lat, lng) {
