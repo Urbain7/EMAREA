@@ -3,20 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EM AREA</title>
+    
+    <!-- 7.7 SEO (OPTIMISATION GOOGLE) -->
+    <title>EM AREA - Le Marché Digital de Lomé</title>
+    <meta name="description" content="Achetez, vendez et trouvez un emploi à Lomé. Boutiques officielles, GPS, et offres d'emploi au Togo. L'application locale N°1.">
+    <meta name="keywords" content="Lomé, Togo, E-commerce, Jobs, Emploi, Boutique, Achat, Vente, GPS, Zem, Pharmacie">
+    <meta name="author" content="EM AREA Team">
+    
+    <!-- Open Graph (Pour les partages WhatsApp/Facebook) -->
+    <meta property="og:title" content="EM AREA - Marché Digital Lomé">
+    <meta property="og:description" content="Découvrez les meilleures offres et boutiques à Lomé.">
+    <meta property="og:image" content="https://img.icons8.com/color/512/shopping-basket-2.png">
+    <meta property="og:url" content="https://emarea.tg">
+    
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
-
-    <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#f68b1e">
-<link rel="apple-touch-icon" href="https://img.icons8.com/color/192/shopping-basket-2.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-    
+    <meta name="theme-color" content="#f68b1e">
 </head>
 <body>
+
+    <!-- 1.1 SPLASH SCREEN (Écran de démarrage) -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <div class="logo splash-logo">EM <span>AREA</span></div>
+            <div class="splash-loader"></div>
+            <p>Chargement du marché...</p>
+        </div>
+    </div>
+    
+    <!-- 1.2 PULL TO REFRESH (Indicateur visuel caché) -->
+    <div id="ptr-indicator">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+    </div>
 
    <header class="app-header">
     <a href="index.html" class="logo">
