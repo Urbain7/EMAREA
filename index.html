@@ -200,49 +200,78 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>AOS.init();
     // --- GESTION PWA ---
-// 1. Enregistrement du Service Worker
+// --- 1. FONCTIONS POUR LA BELLE ALERTE ---
+        function showCustomAlert(title, message) {
+            const modal = document.getElementById('custom-alert');
+            const titleEl = document.getElementById('alert-title');
+            const msgEl = document.getElementById('alert-message');
+            
+            if(modal && titleEl && msgEl) {
+                titleEl.textContent = title;
+                // Remplace les sauts de ligne \n par des balises HTML <br>
+                msgEl.innerHTML = message.replace(/\n/g, '<br>');
+                modal.classList.add('active');
+            } else {
+                // Fallback si jamais le HTML manque
+                alert(message);
+            }
+        }
+
+        function closeAlert() {
+            const modal = document.getElementById('custom-alert');
+            if(modal) modal.classList.remove('active');
+        }
+
+        // Fermer si on clique dehors
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('custom-alert');
+            if (e.target === modal) closeAlert();
+        });
+
+
+        // --- 2. LOGIQUE PWA (INSTALLATION) ---
+        
+        // Enregistrement SW
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker OK'))
-                    .catch(err => console.log('Erreur SW:', err));
+                navigator.serviceWorker.register('sw.js');
             });
         }
 
-        // 2. Gestion de l'installation
-        let deferredPrompt; // Stocke l'événement d'installation
+        let deferredPrompt;
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Empêche la mini-barre automatique de Google
             e.preventDefault();
-            // Sauvegarde l'événement pour plus tard
             deferredPrompt = e;
-            console.log("L'application peut être installée !");
+            console.log("Prêt à installer !");
         });
 
-        // 3. Fonction appelée par le bouton du Footer
         async function installPWA() {
             if (deferredPrompt) {
-                // Cas 1 : L'installation est possible techniquement
+                // CAS 1 : Installation possible
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                console.log(`Résultat : ${outcome}`);
-                deferredPrompt = null; // On ne peut l'utiliser qu'une fois
+                deferredPrompt = null;
             } else {
-                // Cas 2 : Ce n'est pas possible (iPhone, Déjà installé, ou Navigateur incompatible)
+                // CAS 2 : Installation impossible (ou déjà faite)
                 const isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
                 
                 if (isIos) {
-                    alert("🍎 Sur iPhone/iPad :\n1. Appuyez sur le bouton 'Partager' (carré avec flèche)\n2. Cherchez 'Sur l'écran d'accueil' [+]\n3. Cliquez sur 'Ajouter'");
+                    showCustomAlert(
+                        "🍎 Installation sur iPhone", 
+                        "1. Appuyez sur le bouton 'Partager' (carré avec flèche) en bas.\n2. Cherchez l'option 'Sur l'écran d'accueil' [+].\n3. Cliquez sur 'Ajouter'."
+                    );
                 } else {
-                    alert("⚠️ Installation impossible ici.\n\nRaisons possibles :\n1. L'application est DÉJÀ installée (vérifiez vos applis).\n2. Vous n'utilisez pas Chrome/Edge.\n3. Vous êtes en navigation privée.");
+                    showCustomAlert(
+                        "⚠️ Installation Impossible",
+                        "Raisons possibles :\n\n L'application est DÉJÀ installée (vérifiez vos applis).\n🔒 Vous êtes en navigation privée.\n🌐 Vous n'utilisez pas Chrome ou Edge."
+                    );
                 }
             }
         }
 
-        // 4. Détection si l'app est lancée en mode "App"
         window.addEventListener('appinstalled', () => {
-            alert("Merci d'avoir installé EM AREA ! 🎉");
+            showCustomAlert("Félicitations ! 🎉", "EM AREA est maintenant installée sur votre téléphone.");
             deferredPrompt = null;
         });
         </script>
