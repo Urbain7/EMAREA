@@ -39,10 +39,21 @@
 </header>
 
     <div class="container">
-        <!-- Recherche -->
-        <div style="margin-top: 20px;">
-            <input type="text" id="search-input" placeholder="🔍 Rechercher un produit..." style="width:100%; padding:12px 20px; border-radius:50px; border:1px solid #ddd; outline:none;">
-        </div>
+        <!-- BARRE DE RECHERCHE PRO -->
+<div class="search-wrapper">
+    <!-- Icône fixe à gauche -->
+    <div class="search-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </div>
+    
+    <!-- L'input (Champ de texte) -->
+    <input type="text" id="search-input" placeholder="Chercher un produit, une marque...">
+    
+    <!-- Le bouton "X" pour effacer (caché au début) -->
+    <div class="search-clear" id="search-clear" onclick="clearSearch()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+    </div>
+</div>
 
         <!-- Boutiques -->
         <div class="section-title">
