@@ -448,3 +448,14 @@ function renderHistory() {
     s.style.display = 'block'; c.innerHTML = '';
     viewedProducts.forEach(p => c.innerHTML += `<a href="${p.url}/produit.html?id=${p.id}" class="history-card"><img src="${p.img}"><div style="font-size:0.7rem;">${p.name}</div></a>`);
 }
+/* Animation pour le lien "+ Vendre" */
+.pulse-text {
+    display: inline-block; /* Nécessaire pour l'animation */
+    animation: pulseLink 2s infinite ease-in-out;
+}
+
+@keyframes pulseLink {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); color: #e67e22; /* Grossit et change de couleur */ }
+    100% { transform: scale(1); opacity: 1; }
+}
