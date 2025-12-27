@@ -1,0 +1,29 @@
+[
+  {
+    "id": 101,
+    "titre": "Vélo VTT Sport",
+    "prix": 45000,
+    "vendeur": "Marc",
+    "tel": "22890909090",
+    "image": "https://img.icons8.com/fluency/144/bicycle.png",
+    "date": "Aujourd'hui"
+  },
+  {
+    "id": 102,
+    "titre": "PlayStation 4 Slim",
+    "prix": 120000,
+    "vendeur": "Junior",
+    "tel": "22891919191",
+    "image": "https://img.icons8.com/fluency/144/console.png",
+    "date": "Hier"
+  },
+  {
+    "id": 103,
+    "titre": "Gazinière 4 feux",
+    "prix": 30000,
+    "vendeur": "Maman Jo",
+    "tel": "22892929292",
+    "image": "https://img.icons8.com/fluency/144/stove.png",
+    "date": "25/12"
+  }
+]
