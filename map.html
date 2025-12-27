@@ -128,53 +128,79 @@
     <script src="js/app.js"></script>
     <script src="js/map.js"></script>
     <!-- SCRIPT PWA & ALERTES -->
-<script>
-    // 1. GESTION ALERTE MODALE
-    function showCustomAlert(title, message) {
-        const modal = document.getElementById('custom-alert');
-        const titleEl = document.getElementById('alert-title');
-        const msgEl = document.getElementById('alert-message');
-        
-        if(modal && titleEl && msgEl) {
-            titleEl.textContent = title;
-            msgEl.innerHTML = message.replace(/\n/g, '<br>');
-            modal.classList.add('active');
-        } else {
-            alert(message); // Sécurité
-        }
-    }
+    <!-- SCRIPT PWA & ALERTES -->
 
-    function closeAlert() {
-        const modal = document.getElementById('custom-alert');
-        if(modal) modal.classList.remove('active');
-    }
-    
-    window.addEventListener('click', (e) => {
-        const modal = document.getElementById('custom-alert');
-        if (e.target === modal) closeAlert();
-    });
-
-    // 2. LOGIQUE PWA
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-    });
-
-    async function installPWA() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            deferredPrompt = null;
-        } else {
-            const isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
-            if (isIos) {
-                showCustomAlert("🍎 Installation iPhone", "1. Appuyez sur 'Partager' (carré avec flèche).\n2. Cherchez 'Sur l'écran d'accueil'.\n3. Cliquez sur 'Ajouter'.");
+<script>AOS.init();
+    // --- GESTION PWA ---
+// --- 1. FONCTIONS POUR LA BELLE ALERTE ---
+        function showCustomAlert(title, message) {
+            const modal = document.getElementById('custom-alert');
+            const titleEl = document.getElementById('alert-title');
+            const msgEl = document.getElementById('alert-message');
+            
+            if(modal && titleEl && msgEl) {
+                titleEl.textContent = title;
+                // Remplace les sauts de ligne \n par des balises HTML <br>
+                msgEl.innerHTML = message.replace(/\n/g, '<br>');
+                modal.classList.add('active');
             } else {
-                showCustomAlert("⚠️ Information", "L'application est probablement déjà installée ou votre navigateur ne le permet pas directement.");
+                // Fallback si jamais le HTML manque
+                alert(message);
             }
         }
-    }
-</script>
+
+        function closeAlert() {
+            const modal = document.getElementById('custom-alert');
+            if(modal) modal.classList.remove('active');
+        }
+
+        // Fermer si on clique dehors
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('custom-alert');
+            if (e.target === modal) closeAlert();
+        });
+
+
+        // --- 2. LOGIQUE PWA (INSTALLATION) ---
+        
+        // Enregistrement SW
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
+
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log("Prêt à installer !");
+        });
+
+        async function installPWA() {
+            if (deferredPrompt) {
+                // CAS 1 : Installation possible
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+            } else {
+                // CAS 2 : Installation impossible (ou déjà faite)
+                const isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
+                
+                if (isIos) {
+                    showCustomAlert(
+                        "🍎 Installation sur iPhone", 
+                        "1. Appuyez sur le bouton 'Partager' (carré avec flèche) en bas.\n2. Cherchez l'option 'Sur l'écran d'accueil' [+].\n3. Cliquez sur 'Ajouter'."
+                    );
+                } else {
+                    showCustomAlert(
+                        "⚠️ Installation Impossible",
+                        "Raisons possibles :\n\n✅ L'application est DÉJÀ installée (vérifiez vos applis).\n🔒 Vous êtes en navigation privée.\n🌐 Vous n'utilisez pas Chrome ou Edge."
+                    );
+                }
+            }
+        }
+    </script>
 </body>
 </html>
