@@ -84,18 +84,53 @@ async function loadMapData() {
 }
 
 // GPS Utilisateur
+// GPS Utilisateur avec Animation de chargement
 window.locateUser = function() {
-    if (!navigator.geolocation) return alert("GPS non dispo");
+    if (!navigator.geolocation) return alert("Le GPS n'est pas supporté par ce navigateur.");
     
+    // 1. On récupère le bouton
+    const btn = document.getElementById('loc-btn');
+    const originalContent = btn ? btn.innerHTML : ''; // On sauvegarde le texte original
+
+    // 2. On met le bouton en mode "Chargement"
+    if(btn) {
+        btn.innerHTML = '<span class="spinning">⏳</span> <span>Recherche...</span>';
+        btn.classList.add('btn-disabled'); // On grise le bouton
+    }
+
+    // 3. On lance la recherche
     navigator.geolocation.getCurrentPosition(
         (pos) => {
+            // SUCCÈS
             userPos = [pos.coords.latitude, pos.coords.longitude];
-            myMap.setView(userPos, 14);
-            L.marker(userPos, {icon: iconUser}).addTo(myMap).bindPopup("Vous").openPopup();
+            myMap.setView(userPos, 15); // Zoom plus proche (15)
+            
+            // Marqueur "Vous êtes ici"
+            L.marker(userPos, {icon: iconUser}).addTo(myMap)
+             .bindPopup("<b>📍 Vous êtes ici</b>").openPopup();
+            
             updateMapList(userPos);
+
+            // On remet le bouton normal
+            if(btn) {
+                btn.innerHTML = '✅ <span>Trouvé !</span>';
+                btn.classList.remove('btn-disabled');
+                // Remet le texte d'origine après 2 secondes
+                setTimeout(() => { btn.innerHTML = originalContent; }, 2000);
+            }
         },
-        () => alert("Activez votre GPS."),
-        { enableHighAccuracy: true }
+        (err) => {
+            // ERREUR
+            console.error(err);
+            alert("Impossible d'avoir votre position. Vérifiez que le GPS est activé.");
+            
+            // On remet le bouton normal
+            if(btn) {
+                btn.innerHTML = originalContent;
+                btn.classList.remove('btn-disabled');
+            }
+        },
+        { enableHighAccuracy: true, timeout: 10000 } // Timeout 10s max
     );
 };
 
