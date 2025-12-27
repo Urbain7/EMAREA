@@ -785,3 +785,8 @@ body.dark-mode .splash-loader {
     text-transform: uppercase; letter-spacing: 0.5px;
     z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
+
+/* AJUSTEMENT ALERTE EN MODE SOMBRE */
+body.dark-mode #alert-message {
+    color: #ccc !important; /* Texte gris clair lisible sur fond noir */
+}
