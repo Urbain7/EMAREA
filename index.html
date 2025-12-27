@@ -121,9 +121,9 @@
         <div class="install-box">
             <h3 style="color:white; margin:0 0 5px;">📲 Installez l'App</h3>
             <p>Accédez au marché plus rapidement sans passer par le navigateur.</p>
-            <button class="btn btn-primary" onclick="document.getElementById('pwa-install-btn').click()">
-                Installer Maintenant
-            </button>
+           <button class="btn btn-primary" onclick="installPWA()">
+    Installer Maintenant
+</button>
         </div>
 
         <div class="footer-content">
@@ -245,6 +245,7 @@
             alert("Merci d'avoir installé EM AREA ! 🎉");
             deferredPrompt = null;
         });
+        </script>
     <script src="js/app.js"></script>
 
     <!-- Le bouton flottant Dark Mode -->
