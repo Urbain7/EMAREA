@@ -330,6 +330,20 @@
         <button class="btn btn-primary" onclick="closeAlert()" style="width:100%;">C'est compris</button>
     </div>
 </div>
+    <!-- SÉCURITÉ ANTI-BLOCAGE -->
+    <script>
+        // Si le chargement prend trop de temps (ou si le JS plante), on force l'ouverture
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            if(splash && splash.style.opacity !== '0') {
+                console.warn("Ouverture forcée du site (Sécurité)");
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.visibility = 'hidden', 500);
+            }
+        }, 3000); // 3 secondes maximum
+    </script>
+</body>
+</html>
     
 </body>
 </html>
