@@ -814,3 +814,23 @@ body.dark-mode #loc-btn.header-pill-btn {
     50% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
     100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
 }
+
+/* ========================================= */
+/* ANIMATION + VENDRE (CORRIGÉE)             */
+/* ========================================= */
+
+.pulse-text {
+    display: inline-block !important; /* INDISPENSABLE pour que ça bouge */
+    animation: pumpIt 1.5s infinite ease-in-out;
+    transform-origin: center; /* Ça grossit depuis le centre */
+}
+
+@keyframes pumpIt {
+    0% { transform: scale(1); }
+    50% { 
+        transform: scale(1.25); /* Grossit de 25% */
+        color: #e67e22;         /* Devient plus foncé */
+        text-shadow: 0 0 5px rgba(230, 126, 34, 0.3);
+    }
+    100% { transform: scale(1); }
+}
