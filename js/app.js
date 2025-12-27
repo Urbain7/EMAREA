@@ -268,19 +268,70 @@ function closePharmaModal() {
 }
 
 // --- 6. SKELETON LOADER ---
+// --- 6. SKELETON LOADER (TOUTES PAGES + MARKET) ---
 function showSkeletonLoader() {
-    // Boutiques
-    const shopC = document.getElementById('shops-container');
-    if(shopC) { shopC.innerHTML = ''; for(let i=0;i<5;i++) shopC.innerHTML += `<div class="skeleton-shop-wrapper"><div class="skeleton-shop-circle"></div><div class="skeleton-shop-text"></div></div>`; }
-    // Promos
-    const promoC = document.getElementById('promo-container');
-    if(promoC) { promoC.style.display='flex'; promoC.innerHTML = ''; for(let i=0;i<3;i++) promoC.innerHTML += `<div class="skeleton-promo-card"><div class="skeleton-promo-img"></div><div class="skeleton-promo-content"><div class="skeleton-text-lg"></div><div class="skeleton-text-sm"></div></div></div>`; }
-    // Produits
-    const prodC = document.getElementById('products-container');
-    if(prodC) { prodC.innerHTML = ''; for(let i=0;i<4;i++) prodC.innerHTML += `<div class="skeleton-card skeleton"><div class="skeleton-img skeleton"></div><div class="skeleton-line skeleton"></div></div>`; }
-    // Jobs
-    const jobC = document.getElementById('jobs-container');
-    if(jobC) { jobC.innerHTML = ''; for(let i=0;i<3;i++) jobC.innerHTML += `<div class="skeleton-job"><div class="skeleton-title"></div></div>`; }
+    
+    // A. Boutiques (Ronds)
+    const shopContainer = document.getElementById('shops-container');
+    if(shopContainer) {
+        shopContainer.innerHTML = '';
+        for(let i=0; i<5; i++) {
+            shopContainer.innerHTML += `<div class="skeleton-shop-wrapper"><div class="skeleton-shop-circle"></div><div class="skeleton-shop-text"></div></div>`;
+        }
+    }
+
+    // B. Promos (Rectangles)
+    const promoContainer = document.getElementById('promo-container');
+    if(promoContainer) {
+        promoContainer.style.display = 'flex';
+        promoContainer.innerHTML = '';
+        for(let i=0; i<3; i++) {
+            promoContainer.innerHTML += `<div class="skeleton-promo-card"><div class="skeleton-promo-img"></div><div class="skeleton-promo-content"><div class="skeleton-text-lg"></div><div class="skeleton-text-sm"></div></div></div>`;
+        }
+    }
+
+    // C. Produits (Grille verticale)
+    const prodContainer = document.getElementById('products-container');
+    if(prodContainer) {
+        prodContainer.innerHTML = '';
+        for(let i=0; i<4; i++) {
+            prodContainer.innerHTML += `<div class="skeleton-card skeleton"><div class="skeleton-img skeleton"></div><div class="skeleton-line skeleton"></div></div>`;
+        }
+    }
+
+    // D. Jobs (Liste)
+    const jobsContainer = document.getElementById('jobs-container');
+    if(jobsContainer) {
+        jobsContainer.innerHTML = '';
+        for(let i=0; i<4; i++) {
+            jobsContainer.innerHTML += `<div class="skeleton-job"><div class="skeleton-job-top"><span class="skeleton-tag"></span><span class="skeleton-date"></span></div><div class="skeleton-title"></div></div>`;
+        }
+    }
+
+    // E. Map List (Si présente sans map)
+    const mapList = document.getElementById('distance-list');
+    if(mapList && !document.getElementById('map')) {
+        mapList.innerHTML = '';
+        for(let i=0; i<5; i++) mapList.innerHTML += `<div class="skeleton-map-item"><div class="skeleton-map-avatar"></div><div class="skeleton-map-lines"><div class="skeleton-title" style="width:50%"></div></div></div>`;
+    }
+
+    // F. MARKET HOME (NOUVEAU : Section Particuliers)
+    const marketHome = document.getElementById('market-home-container');
+    if(marketHome) {
+        marketHome.innerHTML = '';
+        // On crée 3 faux éléments horizontaux qui ressemblent aux cartes market
+        for(let i=0; i<3; i++) {
+            marketHome.innerHTML += `
+            <div class="skeleton-promo-card" style="min-width: 240px; border:1px solid #f0f0f0;">
+                <div class="skeleton-promo-img" style="width:70px; height:70px;"></div>
+                <div class="skeleton-promo-content">
+                    <div class="skeleton-text-sm" style="width:40%"></div> <!-- Vendeur -->
+                    <div class="skeleton-text-lg" style="width:70%"></div> <!-- Titre -->
+                    <div class="skeleton-text-sm" style="width:90%; margin-top:5px;"></div> <!-- Bouton -->
+                </div>
+            </div>`;
+        }
+    }
 }
 
 // --- 7. RENDU VISUEL & UTILS ---
