@@ -370,12 +370,23 @@ async function fetchShopProducts(shop) {
 }
 
 // Recherche
+/* --- RECHERCHE INTELLIGENTE --- */
 function setupSearch() {
     const input = document.getElementById('search-input');
+    const clearBtn = document.getElementById('search-clear');
+    
     if(!input) return;
 
+    // Quand on écrit
     input.addEventListener('input', (e) => {
         const term = e.target.value.toLowerCase();
+        
+        // 1. Gérer l'affichage du bouton X
+        if(clearBtn) {
+            clearBtn.style.display = term.length > 0 ? 'block' : 'none';
+        }
+
+        // 2. Filtrer les produits
         const promoContainer = document.getElementById('promo-container');
         const c = document.getElementById('products-container');
 
@@ -390,10 +401,29 @@ function setupSearch() {
 
         if(promoContainer) promoContainer.style.display = 'none';
         c.innerHTML = '';
+        
+        // Recherche dans le nom ET la description (si elle existe)
         const f = allProducts.filter(p => p.nom.toLowerCase().includes(term));
-        renderProducts(f);
+        
+        if(f.length === 0) {
+            c.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:#999;">
+                🤷‍♂️ Aucune offre trouvée pour "${term}"
+            </div>`;
+        } else {
+            renderProducts(f);
+        }
     });
 }
+
+// Nouvelle fonction pour vider la recherche
+window.clearSearch = function() {
+    const input = document.getElementById('search-input');
+    if(input) {
+        input.value = '';
+        input.dispatchEvent(new Event('input')); // Déclenche la remise à zéro
+        input.focus(); // Remet le curseur dedans
+    }
+};
 
 // Mode Sombre
 function toggleDarkMode() {
