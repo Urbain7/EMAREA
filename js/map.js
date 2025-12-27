@@ -59,11 +59,16 @@ async function loadMapData() {
         mapShops.forEach(shop => {
             if(shop.lat && shop.lng) {
                 const imgUrl = shop.logo || "https://via.placeholder.com/50";
+                
+                // CORRECTIF ICI : ajout de 'margin: 0 auto' et 'display: block'
                 const popupHTML = `
                     <div style="text-align:center; min-width:150px;">
-                        <img src="${imgUrl}" style="width:50px; height:50px; border-radius:50%; margin-bottom:5px; object-fit:cover;">
+                        <img src="${imgUrl}" 
+                             style="width:50px; height:50px; border-radius:50%; margin: 0 auto 5px auto; display:block; object-fit:cover; border:1px solid #eee;">
+                        
                         <h3 style="margin:0; font-size:0.9rem;">${shop.name}</h3>
                         <p style="margin:0; font-size:0.7rem; color:#666;">${shop.location}</p>
+                        
                         <button onclick="drawRoute(${shop.lat}, ${shop.lng})" 
                             style="background:#FF9F1C; color:white; border:none; padding:5px 10px; border-radius:15px; margin-top:5px; cursor:pointer;">
                             🏍️ Y aller
