@@ -13,10 +13,10 @@
     
   },
   {
-    "id": "koffi",
-    "name": "Koffi Tech",
-    "url": "#",
-    "logo": "https://github.com/dataprojetconstructor/sandy-shop",
+    "id": "Sand",
+    "name": "Sandy",
+    "url": "https://github.com/dataprojetconstructor/sandy-shop/",
+    "logo": "https://github.com/dataprojetconstructor/sandy-shop/assets/img/logo.jpeg",
     "desc": "Mode",
     "location": "Déckon",
     "lat": 6.1328,
