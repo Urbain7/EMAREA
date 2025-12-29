@@ -12,19 +12,7 @@
     "boost": 50,
     
   },
-  {
-    "id": "Sand",
-    "name": "Sandy",
-    "url": "https://github.com/dataprojetconstructor/sandy-shop/",
-    "logo": "https://github.com/dataprojetconstructor/sandy-shop/assets/img/logo.jpeg",
-    "desc": "Mode",
-    "location": "Déckon",
-    "lat": 6.1328,
-    "lng": 1.2246,
-    "verified": true,
-    "boost": 0,
-    
-  },
+  
   {
     "id": "maman",
     "name": "Maman Cuisine",
