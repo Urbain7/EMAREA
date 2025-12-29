@@ -834,3 +834,42 @@ body.dark-mode #loc-btn.header-pill-btn {
     }
     100% { transform: scale(1); }
 }
+/* --- STYLES BOOST & RATING --- */
+
+/* Badge TOP rouge sur le logo */
+.shop-badge-top {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #e74c3c;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    animation: bounceBadge 2s infinite;
+}
+
+@keyframes bounceBadge {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+/* Note (Étoiles) sous le nom */
+.shop-rating {
+    font-size: 0.65rem;
+    color: #f1c40f; /* Jaune or */
+    font-weight: 600;
+    margin-top: 2px;
+    background: rgba(0,0,0,0.03);
+    padding: 1px 5px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* En mode sombre */
+body.dark-mode .shop-rating {
+    background: rgba(255,255,255,0.1);
+}
+
