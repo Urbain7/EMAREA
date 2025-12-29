@@ -273,12 +273,26 @@ function renderProducts(products) {
 
 function renderShops() {
     const c = document.getElementById('shops-container');
-    const countLabel = document.getElementById('shop-count'); // CORRECTIF COMPTEUR
+    const countLabel = document.getElementById('shop-count');
     
     if(c) {
-        if(countLabel) countLabel.textContent = `${allShops.length} actifs`; // MISE A JOUR
+        if(countLabel) countLabel.textContent = `${allShops.length} actifs`;
         c.innerHTML = '';
-        allShops.forEach(s => c.innerHTML += `<a href="${s.url}" class="shop-card" target="_blank"><img src="${s.logo}" class="shop-logo"><div class="shop-name">${s.name}</div></a>`);
+        
+        // On récupère le thème actuel
+        const currentTheme = localStorage.getItem('em_theme') || 'light';
+
+        allShops.forEach(s => {
+            // On prépare le lien avec le paramètre ?theme=dark
+            const separator = s.url.includes('?') ? '&' : '?';
+            const linkWithTheme = `${s.url}${separator}theme=${currentTheme}`;
+
+            c.innerHTML += `
+            <a href="${linkWithTheme}" class="shop-card" target="_blank">
+                <img src="${s.logo}" class="shop-logo" onerror="this.src='https://via.placeholder.com/70'">
+                <div class="shop-name">${s.name}</div>
+            </a>`;
+        });
     }
 }
 
