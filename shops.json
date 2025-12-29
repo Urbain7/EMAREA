@@ -2,34 +2,40 @@
   {
     "id": "sandy",
     "name": "Sandy'Shop",
-    "url": "https://sandy-shop-zeta.vercel.app",
-    "logo": "https://sandy-shop-zeta.vercel.app/assets/favicon.png",
+    "url": "https://dataprojetconstructor.github.io/sandy-shop",
+    "logo": "https://dataprojetconstructor.github.io/sandy-shop/assets/logo.png",
     "desc": "Mode & Accessoires",
     "location": "Agoè, Lomé",
     "lat": 6.1866,
     "lng": 1.1884,
-    "verified": true
+    "verified": true,
+    "boost": 50,
+    
   },
   {
     "id": "koffi",
     "name": "Koffi Tech",
-    "url": "https://koffi-tech.vercel.app",
-    "logo": "https://img.icons8.com/color/96/mac-os.png",
-    "desc": "Smartphones & Gadgets",
-    "location": "Déckon, Lomé",
+    "url": "#",
+    "logo": "https://github.com/dataprojetconstructor/sandy-shop",
+    "desc": "Mode",
+    "location": "Déckon",
     "lat": 6.1328,
     "lng": 1.2246,
-    "verified": true
+    "verified": true,
+    "boost": 0,
+    
   },
   {
     "id": "maman",
     "name": "Maman Cuisine",
-    "url": "https://maman-cuisine.vercel.app",
+    "url": "#",
     "logo": "https://img.icons8.com/color/96/cook-male.png",
     "desc": "Plats locaux",
-    "location": "Bè-Kpota",
+    "location": "Bè",
     "lat": 6.1432,
     "lng": 1.2589,
-    "verified": false
+    "verified": false,
+    "boost": 0,
+    
   }
 ]
