@@ -1,5 +1,5 @@
 /* =============================== */
-/* MOTEUR EM AREA V12.0 (FINAL)    */
+/* MOTEUR EM AREA V13.0 (ALGO RANK)*/
 /* =============================== */
 
 let allProducts = [];
@@ -10,7 +10,7 @@ let viewedProducts = JSON.parse(localStorage.getItem('em_history')) || [];
 document.addEventListener('DOMContentLoaded', () => {
     checkDarkMode();
     
-    // 1.1 SPLASH SCREEN
+    // Splash Screen
     setTimeout(() => {
         const splash = document.getElementById('splash-screen');
         if(splash) {
@@ -19,23 +19,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 1500);
 
-    // 1.2 PULL TO REFRESH
     initPullToRefresh();
 
     // A. PAGE ACCUEIL
     if(document.getElementById('products-container')) {
         initApp();
         renderHistory();
-        if(document.getElementById('market-home-container')) {
-            loadHomeMarket();
-        }
+        if(document.getElementById('market-home-container')) loadHomeMarket();
     } 
     // B. PAGE JOBS
     else if(document.getElementById('jobs-container')) {
         showSkeletonLoader();
         loadJobs();
     }
-    // C. PAGE CARTE (Liste simple)
+    // C. PAGE CARTE
     else if(document.getElementById('distance-list') && !document.getElementById('map')) {
         showSkeletonLoader();
     }
@@ -52,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// --- 1.2 LOGIQUE PULL TO REFRESH ---
+// --- 1.2 PULL TO REFRESH ---
 function initPullToRefresh() {
     let startY = 0;
     const ptr = document.getElementById('ptr-indicator');
@@ -77,7 +74,7 @@ function initPullToRefresh() {
     });
 }
 
-// --- 2. LOGIQUE ACCUEIL ---
+// --- 2. LOGIQUE ACCUEIL (AVEC ALGO DE TRI) ---
 async function initApp() {
     showSkeletonLoader();
 
@@ -86,7 +83,27 @@ async function initApp() {
         if (!res.ok) throw new Error("Erreur Shops");
         allShops = await res.json();
         
-        renderShops();
+        // --- ALGORITHME DE CLASSEMENT (EM RANK) ---
+        // On calcule un score pour chaque boutique
+        allShops.forEach(shop => {
+            let score = 0;
+            // 1. Le Boost Payant (Le plus fort) : 1000 points par niveau
+            if(shop.boost_level) score += (shop.boost_level * 1000);
+            
+            // 2. La Vérification (Confiance) : 500 points
+            if(shop.verified) score += 500;
+            
+            // 3. Aléatoire (Pour mélanger les égaux) : 0 à 10 points
+            score += Math.random() * 10;
+            
+            shop.em_score = score;
+        });
+
+        // On trie du plus grand score au plus petit
+        allShops.sort((a, b) => b.em_score - a.em_score);
+        // -------------------------------------------
+
+        renderShops(); // Affiche les boutiques triées
         
         const promises = allShops.map(shop => fetchShopProducts(shop));
         const results = await Promise.allSettled(promises);
@@ -107,6 +124,8 @@ async function initApp() {
             }
         });
 
+        // Les produits des boutiques "Boostées" apparaissent aussi en premier dans la liste globale ?
+        // Optionnel : Pour l'instant on mélange pour la variété
         promoItems.sort(() => 0.5 - Math.random());
         standardItems.sort(() => 0.5 - Math.random());
         
@@ -133,8 +152,57 @@ async function loadShopsOnly() {
     try {
         const res = await fetch('shops.json');
         allShops = await res.json();
+        // Même algo de tri ici si nécessaire
+        allShops.sort((a, b) => {
+            let sa = (a.boost_level || 0)*1000 + (a.verified?500:0);
+            let sb = (b.boost_level || 0)*1000 + (b.verified?500:0);
+            return sb - sa;
+        });
         renderShops();
     } catch(e) {}
+}
+
+// --- AFFICHAGE BOUTIQUES (AVEC NOUVEAUX BADGES) ---
+function renderShops() {
+    const c = document.getElementById('shops-container');
+    const countLabel = document.getElementById('shop-count');
+    
+    if(c) {
+        if(countLabel) countLabel.textContent = `${allShops.length} actifs`;
+        c.innerHTML = '';
+        
+        const currentTheme = localStorage.getItem('em_theme') || 'light';
+
+        allShops.forEach(s => {
+            const separator = s.url.includes('?') ? '&' : '?';
+            const linkWithTheme = `${s.url}${separator}theme=${currentTheme}`;
+
+            // Badge SPONSORISÉ (Si boost > 0)
+            let sponsorBadge = '';
+            if (s.boost_level > 0) {
+                sponsorBadge = `<div class="badge-sponsored">SPONSORISÉ</div>`;
+            }
+
+            // Badge VÉRIFIÉ (Texte Bleu)
+            let verifyBadge = '';
+            if (s.verified) {
+                verifyBadge = `<div class="badge-verified">VÉRIFIÉ</div>`;
+            }
+
+            // Bordure dorée pour les VIP
+            const imgStyle = s.boost_level > 0 ? "border: 2px solid #FFD700;" : "";
+
+            c.innerHTML += `
+            <a href="${linkWithTheme}" class="shop-card" target="_blank">
+                <div style="position:relative;">
+                    <img src="${s.logo}" class="shop-logo" style="${imgStyle}" onerror="this.src='https://via.placeholder.com/70'">
+                    ${sponsorBadge}
+                </div>
+                <div class="shop-name">${s.name}</div>
+                ${verifyBadge} <!-- Le badge texte en dessous -->
+            </a>`;
+        });
+    }
 }
 
 // --- 3. MARKET (PARTICULIERS) ---
@@ -162,7 +230,7 @@ function loadHomeMarket() {
                             <div style="font-size:0.65rem; color:#888; text-transform:uppercase;">Vendeur : <b>${ad.vendeur}</b></div>
                             <div class="promo-title" style="margin:2px 0;">${ad.titre}</div>
                             <div class="promo-price" style="color:#27ae60;">${prix}</div>
-                            <a href="${waLink}" class="btn btn-outline" style="width:100%; margin-top:5px; padding:4px; font-size:0.75rem; border-color:#27ae60; color:#27ae60;">Contacter </a>
+                            <a href="${waLink}" class="btn btn-outline" style="width:100%; margin-top:5px; padding:4px; font-size:0.75rem; border-color:#27ae60; color:#27ae60;">Contacter </a>
                         </div>
                     </div>`;
             });
@@ -234,9 +302,7 @@ function showSkeletonLoader() {
     const prodC = document.getElementById('products-container');
     if(prodC) { prodC.innerHTML = ''; for(let i=0;i<4;i++) prodC.innerHTML += `<div class="skeleton-card skeleton"><div class="skeleton-img skeleton"></div><div class="skeleton-line skeleton"></div></div>`; }
     const jobC = document.getElementById('jobs-container');
-    if(jobC) { jobC.innerHTML = ''; for(let i=0;i<4;i++) jobC.innerHTML += `<div class="skeleton-job"><div class="skeleton-job-top"></div><div class="skeleton-title"></div></div>`; }
-    
-    // F. Squelette pour la section MARKET (Nouveau)
+    if(jobC) { jobC.innerHTML = ''; for(let i=0;i<4;i++) jobC.innerHTML += `<div class="skeleton-job"><div class="skeleton-title"></div></div>`; }
     const marketHome = document.getElementById('market-home-container');
     if(marketHome) {
         marketHome.innerHTML = '';
@@ -246,7 +312,7 @@ function showSkeletonLoader() {
     }
 }
 
-// --- 7. RENDU VISUEL ---
+// --- 7. RENDU PRODUITS ---
 function renderProducts(products) {
     const container = document.getElementById('products-container');
     if(!container) return; 
@@ -269,31 +335,6 @@ function renderProducts(products) {
                 </div>
             </div>`;
     });
-}
-
-function renderShops() {
-    const c = document.getElementById('shops-container');
-    const countLabel = document.getElementById('shop-count');
-    
-    if(c) {
-        if(countLabel) countLabel.textContent = `${allShops.length} actifs`;
-        c.innerHTML = '';
-        
-        // On récupère le thème actuel
-        const currentTheme = localStorage.getItem('em_theme') || 'light';
-
-        allShops.forEach(s => {
-            // On prépare le lien avec le paramètre ?theme=dark
-            const separator = s.url.includes('?') ? '&' : '?';
-            const linkWithTheme = `${s.url}${separator}theme=${currentTheme}`;
-
-            c.innerHTML += `
-            <a href="${linkWithTheme}" class="shop-card" target="_blank">
-                <img src="${s.logo}" class="shop-logo" onerror="this.src='https://via.placeholder.com/70'">
-                <div class="shop-name">${s.name}</div>
-            </a>`;
-        });
-    }
 }
 
 function renderPromos(promos) {
@@ -319,15 +360,29 @@ function renderPromos(promos) {
 
 // --- 8. UTILS ---
 async function fetchShopProducts(shop) {
+    if (shop.url === '#' || !shop.url) return [];
     try {
         const controller = new AbortController();
         const id = setTimeout(() => controller.abort(), 5000); 
-        const res = await fetch(`${shop.url}/data/produits.json`, { signal: controller.signal });
+        const jsonUrl = shop.url.endsWith('/') ? `${shop.url}data/produits.json` : `${shop.url}/data/produits.json`;
+        const res = await fetch(jsonUrl, { signal: controller.signal });
         clearTimeout(id);
         if(!res.ok) return [];
         const data = await res.json();
         const items = data.items ? data.items : data;
-        return items.map(p => ({ ...p, shopName: shop.name, shopUrl: shop.url, isVerified: shop.verified, image: p.image.startsWith('http') ? p.image : `${shop.url}/${p.image}` }));
+        return items.map(p => {
+            let imgSrc = p.image;
+            if (imgSrc && !imgSrc.startsWith('http')) {
+                if (imgSrc.startsWith('/')) imgSrc = imgSrc.substring(1);
+                const baseUrl = shop.url.endsWith('/') ? shop.url : `${shop.url}/`;
+                imgSrc = baseUrl + imgSrc;
+            }
+            return {
+                id: p.id, nom: p.nom, prix: p.prix, prix_original: p.prix_original,
+                image: imgSrc, shopName: shop.name, shopUrl: shop.url,
+                isVerified: shop.verified, is_star: p.is_star
+            };
+        });
     } catch { return []; }
 }
 
@@ -341,7 +396,8 @@ function setupSearch() {
         const pC = document.getElementById('promo-container');
         if(pC) pC.style.display = term.length === 0 ? 'flex' : 'none';
         const f = allProducts.filter(p => p.nom.toLowerCase().includes(term));
-        renderProducts(f);
+        if(f.length === 0) document.getElementById('products-container').innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:#999;">🤷‍♂️ Aucune offre trouvée.</div>`;
+        else renderProducts(f);
     });
 }
 window.clearSearch = function() {
