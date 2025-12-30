@@ -881,3 +881,87 @@ body.dark-mode #loc-btn.header-pill-btn {
 
 /* Ajustement carte boutique */
 .shop-card { position: relative; overflow: visible; }
+
+/* --- 1. DÉFILEMENT AUTOMATIQUE (MARQUEE) --- */
+.marquee-wrapper {
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    background: white;
+    padding: 15px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.marquee-content {
+    display: inline-flex;
+    gap: 15px;
+    animation: scrollLeft 20s linear infinite;
+}
+
+.marquee-card {
+    width: 140px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    padding: 10px;
+    flex-shrink: 0;
+    border: 1px solid #eee;
+    white-space: normal; /* Permet au texte de revenir à la ligne */
+}
+
+.marquee-img {
+    width: 100%; height: 100px; object-fit: cover;
+    border-radius: 8px; margin-bottom: 8px;
+}
+
+@keyframes scrollLeft {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } /* On défile la moitié (car on duplique le contenu) */
+}
+
+/* --- 2. BOUTON PANIER (HEADER) --- */
+.cart-btn {
+    position: relative;
+    background: #f4f6f8; color: var(--dark);
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: 0.2s;
+}
+.cart-count {
+    position: absolute; top: -2px; right: -2px;
+    background: #e74c3c; color: white;
+    font-size: 0.7rem; font-weight: bold;
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid white;
+}
+
+/* --- 3. MODALE PANIER --- */
+.cart-item {
+    display: flex; gap: 10px; align-items: center;
+    padding: 10px 0; border-bottom: 1px dashed #eee;
+}
+.cart-item img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
+.cart-item-info { flex: 1; }
+.cart-item-remove { color: #e74c3c; cursor: pointer; padding: 5px; }
+
+/* --- 4. FILTRES SIMPLES --- */
+.filter-bar {
+    display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto;
+}
+.filter-chip {
+    padding: 6px 12px; border-radius: 20px; border: 1px solid #ddd;
+    font-size: 0.8rem; cursor: pointer; background: white; white-space: nowrap;
+}
+.filter-chip.active {
+    background: var(--dark); color: white; border-color: var(--dark);
+}
+.filter-chip.verified-filter.active {
+    background: var(--verified); border-color: var(--verified);
+}
+
+/* Dark Mode Adjustments */
+body.dark-mode .marquee-wrapper { background: #1e1e1e; border-color: #333; }
+body.dark-mode .marquee-card { background: #2c2c2c; border-color: #444; }
+body.dark-mode .cart-btn { background: #333; color: white; }
+body.dark-mode .filter-chip { background: #2c2c2c; border-color: #444; color: #ccc; }
