@@ -3,7 +3,7 @@
 /* =============================== */
 
 // ⚠️ CONFIGURATION ADMIN
-const ADMIN_WHATSAPP = "22890000000"; // <--- METS TON NUMÉRO ICI
+const ADMIN_WHATSAPP = "22870901801"; // <--- METS TON NUMÉRO ICI
 
 // ÉTAT GLOBAL
 let allProducts = [];
