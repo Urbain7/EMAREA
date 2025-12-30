@@ -3,16 +3,26 @@
     "id": "sandy",
     "name": "Sandy'Shop",
     "url": "https://dataprojetconstructor.github.io/sandy-shop",
-    "logo": "https://dataprojetconstructor.github.io/sandy-shop/assets/img/logo.jpeg",
+    "logo": "https://dataprojetconstructor.github.io/sandy-shop/assets/logo.png",
     "desc": "Mode & Accessoires",
     "location": "Agoè, Lomé",
     "lat": 6.1866,
     "lng": 1.1884,
     "verified": true,
-    "boost": 50,
-    
+    "boost_level": 2
   },
-  
+  {
+    "id": "koffi",
+    "name": "Koffi Tech",
+    "url": "#",
+    "logo": "https://img.icons8.com/color/96/mac-os.png",
+    "desc": "Smartphones",
+    "location": "Déckon",
+    "lat": 6.1328,
+    "lng": 1.2246,
+    "verified": true,
+    "boost_level": 0
+  },
   {
     "id": "maman",
     "name": "Maman Cuisine",
@@ -23,7 +33,6 @@
     "lat": 6.1432,
     "lng": 1.2589,
     "verified": false,
-    "boost": 0,
-    
+    "boost_level": 0
   }
 ]
