@@ -5,10 +5,15 @@
 let allProducts = [];
 let allShops = [];
 let viewedProducts = JSON.parse(localStorage.getItem('em_history')) || [];
+// --- PANIER (Nouveau) ---
+let cart = JSON.parse(localStorage.getItem('em_cart')) || [];
 
 // --- 1. DÉMARRAGE & ROUTING ---
 document.addEventListener('DOMContentLoaded', () => {
     checkDarkMode();
+    
+    // Mise à jour du badge panier au démarrage
+    updateCartCount(); 
     
     // Splash Screen (Disparition)
     setTimeout(() => {
@@ -43,10 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
         loadShopsOnly();
     }
 
-    // Listener fermeture modale pharmacie
+    // Listener fermeture modale PANIER (clic en dehors)
     window.addEventListener('click', (e) => {
-        const modal = document.getElementById('pharma-modal');
-        if (e.target === modal) closePharmaModal();
+        const modal = document.getElementById('cart-modal');
+        if (e.target === modal) toggleCart();
     });
 });
 
@@ -88,18 +93,13 @@ async function initApp() {
         // 2. TRI DES BOUTIQUES (EM SCORE)
         allShops.forEach(shop => {
             let score = 0;
-            // Boost payant
             if(shop.boost_level) score += (shop.boost_level * 1000);
-            // Vérification
             if(shop.verified) score += 500;
-            // Aléatoire léger pour mélanger les égaux
             score += Math.random() * 10; 
             shop.em_score = score;
         });
         
-        // Tri décroissant
         allShops.sort((a, b) => b.em_score - a.em_score);
-
         renderShops();
         
         // 3. RÉCUPÉRATION DES PRODUITS (Multi-Boutiques)
@@ -112,10 +112,8 @@ async function initApp() {
         results.forEach(result => {
             if (result.status === 'fulfilled') {
                 result.value.forEach(p => {
-                    // Badge Nouveau (Simulation)
                     if(!p.is_star && Math.random() > 0.8) p.is_new = true;
                     
-                    // Séparation Promos / Standards
                     if (p.is_star === true || (p.prix_original && p.prix_original > p.prix)) {
                         promoItems.push(p);
                     } else {
@@ -149,14 +147,13 @@ async function initApp() {
     }
 }
 
-// Fonction cruciale : Récupère les produits d'une boutique distante
+// Récupère les produits d'une boutique
 async function fetchShopProducts(shop) {
     if (shop.url === '#' || !shop.url) return [];
     try {
         const controller = new AbortController();
         const id = setTimeout(() => controller.abort(), 5000); // Timeout 5s
         
-        // Gestion URL avec ou sans slash
         const jsonUrl = shop.url.endsWith('/') ? `${shop.url}data/produits.json` : `${shop.url}/data/produits.json`;
         
         const res = await fetch(jsonUrl, { signal: controller.signal });
@@ -166,11 +163,8 @@ async function fetchShopProducts(shop) {
         const data = await res.json();
         const items = data.items ? data.items : data;
         
-        // Nettoyage et formatage des données
         return items.map(p => {
             let imgSrc = p.image;
-            
-            // Correction chemin image (Absolu)
             if (imgSrc && !imgSrc.startsWith('http')) {
                 if (imgSrc.startsWith('/')) imgSrc = imgSrc.substring(1);
                 const baseUrl = shop.url.endsWith('/') ? shop.url : `${shop.url}/`;
@@ -184,7 +178,7 @@ async function fetchShopProducts(shop) {
                 prix_original: p.prix_original,
                 image: imgSrc,
                 shopName: shop.name,
-                shopUrl: shop.url, // URL de base
+                shopUrl: shop.url,
                 isVerified: shop.verified,
                 is_star: p.is_star
             };
@@ -192,7 +186,7 @@ async function fetchShopProducts(shop) {
     } catch { return []; }
 }
 
-// --- 3. RENDU VISUEL ---
+// --- 3. RENDU VISUEL (PRODUITS) ---
 
 function renderProducts(products) {
     const container = document.getElementById('products-container');
@@ -200,25 +194,34 @@ function renderProducts(products) {
     if(container.innerHTML.includes('skeleton')) container.innerHTML = ''; 
 
     products.slice(0, 30).forEach(p => {
-        const price = Number(p.prix).toLocaleString() + ' F';
+        const priceDisplay = Number(p.prix).toLocaleString() + ' F';
         const newBadgeHTML = p.is_new ? `<div class="badge-new">NOUVEAU</div>` : '';
-        
-        // LIEN PROFOND vers la boutique avec ID
         const targetUrl = `${p.shopUrl}/index.html?id=${p.id}`;
+        
+        // Sécurisation des textes pour le JS
+        const safeName = p.nom.replace(/'/g, "\\'");
+        const safeShop = p.shopName.replace(/'/g, "\\'");
 
         container.innerHTML += `
             <div class="product-card" data-aos="fade-up">
                 ${newBadgeHTML}
                 <button class="btn-copy" onclick="copyLink('${targetUrl}')">🔗</button>
                 
-                <a href="${targetUrl}" target="_blank" onclick="addToHistory('${p.id}', '${p.nom}', '${p.image}', '${p.shopUrl}')">
-                    <img src="${p.image}" class="product-img" loading="lazy" onerror="this.src='https://via.placeholder.com/150'">
-                </a>
+                <div style="position:relative;">
+                    <a href="${targetUrl}" target="_blank" onclick="addToHistory('${p.id}', '${safeName}', '${p.image}', '${p.shopUrl}')">
+                        <img src="${p.image}" class="product-img" loading="lazy" onerror="this.src='https://via.placeholder.com/150'">
+                    </a>
+                    <!-- BOUTON AJOUT PANIER (+) -->
+                    <button onclick="addToCart('${p.id}', '${safeName}', ${p.prix}, '${p.image}', '${safeShop}')" 
+                        style="position:absolute; bottom:10px; right:10px; width:35px; height:35px; border-radius:50%; border:none; background:white; color:var(--primary); font-weight:bold; box-shadow:0 3px 10px rgba(0,0,0,0.2); cursor:pointer; font-size:1.2rem; display:flex; align-items:center; justify-content:center; z-index:2;">
+                        +
+                    </button>
+                </div>
+
                 <div class="product-info">
                     <div class="product-shop">${p.shopName}</div>
                     <div class="product-title">${p.nom}</div>
-                    <div class="product-price">${price}</div>
-                    <a href="${targetUrl}" target="_blank" onclick="addToHistory('${p.id}', '${p.nom}', '${p.image}', '${p.shopUrl}')" class="btn btn-outline" style="font-size:0.8rem; padding:5px;">Voir</a>
+                    <div class="product-price">${priceDisplay}</div>
                 </div>
             </div>`;
     });
@@ -231,18 +234,23 @@ function renderPromos(promos) {
     
     c.innerHTML = '';
     promos.forEach(p => {
-        const price = Number(p.prix).toLocaleString() + ' F';
+        const priceDisplay = Number(p.prix).toLocaleString() + ' F';
         const oldPrice = p.prix_original ? `<span class="old-price">${Number(p.prix_original).toLocaleString()} F</span>` : '';
-        const targetUrl = `${p.shopUrl}/index.html?id=${p.id}`;
+        const safeName = p.nom.replace(/'/g, "\\'");
+        const safeShop = p.shopName.replace(/'/g, "\\'");
 
         c.innerHTML += `
             <div class="promo-card">
-                <a href="${targetUrl}" target="_blank"><img src="${p.image}"></a>
+                <img src="${p.image}" onclick="window.open('${p.shopUrl}/index.html?id=${p.id}')">
                 <div class="promo-info">
                     <div class="product-shop" style="color:#e67e22;">🔥 PROMO</div>
                     <div class="promo-title">${p.nom}</div>
-                    <div>${oldPrice}<span class="promo-price">${price}</span></div>
-                    <a href="${targetUrl}" target="_blank" class="btn btn-primary" style="font-size:0.7rem; padding:5px 15px; margin-top:5px;">Voir</a>
+                    <div>${oldPrice}<span class="promo-price">${priceDisplay}</span></div>
+                    
+                    <button onclick="addToCart('${p.id}', '${safeName}', ${p.prix}, '${p.image}', '${safeShop}')" 
+                        class="btn btn-primary" style="font-size:0.75rem; padding:6px 15px; margin-top:8px; width:100%;">
+                        Ajouter au Panier
+                    </button>
                 </div>
             </div>`;
     });
@@ -258,11 +266,9 @@ function renderShops() {
         const currentTheme = localStorage.getItem('em_theme') || 'light';
         
         allShops.forEach(s => {
-            // Ajout du paramètre de thème pour la boutique
             const separator = s.url.includes('?') ? '&' : '?';
             const linkWithTheme = `${s.url}${separator}theme=${currentTheme}`;
             
-            // Badges
             let sponsorBadge = s.boost_level > 0 ? `<div class="badge-sponsored">SPONSORISÉ</div>` : '';
             let verifyBadge = s.verified ? `<div class="badge-verified">VÉRIFIÉ</div>` : '';
             const imgStyle = s.boost_level > 0 ? "border: 2px solid #FFD700;" : "";
@@ -282,7 +288,6 @@ function renderShops() {
 
 // --- 4. SECTIONS SECONDAIRES ---
 
-// Market (Particuliers)
 function loadHomeMarket() {
     const container = document.getElementById('market-home-container');
     if(!container) return;
@@ -313,7 +318,6 @@ function loadHomeMarket() {
         .catch(e => { container.innerHTML = ''; });
 }
 
-// Jobs
 function loadJobs() {
     const container = document.getElementById('jobs-container');
     if(!container) return;
@@ -350,30 +354,8 @@ function loadJobs() {
         .catch(e => container.innerHTML = '<div style="text-align:center; color:red;">Erreur chargement.</div>');
 }
 
-// Pharmacies
-function openPharmaModal() {
-    const modal = document.getElementById('pharma-modal');
-    const list = document.getElementById('pharma-list');
-    if(!modal) return;
-    
-    modal.classList.add('active');
-    if(navigator.vibrate) navigator.vibrate(50);
-    
-    list.innerHTML = '<div style="text-align:center; padding:20px;">Chargement...</div>';
-    
-    fetch('pharmacies.json')
-        .then(res => res.json())
-        .then(data => {
-            list.innerHTML = '';
-            data.forEach(p => {
-                list.innerHTML += `<div class="pharma-item"><div class="pharma-info"><span class="pharma-tag">${p.quartier}</span><h4>${p.nom}</h4><p>📍 ${p.loc}</p></div><a href="tel:${p.tel.replace(/\s/g, '')}" class="btn-call">📞</a></div>`;
-            });
-        })
-        .catch(() => list.innerHTML = '<div style="color:red; text-align:center;">Erreur chargement.</div>');
-}
-function closePharmaModal() { document.getElementById('pharma-modal').classList.remove('active'); }
+// --- 5. SKELETONS & UTILITAIRES ---
 
-// Skeletons
 function showSkeletonLoader() {
     const shopC = document.getElementById('shops-container');
     if(shopC) { shopC.innerHTML = ''; for(let i=0;i<5;i++) shopC.innerHTML += `<div class="skeleton-shop-wrapper"><div class="skeleton-shop-circle"></div><div class="skeleton-shop-text"></div></div>`; }
@@ -383,15 +365,12 @@ function showSkeletonLoader() {
     if(prodC) { prodC.innerHTML = ''; for(let i=0;i<4;i++) prodC.innerHTML += `<div class="skeleton-card skeleton"><div class="skeleton-img skeleton"></div><div class="skeleton-line skeleton"></div></div>`; }
     const jobC = document.getElementById('jobs-container');
     if(jobC) { jobC.innerHTML = ''; for(let i=0;i<4;i++) jobC.innerHTML += `<div class="skeleton-job"><div class="skeleton-title"></div></div>`; }
-    const marketHome = document.getElementById('market-home-container');
-    if(marketHome) { marketHome.innerHTML = ''; for(let i=0; i<3; i++) { marketHome.innerHTML += `<div class="skeleton-promo-card" style="min-width: 240px; border:1px solid #f0f0f0;"><div class="skeleton-promo-img" style="width:70px; height:70px;"></div><div class="skeleton-promo-content"><div class="skeleton-text-sm" style="width:40%"></div><div class="skeleton-text-lg" style="width:70%"></div><div class="skeleton-text-sm" style="width:90%"></div></div></div>`; } }
 }
 
 async function loadShopsOnly() {
     try {
         const res = await fetch('shops.json');
         allShops = await res.json();
-        // Tri (Même logique que initApp)
         allShops.sort((a, b) => {
             let sa = (a.boost_level || 0)*1000 + (a.verified?500:0);
             let sb = (b.boost_level || 0)*1000 + (b.verified?500:0);
@@ -401,7 +380,6 @@ async function loadShopsOnly() {
     } catch(e) {}
 }
 
-// --- 5. UTILITAIRES ---
 function setupSearch() {
     const input = document.getElementById('search-input');
     const clearBtn = document.getElementById('search-clear');
@@ -444,4 +422,124 @@ function renderHistory() {
     if(!c || !s || viewedProducts.length===0) return;
     s.style.display = 'block'; c.innerHTML = '';
     viewedProducts.forEach(p => c.innerHTML += `<a href="${p.url}/index.html?id=${p.id}" class="history-card"><img src="${p.img}"><div style="font-size:0.7rem;">${p.name}</div></a>`);
+}
+
+// ===============================
+// 6. GESTION DU PANIER (NOUVEAU)
+// ===============================
+
+function toggleCart() {
+    const modal = document.getElementById('cart-modal');
+    if(modal) {
+        if(modal.classList.contains('active')) {
+            modal.classList.remove('active');
+        } else {
+            renderCart();
+            modal.classList.add('active');
+        }
+    }
+}
+
+function addToCart(id, name, price, image, shop) {
+    if(navigator.vibrate) navigator.vibrate(50);
+    
+    cart.push({ id, name, price, image, shop });
+    localStorage.setItem('em_cart', JSON.stringify(cart));
+    updateCartCount();
+    
+    // Feedback sur le bouton
+    const btn = event.currentTarget; 
+    const originalText = btn.innerHTML;
+    
+    if(btn.innerText.trim() === '+') {
+        btn.style.background = '#27ae60';
+        btn.style.color = 'white';
+        btn.innerText = '✓';
+    } else {
+        btn.innerText = 'Ajouté !';
+        btn.style.background = '#27ae60';
+    }
+    
+    setTimeout(() => {
+        if(originalText.trim() === '+') {
+            btn.style.background = 'white';
+            btn.style.color = 'var(--primary)';
+        } else {
+            btn.style.background = 'var(--primary)';
+        }
+        btn.innerHTML = originalText;
+    }, 1000);
+}
+
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    localStorage.setItem('em_cart', JSON.stringify(cart));
+    renderCart();
+    updateCartCount();
+}
+
+function updateCartCount() {
+    const badge = document.getElementById('cart-count');
+    if(badge) {
+        badge.innerText = cart.length;
+        badge.style.display = cart.length > 0 ? 'inline-block' : 'none';
+    }
+}
+
+function renderCart() {
+    const list = document.getElementById('cart-items');
+    const footer = document.getElementById('cart-footer');
+    const totalEl = document.getElementById('cart-total-amount');
+    
+    if(!list) return;
+    
+    if(cart.length === 0) {
+        list.innerHTML = `<div style="text-align:center; padding:40px; color:#ccc;">
+            <div style="font-size:3rem; margin-bottom:10px;">🛒</div>
+            <p>Votre panier est vide</p>
+            <button onclick="toggleCart()" class="btn btn-outline" style="margin-top:10px;">Continuer mes achats</button>
+        </div>`;
+        if(footer) footer.style.display = 'none';
+        return;
+    }
+
+    list.innerHTML = '';
+    let total = 0;
+
+    cart.forEach((item, index) => {
+        total += Number(item.price);
+        list.innerHTML += `
+        <div class="cart-item">
+            <img src="${item.image}" onerror="this.src='https://via.placeholder.com/50'">
+            <div class="cart-item-info">
+                <div class="cart-title">${item.name}</div>
+                <div style="font-size:0.7rem; color:#888;">${item.shop}</div>
+                <div class="cart-price">${Number(item.price).toLocaleString()} F</div>
+            </div>
+            <button class="btn-remove" onclick="removeFromCart(${index})">&times;</button>
+        </div>`;
+    });
+
+    if(totalEl) totalEl.innerText = total.toLocaleString() + ' F';
+    if(footer) footer.style.display = 'block';
+}
+
+function checkoutWhatsApp() {
+    if(cart.length === 0) return;
+
+    let msg = "Bonjour, je souhaite commander ces articles :\n\n";
+    let total = 0;
+    
+    cart.forEach(item => {
+        msg += `- ${item.name} (${Number(item.price).toLocaleString()} F)\n`;
+        total += Number(item.price);
+    });
+    
+    msg += `\n*TOTAL : ${total.toLocaleString()} F*`;
+    
+    // ⚠ ATTENTION : REMPLACE LE NUMÉRO CI-DESSOUS PAR LE TIEN (Format 228...)
+    const myPhone = "22890000000"; 
+    
+    const url = `https://wa.me/${myPhone}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
 }
