@@ -1,27 +1,35 @@
 [
   {
     "id": "sandy",
-    "name": "Sandy'Shop",
+    "name": "Sandy's Shop",
     "url": "https://dataprojetconstructor.github.io/sandy-shop",
     "logo": "https://dataprojetconstructor.github.io/sandy-shop/assets/img/logo.jpeg",
     "desc": "Mode & Accessoires",
     "location": "Agoè, Lomé",
+    "category": "Mode",
     "lat": 6.1866,
     "lng": 1.1884,
     "verified": true,
-    "boost_level": 2
+    "subscription": "active",
+    "boost_level": 2,
+    "owner_phone": "22890000000",
+    "join_date": "2025-01-01"
   },
   {
     "id": "koffi",
     "name": "Koffi Tech",
     "url": "#",
     "logo": "https://img.icons8.com/color/96/mac-os.png",
-    "desc": "Smartphones",
+    "desc": "Smartphones & PC",
     "location": "Déckon",
+    "category": "High-Tech",
     "lat": 6.1328,
     "lng": 1.2246,
     "verified": true,
-    "boost_level": 0
+    "subscription": "active",
+    "boost_level": 1,
+    "owner_phone": "22891000000",
+    "join_date": "2025-01-15"
   },
   {
     "id": "maman",
@@ -30,9 +38,13 @@
     "logo": "https://img.icons8.com/color/96/cook-male.png",
     "desc": "Plats locaux",
     "location": "Bè",
+    "category": "Resto",
     "lat": 6.1432,
     "lng": 1.2589,
     "verified": false,
-    "boost_level": 0
+    "subscription": "pending",
+    "boost_level": 0,
+    "owner_phone": "22892000000",
+    "join_date": "2025-02-01"
   }
 ]
