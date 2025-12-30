@@ -112,8 +112,8 @@
     </div>
 
     <script>
-        // HASH SHA-256 pour "admin123"
-        const SECRET_HASH = "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3";
+        // HASH CORRECT SHA-256 pour "admin123"
+        const SECRET_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
         let shopsData = [];
 
         // 1. SÉCURITÉ
@@ -144,7 +144,7 @@
                 shopsData = await res.json();
                 renderTable();
                 calcStats();
-            } catch(e) { alert("Erreur chargement shops.json"); }
+            } catch(e) { alert("Erreur chargement shops.json : assure-toi que le fichier existe."); }
         }
 
         // 3. AFFICHAGE
@@ -191,8 +191,7 @@
         function updateShop(index, field, value) {
             shopsData[index][field] = value;
             calcStats();
-            renderTable(); // Rafraîchir pour voir les changements de couleur/revenu
-            // Affiche la zone d'export car des données ont changé
+            renderTable(); 
             document.getElementById('export-area').style.display = 'block';
             generateJSON(); 
         }
@@ -207,7 +206,6 @@
                 } else if (s.subscription === 'pending') {
                     pending++;
                 }
-                // Revenus Boost (même si inactif, on facture le boost techniquement, mais ici comptons que pour les actifs)
                 if(s.subscription === 'active') {
                     mrr += (s.boost_level * 2000); 
                 }
