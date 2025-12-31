@@ -408,7 +408,10 @@ function showSkeletonLoader() {
 async function loadShopsOnly() { /* Code existant */ }
 function setupSearch() { /* Code existant */ }
 window.clearSearch = function() { const i = document.getElementById('search-input'); if(i){ i.value=''; i.dispatchEvent(new Event('input')); i.focus(); } };
-function toggleDarkMode() { document.body.classList.toggle('dark-mode'); localStorage.setItem('em_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light'); }
+function toggleDarkMode() { document.body.classList.toggle('dark-mode'); localStorage.setItem('em_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light'); 
+                           // Recharge la liste des boutiques pour mettre à jour les liens
+    renderShops(); 
+                          }
 function checkDarkMode() { if(localStorage.getItem('em_theme') === 'dark') document.body.classList.add('dark-mode'); }
 window.copyLink = (url) => { if (navigator.vibrate) navigator.vibrate(50); navigator.clipboard.writeText(url).then(() => alert("Lien copié !")); };
 window.addToHistory = (id, n, i, u) => { viewedProducts = viewedProducts.filter(p => p.id !== id); viewedProducts.unshift({ id, name: n, img: i, url: u }); if(viewedProducts.length > 10) viewedProducts.pop(); localStorage.setItem('em_history', JSON.stringify(viewedProducts)); };
