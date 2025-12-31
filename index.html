@@ -3,19 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <!-- 7.7 SEO (OPTIMISATION GOOGLE) -->
-    <title>EM AREA - Le Marché Digital de Lomé</title>
-    <meta name="description" content="Achetez, vendez et trouvez un emploi à Lomé. Boutiques officielles, GPS, et offres d'emploi au Togo. L'application locale N°1.">
-    <meta name="keywords" content="Lomé, Togo, E-commerce, Jobs, Emploi, Boutique, Achat, Vente, GPS, Zem, Pharmacie">
-    <meta name="author" content="EM AREA Team">
-    
-    <!-- Open Graph (Pour les partages WhatsApp/Facebook) -->
-    <meta property="og:title" content="EM AREA - Marché Digital Lomé">
-    <meta property="og:description" content="Découvrez les meilleures offres et boutiques à Lomé.">
-    <meta property="og:image" content="https://img.icons8.com/color/512/shopping-basket-2.png">
-    <meta property="og:url" content="https://emarea.tg">
-    
+    <title>EM AREA - Le Marché Digital</title>
+    <meta name="description" content="Achetez, vendez et trouvez un emploi à Lomé.">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -24,144 +13,103 @@
 </head>
 <body>
 
-    <!-- 1.1 SPLASH SCREEN (Écran de démarrage) -->
-   <!-- 1.1 SPLASH SCREEN (Épuré) -->
-<div id="splash-screen">
-    <div class="splash-content">
-        <!-- Juste le Logo et le Loader -->
-        <div class="logo splash-logo">EM <span>AREA</span></div>
-        <div class="splash-loader"></div>
+    <!-- SPLASH SCREEN -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <div class="logo splash-logo">EM <span>AREA</span></div>
+            <div class="splash-loader"></div>
+        </div>
     </div>
-</div>
     
-    <!-- 1.2 PULL TO REFRESH (Indicateur visuel caché) -->
-    <div id="ptr-indicator">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-    </div>
+    <div id="ptr-indicator"><div class="splash-loader" style="width:20px;height:20px;"></div></div>
 
-   <header class="app-header">
-    <a href="index.html" class="logo">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF9F1C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-        EM <span>AREA</span>
-    </a>
-    
-   
-   <!-- panier -->
-<div class="header-pill-btn" onclick="toggleCart()" style="background:#e3f2fd; color:#2196f3; border-color:#2196f3;">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-    </svg>
-    <span>Panier</span>
-    <!-- Badge de quantité (caché par défaut) -->
-    <span id="cart-count" style="display:none; background:red; color:white; font-size:0.6rem; padding:2px 6px; border-radius:10px; margin-left:5px;">0</span>
-</div>
-
-
-</header>
+    <header class="app-header">
+        <a href="index.html" class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF9F1C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            EM <span>AREA</span>
+        </a>
+        <div class="header-pill-btn" onclick="toggleCart()" style="background:#e3f2fd; color:#2196f3; border-color:#2196f3;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <span>Panier</span>
+            <span id="cart-count" style="display:none; background:red; color:white; font-size:0.6rem; padding:2px 6px; border-radius:10px; margin-left:5px;">0</span>
+        </div>
+    </header>
 
     <div class="container">
-        <!-- BARRE DE RECHERCHE PRO -->
-<div class="search-wrapper">
-    <!-- Icône fixe à gauche -->
-    <div class="search-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-    </div>
-    
-    <!-- L'input (Champ de texte) -->
-    <input type="text" id="search-input" placeholder="Chercher un produit, une marque...">
-    
-    <!-- Le bouton "X" pour effacer (caché au début) -->
-    <div class="search-clear" id="search-clear" onclick="clearSearch()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-    </div>
-</div>
-
-        <!-- Boutiques -->
-        <div class="section-title">
-            <span>Boutiques Officielles</span>
-            <span style="font-size:0.8rem; color:#888;" id="shop-count">0 actifs</span>
+        <!-- RECHERCHE -->
+        <div class="search-wrapper">
+            <div class="search-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
+            <input type="text" id="search-input" placeholder="Chercher un produit...">
+            <div class="search-clear" id="search-clear" onclick="clearSearch()">✕</div>
         </div>
-        <div class="shops-slider" id="shops-container"></div>
 
-        <!-- NOUVEAU : SLIDER PROMOS & TENDANCES -->
-        <!-- Algorithme spécial : Affiche les produits avec réduction ou Stars -->
+        <!-- BARRE CATÉGORIES (Insérée par JS ici) -->
+        <div id="cat-bar-container"></div>
+
+        <!-- PROMOS -->
         <div class="section-title">
-            <span> Offres Flash & Promos</span>
+            <span>⚡ Offres Flash</span>
             <span class="scroll-hint-text">Glisser ↔</span>
         </div>
-        
-        <!-- Conteneur horizontal (Slider) -->
         <div class="promo-slider-container" id="promo-container">
-            <!-- Rempli par JS -->
-            <div class="loader-mini">Recherche des promos...</div>
+            <div class="loader-mini">Chargement...</div>
         </div>
 
-        <!-- Grille Produits Classique -->
-        <div class="section-title">
-            <span>🔥 Tout le catalogue</span>
-        </div>
+        <!-- GRILLE PRODUITS -->
+        <div class="section-title"><span>🔥 Tout le catalogue</span></div>
         <div id="loader" style="text-align:center; padding:40px; color:#888;">Chargement...</div>
         <div class="product-grid" id="products-container"></div>
-        
-        <button id="load-more-btn" class="btn btn-outline" style="display:none;">Voir plus d'offres ↓</button>
-    
-    </div>
 
-    <!-- SECTION MARKET (Particuliers) -->
-<!-- On ajoute class="container" pour aligner le tout -->
-<div class="container" style="margin-top: 50px; padding-top: 20px; border-top: 1px dashed #ddd;">
-    <div class="section-title">
-        <span> Le Coin des Particuliers</span>
-        <a href="vendre.html" class="pulse-text" style="font-size:0.8rem; color:var(--primary); font-weight:800; text-decoration:none;">
-    + Vendre
-</a>
-    </div>
-    <p style="font-size:0.8rem; color:#888; margin-top:-10px; margin-bottom:20px;">
-        Occasions et bonnes affaires vérifiées.
-    </p>
+        <!-- BOUTIQUES OFFICIELLES (DÉPLACÉ EN BAS) -->
+        <div class="container" style="margin-top: 40px; padding-top: 20px; border-top: 1px dashed #ddd;">
+            <div class="section-title">
+                <span>🏪 Boutiques Officielles</span>
+                <span style="font-size:0.8rem; color:#888;" id="shop-count"></span>
+            </div>
+            <div class="shops-slider" id="shops-container"></div>
+        </div>
 
-    <!-- Conteneur Horizontal -->
-    <div id="market-home-container" class="promo-slider-container">
-        <!-- Rempli par JS -->
-        <div style="padding:20px; color:#999; font-size:0.8rem;">Chargement des occasions...</div>
+        <!-- HISTORIQUE -->
+        <div class="container" id="history-section" style="display:none; margin-top:20px;">
+            <div class="section-title">Vus récemment</div>
+            <div class="history-slider" id="history-container"></div>
+        </div>
     </div>
-</div>
     
-<!-- AJOUT 2 : La section Historique (Juste avant le Footer) -->
-<div class="container" id="history-section" style="display:none;">
-    <div class="section-title">Vus récemment</div>
-    <div class="history-slider" id="history-container"></div>
-</div>
-    
-    <!-- Footer -->
-    <!-- DANS index.html (Remplacer tout le bloc footer existant) -->
-
+    <!-- FOOTER -->
+   <!-- FOOTER PREMIUM COMPLET -->
 <footer>
     <div class="container">
-        <!-- Section du haut : Invitation à installer -->
-        <div class="install-box">
+        <!-- Section du haut : Invitation à installer l'App (PWA) -->
+        <div class="install-box" id="install-promo">
             <h3 style="color:white; margin:0 0 5px;">📲 Installez l'App</h3>
             <p>Accédez au marché plus rapidement sans passer par le navigateur.</p>
-           <button class="btn btn-primary" onclick="installPWA()">
-    Installer Maintenant
-</button>
+            <button class="btn btn-primary" onclick="installPWA()" style="background:white; color:var(--dark); font-weight:800;">
+                Installer Maintenant
+            </button>
         </div>
 
         <div class="footer-content">
             <!-- Colonne 1 : À propos -->
             <div class="footer-col">
                 <div class="logo" style="margin-bottom:15px; color:white;">EM <span>AREA</span></div>
-                <p style="font-size:0.8rem; line-height:1.6;">
-                    Le premier marché digital connecté à Lomé. Trouvez des produits, des jobs et localisez les boutiques en un clic.
+                <p style="font-size:0.8rem; line-height:1.6; color:#b0b0b0;">
+                    Le premier marché digital connecté à Lomé. Trouvez des produits, des jobs et localisez les boutiques officielles en un clic.
                 </p>
                 
-                <!-- RÉSEAUX SOCIAUX AVEC LINKEDIN -->
+                <!-- RÉSEAUX SOCIAUX -->
                 <div class="social-links">
-                    <a href="#" class="social-icon"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
-                    <a href="#" class="social-icon"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a>
+                    <!-- Facebook -->
+                    <a href="#" class="social-icon">
+                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                    </a>
+                    <!-- Instagram -->
                     <a href="#" class="social-icon">
                         <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                    </a>
+                    <!-- WhatsApp (Admin) -->
+                    <a href="#" onclick="openConcierge()" class="social-icon">
+                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                     </a>
                 </div>
             </div>
@@ -173,18 +121,19 @@
                     <li><a href="index.html">Accueil & Promos</a></li>
                     <li><a href="map.html">Carte GPS</a></li>
                     <li><a href="jobs.html">Offres d'emploi</a></li>
-                    <li><a href="vendre.html">Devenir Vendeur</a></li>
+                    <!-- Lien vers le concierge WhatsApp -->
+                    <li><a href="#" onclick="openConcierge()">Je cherche pour toi 🕵️‍♂️</a></li>
                 </ul>
             </div>
 
-            <!-- Colonne 3 : Support -->
+            <!-- Colonne 3 : Infos Légales -->
             <div class="footer-col">
-                <h3>Support</h3>
+                <h3>Infos</h3>
                 <ul class="footer-links">
-                    <li><a href="#">Centre d'aide</a></li>
+                    <li><a href="#">À propos de nous</a></li>
                     <li><a href="#">Conditions d'utilisation</a></li>
                     <li><a href="#">Politique de confidentialité</a></li>
-                    <li><a href="#">Signaler un problème</a></li>
+                    <li><a href="#">Devenir Partenaire</a></li>
                 </ul>
             </div>
         </div>
@@ -196,183 +145,45 @@
     </div>
 </footer>
 
-    <!-- Bottom Nav -->
-    <!-- À REMPLACER DANS index.html, map.html ET jobs.html -->
-<!-- MENU DU BAS (4 ÉLÉMENTS) -->
-<nav class="bottom-nav">
-    <a href="index.html" class="nav-item active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-        Accueil
-    </a>
-    
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            Accueil
+        </a>
+        <a href="jobs.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            Jobs
+        </a>
+        <a href="map.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+            Carte
+        </a>
+    </nav>
 
-    <a href="jobs.html" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-        Jobs
-    </a>
-    
-    <a href="map.html" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
-        Carte
-    </a>
-</nav>
-<!-- Le bouton caché par défaut -->
-    <button id="pwa-install-btn" style="display: none;">📲 Installer l'App</button>
-    
+    <div class="theme-toggle" onclick="toggleDarkMode()">🌓</div>
+
+    <!-- MODALE PANIER -->
+    <div id="cart-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🛒 Mon Panier</h3>
+                <button class="close-btn" onclick="toggleCart()">&times;</button>
+            </div>
+            <div id="cart-items" class="cart-list"></div>
+            <div class="cart-footer" id="cart-footer" style="display:none;">
+                <div class="cart-total-row">
+                    <span>Total Estimé</span>
+                    <span id="cart-total-amount" style="font-weight:800; font-size:1.2rem;">0 F</span>
+                </div>
+                <button onclick="checkoutWhatsApp()" class="btn btn-primary" style="width:100%; background:#25D366; margin-top:10px;">
+                    Commander sur WhatsApp 
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>AOS.init();
-    // --- GESTION PWA ---
-// --- 1. FONCTIONS POUR LA BELLE ALERTE ---
-        function showCustomAlert(title, message) {
-            const modal = document.getElementById('custom-alert');
-            const titleEl = document.getElementById('alert-title');
-            const msgEl = document.getElementById('alert-message');
-            
-            if(modal && titleEl && msgEl) {
-                titleEl.textContent = title;
-                // Remplace les sauts de ligne \n par des balises HTML <br>
-                msgEl.innerHTML = message.replace(/\n/g, '<br>');
-                modal.classList.add('active');
-            } else {
-                // Fallback si jamais le HTML manque
-                alert(message);
-            }
-        }
-
-        function closeAlert() {
-            const modal = document.getElementById('custom-alert');
-            if(modal) modal.classList.remove('active');
-        }
-
-        // Fermer si on clique dehors
-        window.addEventListener('click', (e) => {
-            const modal = document.getElementById('custom-alert');
-            if (e.target === modal) closeAlert();
-        });
-
-
-        // --- 2. LOGIQUE PWA (INSTALLATION) ---
-        
-        // Enregistrement SW
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js');
-            });
-        }
-
-        let deferredPrompt;
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            console.log("Prêt à installer !");
-        });
-
-        async function installPWA() {
-            if (deferredPrompt) {
-                // CAS 1 : Installation possible
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                deferredPrompt = null;
-            } else {
-                // CAS 2 : Installation impossible (ou déjà faite)
-                const isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
-                
-                if (isIos) {
-                    showCustomAlert(
-                        "🍎 Installation sur iPhone", 
-                        "1. Appuyez sur le bouton 'Partager' (carré avec flèche) en bas.\n2. Cherchez l'option 'Sur l'écran d'accueil' [+].\n3. Cliquez sur 'Ajouter'."
-                    );
-                } else {
-                    showCustomAlert(
-                        "⚠️ Installation Impossible",
-                        "Raisons possibles :\n\n✅ L'application est DÉJÀ installée (vérifiez vos applis).\n🔒 Vous êtes en navigation privée.\n🌐 Vous n'utilisez pas Chrome ou Edge."
-                    );
-                }
-            }
-        }
-
-        window.addEventListener('appinstalled', () => {
-            showCustomAlert("Félicitations ! 🎉", "EM AREA est maintenant installée sur votre téléphone.");
-            deferredPrompt = null;
-        });
-        </script>
+    <script>AOS.init();</script>
     <script src="js/app.js"></script>
-
-    <!-- Le bouton flottant Dark Mode -->
-<div class="theme-toggle" onclick="toggleDarkMode()">
-    🌓
-</div>
-    <!-- MODALE PHARMACIES -->
-<!-- DANS LE HEADER (index.html) -->
-<!-- Remplace tout le bloc <div class="header-pill-btn" onclick="openPharmaModal()">...</div> par ceci : -->
-
-<div class="header-pill-btn" onclick="toggleCart()" style="background:#e3f2fd; color:#2196f3; border-color:#2196f3;">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-    </svg>
-    <span>Panier</span>
-    <!-- Badge de quantité (caché par défaut) -->
-    <span id="cart-count" style="display:none; background:red; color:white; font-size:0.6rem; padding:2px 6px; border-radius:10px; margin-left:5px;">0</span>
-</div>
-
-<!-- EN BAS DE PAGE (index.html), avant les scripts -->
-<!-- Remplace tout le bloc <div id="pharma-modal">...</div> par ceci : -->
-
-<div id="cart-modal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>🛒 Mon Panier</h3>
-            <button class="close-btn" onclick="toggleCart()">&times;</button>
-        </div>
-        
-        <!-- Liste des produits (sera remplie par JS) -->
-        <div id="cart-items" class="cart-list">
-            <div style="text-align:center; padding:30px; color:#999;">
-                Votre panier est vide.
-            </div>
-        </div>
-
-        <!-- Total et Action -->
-        <div class="cart-footer" id="cart-footer" style="display:none;">
-            <div class="cart-total-row">
-                <span>Total</span>
-                <span id="cart-total-amount" style="font-weight:800; font-size:1.2rem;">0 F</span>
-            </div>
-            <button onclick="checkoutWhatsApp()" class="btn btn-primary" style="width:100%; background:#25D366; margin-top:10px;">
-                Commander sur WhatsApp 
-            </button>
-        </div>
-    </div>
-</div>
-    <!-- MODALE D'ALERTE PERSONNALISÉE -->
-<div id="custom-alert" class="modal-overlay" style="z-index: 4000;">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 id="alert-title">Notification</h3>
-            <button class="close-btn" onclick="closeAlert()">&times;</button>
-        </div>
-        <!-- Le message s'affichera ici -->
-        <div id="alert-message" style="font-size:0.9rem; line-height:1.6; color:#666; margin-bottom:20px;"></div>
-        
-        <button class="btn btn-primary" onclick="closeAlert()" style="width:100%;">C'est compris</button>
-    </div>
-</div>
-    <!-- SÉCURITÉ ANTI-BLOCAGE -->
-    <script>
-        // Si le chargement prend trop de temps (ou si le JS plante), on force l'ouverture
-        setTimeout(() => {
-            const splash = document.getElementById('splash-screen');
-            if(splash && splash.style.opacity !== '0') {
-                console.warn("Ouverture forcée du site (Sécurité)");
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.visibility = 'hidden', 500);
-            }
-        }, 3000); // 3 secondes maximum
-    </script>
-</body>
-</html>
-    
 </body>
 </html>
