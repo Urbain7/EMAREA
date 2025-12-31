@@ -3,11 +3,10 @@
 /* ========================================= */
 :root {
     --primary: #FF9F1C;   /* Orange dynamique */
-    --secondary: #2EC4B6; /* Turquoise pour les actions */
-    --dark: #011627;      /* Bleu nuit très sombre */
-    --light: #F8F9FA;     /* Blanc cassé pour le fond */
+    --secondary: #2EC4B6; /* Turquoise */
+    --dark: #011627;      /* Bleu nuit */
+    --light: #F8F9FA;     /* Fond clair */
     --white: #FFFFFF;
-    --verified: #3a86ff;  /* Bleu certification */
     --shadow: 0 4px 15px rgba(0,0,0,0.05);
     --radius: 12px;
 }
@@ -31,9 +30,9 @@ ul { list-style: none; padding: 0; margin: 0; }
 /* 2. HEADER MODERNE (Glassmorphism)         */
 /* ========================================= */
 .app-header {
-    background: rgba(255, 255, 255, 0.95); /* Très légèrement transparent */
-    backdrop-filter: blur(10px); /* Effet de flou derrière */
-    -webkit-backdrop-filter: blur(10px); /* Pour iPhone */
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     position: sticky; 
     top: 0; 
     z-index: 1000;
@@ -45,96 +44,54 @@ ul { list-style: none; padding: 0; margin: 0; }
     transition: background 0.3s;
 }
 
-/* Logo */
 .logo { 
-    font-size: 1.3rem; 
-    font-weight: 800; 
-    color: var(--dark); 
-    letter-spacing: -0.5px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    font-size: 1.3rem; font-weight: 800; color: var(--dark); 
+    display: flex; align-items: center; gap: 8px;
 }
 .logo span { color: var(--primary); }
 
-/* Bouton icône (Header) */
-.header-icon-btn {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: #f4f6f8;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--dark);
-    transition: 0.2s;
-    position: relative;
-    cursor: pointer;
+.header-pill-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 12px; border-radius: 50px;
+    font-size: 0.8rem; font-weight: 700;
+    cursor: pointer; border: 1px solid transparent;
 }
-.header-icon-btn:active { transform: scale(0.95); background: #eee; }
-
-/* Point rouge de notification */
-.notif-dot {
-    position: absolute; top: 8px; right: 8px;
-    width: 8px; height: 8px;
-    background: #ff4757;
-    border-radius: 50%;
-    border: 1px solid white;
-}
-
-/* Menu du Bas (App Style) */
-.bottom-nav {
-    position: fixed; bottom: 0; left: 0; width: 100%;
-    background: var(--white); border-top: 1px solid #eee;
-    display: flex; justify-content: space-around; padding: 10px 0;
-    z-index: 2000;
-    transition: background 0.3s, border 0.3s;
-}
-.nav-item { 
-    display: flex; flex-direction: column; align-items: center; 
-    font-size: 0.7rem; color: #999; 
-}
-.nav-item.active { color: var(--primary); font-weight: 600; }
-.nav-item svg { width: 24px; height: 24px; margin-bottom: 2px; }
 
 /* ========================================= */
-/* 3. COMPOSANTS UI                          */
+/* 3. RECHERCHE & CATÉGORIES                 */
 /* ========================================= */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
 
-/* Boutons */
-.btn { 
-    display: inline-block; padding: 10px 20px; 
-    border-radius: 50px; font-weight: 600; 
-    transition: 0.2s; border: none; cursor: pointer; 
+.search-wrapper {
+    position: relative; display: flex; align-items: center;
+    background: #fff; border: 1px solid #eee;
+    border-radius: 50px; padding: 5px 15px;
+    margin-top: 15px; margin-bottom: 15px;
+    box-shadow: var(--shadow);
 }
-.btn-primary { background: var(--primary); color: white; }
-.btn-outline { 
-    border: 1px solid #ddd; background: white; 
-    color: var(--dark); width: 100%; margin-top: 10px; 
+.search-icon { color: #999; margin-right: 10px; display: flex; }
+#search-input {
+    border: none; background: transparent; padding: 10px 0;
+    flex: 1; outline: none; font-size: 0.95rem; color: var(--dark);
 }
-
-/* Bouton Copier Lien */
-.btn-copy {
-    position: absolute; top: 10px; right: 10px;
-    background: rgba(255,255,255,0.9); padding: 5px;
-    border-radius: 50%; width: 30px; height: 30px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    border: none; z-index: 2;
+.search-clear {
+    color: #999; cursor: pointer; display: none; padding: 5px;
 }
 
-/* Bouton Mode Sombre (Flottant) */
-.theme-toggle {
-    position: fixed; bottom: 85px; right: 20px;
-    width: 45px; height: 45px;
-    background: var(--dark); color: white;
-    border-radius: 50%; display: flex;
-    justify-content: center; align-items: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    z-index: 1900; cursor: pointer; border: 2px solid white;
-    font-size: 1.2rem;
+/* Barre de Catégories (Pills) */
+#cat-bar-container {
+    overflow-x: auto; white-space: nowrap; 
+    padding-bottom: 5px; margin-bottom: 15px;
+    scrollbar-width: none;
+}
+#cat-bar-container::-webkit-scrollbar { display: none; }
+
+.cat-pill {
+    transition: 0.2s;
 }
 
 /* ========================================= */
-/* 4. PAGE ACCUEIL (SHOPS & PRODUITS)        */
+/* 4. SECTIONS & TITRES                      */
 /* ========================================= */
 .section-title { 
     font-size: 1.1rem; font-weight: 800; 
@@ -143,14 +100,18 @@ ul { list-style: none; padding: 0; margin: 0; }
 }
 .scroll-hint-text { font-size: 0.75rem; color: #888; font-weight: normal; }
 
-/* Slider Boutiques */
-.shops-slider { 
+/* ========================================= */
+/* 5. SLIDERS (Boutiques & Promos)           */
+/* ========================================= */
+.shops-slider, .promo-slider-container { 
     display: flex; gap: 15px; overflow-x: auto; 
     padding: 10px 0; scrollbar-width: none; 
 }
+
+/* Carte Boutique */
 .shop-card { 
     min-width: 80px; display: flex; 
-    flex-direction: column; align-items: center; 
+    flex-direction: column; align-items: center; cursor: pointer;
 }
 .shop-logo { 
     width: 70px; height: 70px; border-radius: 18px; 
@@ -164,17 +125,12 @@ ul { list-style: none; padding: 0; margin: 0; }
     text-overflow: ellipsis; width: 100%; 
 }
 
-/* Slider Promo */
-.promo-slider-container {
-    display: flex; overflow-x: auto; gap: 15px; 
-    padding-bottom: 20px; scroll-snap-type: x mandatory; 
-    scrollbar-width: none;
-}
+/* Carte Promo */
 .promo-card {
     min-width: 260px; background: white; 
     border-radius: 16px; padding: 10px; display: flex; 
-    gap: 10px; align-items: center; border: 2px solid var(--primary); 
-    scroll-snap-align: start; box-shadow: 0 4px 10px rgba(246, 139, 30, 0.2); 
+    gap: 10px; align-items: center; border: 1px solid #f0f0f0; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03); 
 }
 .promo-card img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; }
 .promo-info { flex: 1; }
@@ -182,7 +138,9 @@ ul { list-style: none; padding: 0; margin: 0; }
 .promo-price { color: #e74c3c; font-weight: 800; font-size: 1rem; }
 .old-price { text-decoration: line-through; color: #999; font-size: 0.7rem; margin-right: 5px; }
 
-/* Grille Produits */
+/* ========================================= */
+/* 6. GRILLE PRODUITS (ALIBABA STYLE)        */
+/* ========================================= */
 .product-grid { 
     display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; 
 }
@@ -191,6 +149,7 @@ ul { list-style: none; padding: 0; margin: 0; }
 .product-card { 
     background: var(--white); border-radius: var(--radius); 
     overflow: hidden; border: 1px solid #f0f0f0; position: relative; 
+    box-shadow: var(--shadow);
 }
 .product-img { width: 100%; height: 160px; object-fit: cover; background: #eee; }
 .product-info { padding: 10px; }
@@ -201,9 +160,47 @@ ul { list-style: none; padding: 0; margin: 0; }
 }
 .product-price { color: var(--primary); font-weight: 800; font-size: 1rem; }
 
+/* Badges */
+.badge-new {
+    position: absolute; top: 10px; left: 10px;
+    background: #27ae60; color: white;
+    font-size: 0.6rem; font-weight: 800;
+    padding: 3px 8px; border-radius: 4px;
+    text-transform: uppercase; z-index: 2;
+}
+.badge-sponsored {
+    position: absolute; top: -5px; right: -5px;
+    background: linear-gradient(45deg, #FFD700, #FFC107);
+    color: #5a4a00; font-size: 0.5rem; font-weight: 900;
+    padding: 2px 6px; border-radius: 4px; z-index: 5;
+}
+.btn-copy {
+    position: absolute; top: 10px; right: 10px;
+    background: rgba(255,255,255,0.9); border:none;
+    border-radius: 50%; width: 25px; height: 25px;
+    cursor: pointer; z-index: 2; font-size: 0.8rem;
+}
+
 /* ========================================= */
-/* 5. PAGE CARTE & JOBS                      */
+/* 7. JOBS & CARTE                           */
 /* ========================================= */
+.job-card {
+    background: var(--white); border-radius: 16px;
+    padding: 20px; margin-bottom: 15px; border: 1px solid #f0f0f0;
+    box-shadow: var(--shadow);
+}
+.job-header { display: flex; gap: 15px; align-items: center; margin-bottom: 10px; }
+.job-avatar { 
+    width: 50px; height: 50px; border-radius: 12px; 
+    display: flex; align-items: center; justify-content: center; 
+    font-weight: 800; font-size: 1.2rem;
+}
+.job-footer { 
+    display: flex; justify-content: space-between; 
+    align-items: center; margin-top: 15px; border-top: 1px dashed #eee; padding-top: 10px;
+}
+.job-salary { color: #27ae60; font-weight: 800; }
+
 #map {
     width: 100%; height: 60vh; min-height: 400px;
     background-color: #e5e5e5; border-radius: 12px;
@@ -214,53 +211,20 @@ ul { list-style: none; padding: 0; margin: 0; }
     padding: 15px; border-radius: 12px; margin-bottom: 10px; 
     border: 1px solid #eee; cursor: pointer;
 }
-.dist-val { font-weight: bold; color: var(--secondary); margin-left: auto; }
 
 /* ========================================= */
-/* 6. ANIMATION & HISTORIQUE                 */
-/* ========================================= */
-.skeleton {
-    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-    border-radius: 5px; background-size: 200% 100%;
-    animation: 1.5s shine linear infinite;
-}
-.skeleton-card { height: 240px; border-radius: 12px; background: white; padding: 10px; border: 1px solid #f0f0f0; }
-.skeleton-img { height: 140px; width: 100%; margin-bottom: 10px; border-radius: 8px; }
-.skeleton-line { height: 15px; margin-bottom: 8px; width: 80%; border-radius: 4px; }
-.skeleton-line.short { width: 40%; }
-@keyframes shine { to { background-position-x: -200%; } }
-
-.history-section { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; }
-.history-slider { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
-.history-card { min-width: 110px; width: 110px; display: flex; flex-direction: column; align-items: center; }
-.history-card img { width: 100px; height: 100px; border-radius: 12px; object-fit: cover; margin-bottom: 5px; border: 1px solid #eee; }
-.history-card div { font-size: 0.7rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-
-/* ========================================= */
-/* 7. NOUVEAU FOOTER PROFESSIONNEL           */
+/* 8. FOOTER PREMIUM                         */
 /* ========================================= */
 footer {
-    background: var(--dark);
-    color: #b0b0b0;
-    padding: 60px 20px 110px;
-    text-align: left;
-    margin-top: 50px;
-    font-size: 0.9rem;
-    position: relative;
-    overflow: hidden;
+    background: var(--dark); color: #b0b0b0;
+    padding: 60px 20px 110px; text-align: left;
+    margin-top: 50px; font-size: 0.9rem;
 }
-
 .footer-content {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
+    display: grid; grid-template-columns: 1fr; gap: 30px;
+    max-width: 1200px; margin: 0 auto;
 }
-
-@media (min-width: 768px) {
-    .footer-content { grid-template-columns: repeat(3, 1fr); }
-}
+@media (min-width: 768px) { .footer-content { grid-template-columns: repeat(3, 1fr); } }
 
 .footer-col h3 { color: var(--white); font-size: 1.1rem; margin-bottom: 15px; font-weight: 700; }
 .footer-links li { margin-bottom: 10px; }
@@ -272,673 +236,138 @@ footer {
     padding: 20px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1);
     text-align: center; margin-bottom: 30px; backdrop-filter: blur(10px);
 }
-.install-box p { font-size: 0.8rem; margin-bottom: 15px; color: #ccc; }
-
-.footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    margin-top: 40px; padding-top: 20px;
-    text-align: center; font-size: 0.75rem; color: #666;
-}
-
 .social-links { display: flex; gap: 15px; margin-top: 15px; }
 .social-icon {
     width: 35px; height: 35px; background: rgba(255,255,255,0.1);
     border-radius: 50%; display: flex; align-items: center; justify-content: center;
     transition: 0.3s; color: white;
 }
-.social-icon:hover { background: var(--primary); transform: translateY(-3px); }
-
-/* ========================================= */
-/* 8. MODE SOMBRE (DARK MODE)                */
-/* ========================================= */
-body.dark-mode { background: #121212; color: #e0e0e0; }
-
-body.dark-mode .app-header { background: rgba(30, 30, 30, 0.95); border-bottom: 1px solid #333; box-shadow: none; }
-body.dark-mode .header-icon-btn { background: #333; color: white; }
-
-body.dark-mode .bottom-nav,
-body.dark-mode .product-card,
-body.dark-mode .shop-card,
-body.dark-mode .job-card,
-body.dark-mode .promo-card,
-body.dark-mode .distance-item,
-body.dark-mode .skeleton-card,
-body.dark-mode .history-section {
-    background: #1e1e1e; border-color: #333; color: #fff;
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 40px; padding-top: 20px;
+    text-align: center; font-size: 0.75rem; color: #666;
 }
 
-body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
-body.dark-mode .product-title,
-body.dark-mode .shop-name,
-body.dark-mode .logo { color: #ffffff !important; }
+/* ========================================= */
+/* 9. NAVIGATION BAS & UI                    */
+/* ========================================= */
+.bottom-nav {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: var(--white); border-top: 1px solid #eee;
+    display: flex; justify-content: space-around; padding: 10px 0;
+    z-index: 2000;
+}
+.nav-item { 
+    display: flex; flex-direction: column; align-items: center; 
+    font-size: 0.7rem; color: #999; 
+}
+.nav-item.active { color: var(--primary); font-weight: 600; }
+.nav-item svg { width: 24px; height: 24px; margin-bottom: 2px; }
 
-body.dark-mode .product-shop,
-body.dark-mode .job-card p,
-body.dark-mode .distance-item div,
-body.dark-mode .job-meta-info { color: #b0b0b0 !important; }
+.theme-toggle {
+    position: fixed; bottom: 85px; right: 20px;
+    width: 45px; height: 45px;
+    background: var(--dark); color: white;
+    border-radius: 50%; display: flex;
+    justify-content: center; align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 1900; cursor: pointer; border: 2px solid white;
+}
 
-body.dark-mode .shop-logo,
-body.dark-mode .product-img,
-body.dark-mode .promo-card img,
-body.dark-mode .distance-item img,
-body.dark-mode .leaflet-popup-content img,
-body.dark-mode .history-card img { background-color: #ffffff; border: 1px solid #444; }
-
-body.dark-mode input { background: #2c2c2c; color: white; border-color: #444; }
-body.dark-mode .btn-copy { background: #333; color: white; }
-body.dark-mode .theme-toggle { background: #fff; color: var(--dark); }
-
-/* --- MODALE PHARMACIE --- */
+/* ========================================= */
+/* 10. MODALE PANIER                         */
+/* ========================================= */
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.5); z-index: 3000;
-    display: none; justify-content: center; align-items: flex-end; /* Alignement en bas */
-    opacity: 0; transition: opacity 0.3s;
+    display: none; justify-content: center; align-items: flex-end;
 }
-
-.modal-overlay.active { display: flex; opacity: 1; }
+.modal-overlay.active { display: flex; }
 
 .modal-content {
     background: white; width: 100%; max-width: 500px;
     border-radius: 20px 20px 0 0; padding: 25px;
     box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
-    transform: translateY(100%); transition: transform 0.3s;
-    max-height: 80vh; overflow-y: auto;
+    animation: slideUp 0.3s; max-height: 80vh; overflow-y: auto;
 }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-.modal-overlay.active .modal-content { transform: translateY(0); }
-
-.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.modal-header h3 { margin: 0; color: #27ae60; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .close-btn { background: none; border: none; font-size: 2rem; color: #999; cursor: pointer; }
 
-
-/* Dark Mode support */
-body.dark-mode .modal-content { background: #1e1e1e; color: white; }
-body.dark-mode .pharma-item { border-color: #333; }
-body.dark-mode .pharma-info h4 { color: white; }
-body.dark-mode .pharma-info p { color: #aaa; }
-
-
-/* Dark Mode Support */
-body.dark-mode .header-pill-btn {
-    background: rgba(39, 174, 96, 0.2);
-    color: #2ecc71;
-    border-color: transparent;
+.cart-item {
+    display: flex; align-items: center; gap: 15px;
+    padding: 10px 0; border-bottom: 1px solid #f0f0f0;
 }
-
-/* --- SKELETONS AVANCÉS (Promos & Boutiques) --- */
-
-/* 1. Skeleton Boutiques (Rond + Petit texte) */
-.skeleton-shop-wrapper {
-    min-width: 80px;
-    display: flex; flex-direction: column; align-items: center;
-    gap: 5px;
+.cart-item img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
+.cart-title { font-size: 0.85rem; font-weight: 600; }
+.cart-price { color: var(--primary); font-weight: 700; font-size: 0.9rem; }
+.btn-remove { 
+    margin-left: auto; background: #ffebee; color: #e74c3c; 
+    border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; 
 }
-.skeleton-shop-circle {
-    width: 70px; height: 70px; border-radius: 18px;
-    background: #eee;
+.btn { 
+    display: inline-block; padding: 12px 20px; 
+    border-radius: 50px; font-weight: 600; border: none; cursor: pointer; 
 }
-.skeleton-shop-text {
-    width: 50px; height: 10px; border-radius: 4px;
-    background: #eee;
-}
-
-/* 2. Skeleton Promos (Rectangle large) */
-.skeleton-promo-card {
-    min-width: 260px; height: 110px;
-    background: #fff; border-radius: 16px;
-    border: 1px solid #f0f0f0;
-    padding: 10px; display: flex; gap: 10px; align-items: center;
-}
-.skeleton-promo-img {
-    width: 80px; height: 80px; border-radius: 10px;
-    background: #eee;
-}
-.skeleton-promo-content {
-    flex: 1; display: flex; flex-direction: column; gap: 8px;
-}
-.skeleton-text-lg { height: 12px; width: 80%; background: #eee; border-radius: 4px; }
-.skeleton-text-sm { height: 10px; width: 50%; background: #eee; border-radius: 4px; }
-
-/* Animation commune (Shine) */
-.skeleton-shop-circle, .skeleton-shop-text, 
-.skeleton-promo-img, .skeleton-text-lg, .skeleton-text-sm {
-    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-    background-size: 200% 100%;
-    animation: 1.5s shine linear infinite;
-}
-
-/* Dark Mode Support */
-body.dark-mode .skeleton-shop-circle, 
-body.dark-mode .skeleton-shop-text,
-body.dark-mode .skeleton-promo-img,
-body.dark-mode .skeleton-text-lg,
-body.dark-mode .skeleton-text-sm {
-    background: linear-gradient(110deg, #2a2a2a 8%, #333 18%, #2a2a2a 33%);
-    background-size: 200% 100%;
-}
-body.dark-mode .skeleton-promo-card {
-    background: #1e1e1e; border-color: #333;
-}
-
-/* --- SKELETONS SUPPLÉMENTAIRES (Jobs & Map) --- */
-
-/* 1. Skeleton JOB (Ressemble à une offre) */
-.skeleton-job {
-    background: white; border-radius: 12px; padding: 20px;
-    margin-bottom: 15px; border: 1px solid #f0f0f0;
-}
-.skeleton-job-top {
-    display: flex; justify-content: space-between; margin-bottom: 15px;
-}
-.skeleton-tag { width: 60px; height: 20px; border-radius: 4px; background: #eee; }
-.skeleton-date { width: 40px; height: 15px; border-radius: 4px; background: #eee; }
-.skeleton-title { width: 60%; height: 20px; border-radius: 4px; background: #eee; margin-bottom: 10px; }
-.skeleton-desc { width: 90%; height: 12px; border-radius: 4px; background: #eee; margin-bottom: 5px; }
-
-/* 2. Skeleton MAP LIST (Ressemble à la liste des boutiques) */
-.skeleton-map-item {
-    display: flex; align-items: center; padding: 15px;
-    background: white; border-radius: 12px; margin-bottom: 10px;
-    border: 1px solid #eee;
-}
-.skeleton-map-avatar {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: #eee; margin-right: 15px;
-}
-.skeleton-map-lines { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-
-/* Application de l'animation existante */
-.skeleton-tag, .skeleton-date, .skeleton-title, .skeleton-desc,
-.skeleton-map-avatar {
-    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-    background-size: 200% 100%;
-    animation: 1.5s shine linear infinite;
-}
-
-/* Dark Mode */
-body.dark-mode .skeleton-job,
-body.dark-mode .skeleton-map-item { background: #1e1e1e; border-color: #333; }
-body.dark-mode .skeleton-tag, 
-body.dark-mode .skeleton-date, 
-body.dark-mode .skeleton-title, 
-body.dark-mode .skeleton-desc,
-body.dark-mode .skeleton-map-avatar {
-    background: linear-gradient(110deg, #2a2a2a 8%, #333 18%, #2a2a2a 33%);
-    background-size: 200% 100%;
-}
-/* ========================================= */
-/* CORRECTIF CARTE (MAP)                     */
-/* ========================================= */
-#map {
-    width: 100%;
-    height: 60vh;       /* 60% de la hauteur de l'écran */
-    min-height: 400px;  /* Minimum 400px sur petit écran */
-    background-color: #e5e5e5; /* Fond gris pendant le chargement */
-    border-radius: 12px;
-    margin-top: 15px;
-    z-index: 1;
-    display: block !important; /* Force l'affichage */
-}
-/* Cache les instructions écrites du GPS (on veut juste la ligne) */
-.leaflet-routing-container { display: none !important; }
+.btn-primary { background: var(--primary); color: white; }
 
 /* ========================================= */
-/* JOBS DESIGN PRO (LinkedIn Style)          */
+/* 11. MODE SOMBRE (DARK MODE)               */
 /* ========================================= */
+body.dark-mode { background: #121212; color: #e0e0e0; }
 
-.job-card {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 15px;
-    border: 1px solid #f0f0f0;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03); /* Ombre très douce */
-    transition: transform 0.2s, box-shadow 0.2s;
-    position: relative;
-    overflow: hidden;
-}
-
-.job-card:active { transform: scale(0.98); }
-
-/* En-tête de la carte (Logo + Titre) */
-.job-header {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-/* Avatar généré avec la lettre */
-.job-avatar {
-    width: 50px; height: 50px;
-    border-radius: 12px;
-    background: #eee;
-    color: var(--dark);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
-    font-weight: 800;
-    flex-shrink: 0; /* Empêche l'écrasement */
-}
-
-/* Infos principales */
-.job-main-info h3 {
-    margin: 0 0 2px;
-    font-size: 1rem;
-    color: var(--dark);
-}
-.job-company {
-    font-size: 0.8rem;
-    color: #888;
-    display: flex; align-items: center; gap: 5px;
-}
-
-/* Tags et Description */
-.job-tags-row {
-    display: flex; gap: 8px; margin-bottom: 12px;
-}
-.job-pill {
-    font-size: 0.7rem;
-    padding: 4px 10px;
-    border-radius: 6px;
-    background: #f4f6f8;
-    color: #555;
-    font-weight: 600;
-}
-.job-pill.highlight { background: #e3f2fd; color: #2196f3; }
-
-.job-desc {
-    font-size: 0.85rem;
-    color: #666;
-    line-height: 1.5;
-    margin-bottom: 15px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* Limite à 2 lignes */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* Pied de page (Salaire + Bouton) */
-.job-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 15px;
-    border-top: 1px dashed #eee; /* Ligne pointillée style ticket */
-}
-
-.job-salary {
-    color: #27ae60;
-    font-weight: 800;
-    font-size: 0.95rem;
-    background: #e8f8f5;
-    padding: 5px 10px;
-    border-radius: 8px;
-}
-
-/* DARK MODE SUPPORT */
-body.dark-mode .job-card { background: #1e1e1e; border-color: #333; }
-body.dark-mode .job-main-info h3 { color: white; }
-body.dark-mode .job-pill { background: #333; color: #ccc; }
-body.dark-mode .job-pill.highlight { background: rgba(33, 150, 243, 0.2); color: #64b5f6; }
-body.dark-mode .job-footer { border-color: #333; }
-body.dark-mode .job-salary { background: rgba(39, 174, 96, 0.2); color: #2ecc71; }
-
-/* ========================================= */
-/* CORRECTIFS UX (Popup & Loading)           */
-/* ========================================= */
-
-/* 1. Correction Popup Carte en Mode Sombre */
-body.dark-mode .leaflet-popup-content-wrapper,
-body.dark-mode .leaflet-popup-tip {
-    background-color: #1e1e1e !important; /* Fond sombre */
-    color: #ffffff !important; /* Texte blanc */
-    box-shadow: 0 3px 14px rgba(0,0,0,0.6);
-}
-
-/* Force le titre en blanc et description en gris clair */
-body.dark-mode .leaflet-popup-content h3 { color: #ffffff !important; }
-body.dark-mode .leaflet-popup-content p { color: #cccccc !important; }
-
-/* 2. Animation de chargement pour le bouton GPS */
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.spinning {
-    animation: spin 1s linear infinite;
-    display: inline-block;
-}
-
-/* Style quand le bouton est désactivé (pendant la recherche) */
-.btn-disabled {
-    opacity: 0.7;
-    pointer-events: none; /* Empêche de recliquer */
-    cursor: wait;
-}
-/* ========================================= */
-/* BARRE DE RECHERCHE PRO                    */
-/* ========================================= */
-.search-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    background: #f0f2f5; /* Gris Facebook/Instagram */
-    border-radius: 50px;
-    padding: 5px 15px;
-    margin-top: 15px;
-    margin-bottom: 20px;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-}
-
-/* Quand on clique dedans */
-.search-wrapper:focus-within {
-    background: var(--white);
-    border-color: var(--primary); /* Devient orange */
-    box-shadow: 0 4px 15px rgba(255, 159, 28, 0.15);
-}
-
-.search-icon {
-    color: #999;
-    display: flex;
-    align-items: center;
-    margin-right: 10px;
-}
-
-#search-input {
-    border: none;
-    background: transparent;
-    padding: 10px 0;
-    flex: 1; /* Prend toute la place */
-    outline: none;
-    font-size: 0.95rem;
-    color: var(--dark);
-    font-weight: 500;
-}
-
-/* Le bouton X */
-.search-clear {
-    color: #999;
-    cursor: pointer;
-    display: none; /* Caché par défaut */
-    padding: 5px;
-    transition: 0.2s;
-}
-.search-clear:active { transform: scale(0.9); color: #e74c3c; }
-
-/* DARK MODE */
-body.dark-mode .search-wrapper { background: #2a2a2a; }
-body.dark-mode .search-wrapper:focus-within { background: #1e1e1e; border-color: var(--primary); }
+body.dark-mode .app-header { background: rgba(30, 30, 30, 0.95); border-bottom: 1px solid #333; }
+body.dark-mode .bottom-nav { background: #1e1e1e; border-top-color: #333; }
+body.dark-mode .search-wrapper { background: #2a2a2a; border-color: #333; }
 body.dark-mode #search-input { color: white; }
 
-/* ========================================= */
-/* 1.1 SPLASH SCREEN                         */
-/* ========================================= */
+body.dark-mode .product-card,
+body.dark-mode .shop-card,
+body.dark-mode .job-card,
+body.dark-mode .promo-card,
+body.dark-mode .distance-item,
+body.dark-mode .modal-content {
+    background: #1e1e1e; border-color: #333; color: #fff;
+}
+
+body.dark-mode .product-title,
+body.dark-mode .shop-name,
+body.dark-mode h3 { color: #ffffff; }
+
+body.dark-mode .product-shop,
+body.dark-mode .old-price { color: #888; }
+
+body.dark-mode .cat-pill { 
+    background: #333; color: #ccc; border-color: #444; 
+}
+body.dark-mode .btn-remove { background: #330000; color: #ff5252; }
+body.dark-mode .close-btn { color: white; }
+
+/* Skeletons Dark */
+body.dark-mode .skeleton-shop-circle, 
+body.dark-mode .skeleton-img,
+body.dark-mode .skeleton-line {
+    background: linear-gradient(110deg, #2a2a2a 8%, #333 18%, #2a2a2a 33%);
+}
+
+/* Animations */
+.skeleton {
+    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+    background-size: 200% 100%; animation: 1.5s shine linear infinite;
+}
+@keyframes shine { to { background-position-x: -200%; } }
+
+/* Loader Splash */
 #splash-screen {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: var(--light); /* Utilise la couleur de fond du site */
-    z-index: 9999;
+    background: var(--light); z-index: 9999;
     display: flex; justify-content: center; align-items: center;
-    transition: opacity 0.5s ease-out, visibility 0.5s;
+    transition: opacity 0.5s;
 }
-
-.splash-content { text-align: center; }
-.splash-logo { font-size: 2.5rem; margin-bottom: 30px; justify-content: center; }
-
 .splash-loader {
-    width: 45px; height: 45px; 
-    border: 4px solid #eee;
-    border-top-color: var(--primary); 
-    border-radius: 50%;
-    margin: 0 auto; /* Centré sans marge en bas */
-    animation: spin 1s linear infinite;
+    width: 40px; height: 40px; border: 4px solid #eee;
+    border-top-color: var(--primary); border-radius: 50%;
+    animation: spin 1s linear infinite; margin-top: 20px;
 }
-
-/* IMPORTANT : Correction pour le Mode Sombre */
-body.dark-mode #splash-screen {
-    background: #121212; /* Fond Noir pur */
-    color: white;
-}
-body.dark-mode .splash-loader {
-    border-color: #333; /* Cercle gris foncé */
-    border-top-color: var(--primary); /* Garde l'orange */
-}
-
-/* ========================================= */
-/* 1.2 PULL TO REFRESH (Indicateur)          */
-/* ========================================= */
-#ptr-indicator {
-    position: fixed; top: -50px; left: 0; width: 100%;
-    height: 50px; display: flex; justify-content: center; align-items: center;
-    background: transparent; color: var(--primary);
-    z-index: 2000; transition: top 0.2s;
-}
-#ptr-indicator.visible { top: 60px; /* Juste sous le header */ }
-.ptr-rotate { animation: spin 0.5s linear infinite; }
-
-/* ========================================= */
-/* 2.3 BADGE NOUVEAU (Sur les produits)      */
-/* ========================================= */
-.badge-new {
-    position: absolute; top: 10px; left: 10px;
-    background: #27ae60; color: white;
-    font-size: 0.6rem; font-weight: 800;
-    padding: 3px 8px; border-radius: 4px;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-/* AJUSTEMENT ALERTE EN MODE SOMBRE */
-body.dark-mode #alert-message {
-    color: #ccc !important; /* Texte gris clair lisible sur fond noir */
-}
-
-/* ========================================= */
-/* ANIMATION PULSE (CORRIGÉE DARK MODE)      */
-/* ========================================= */
-
-.header-pill-btn {
-    display: flex; align-items: center; gap: 8px;
-    padding: 8px 15px; border-radius: 50px;
-    font-size: 0.8rem; font-weight: 700;
-    cursor: pointer; transition: all 0.2s ease;
-    border: 1px solid transparent;
-    
-    /* Animation par défaut (Verte pour Pharmacie) */
-    background: #e8f8f5; color: #27ae60;
-    animation: pulseGreen 3s infinite;
-}
-
-/* Cas Spécifique : Bouton GPS (Orange) */
-#loc-btn.header-pill-btn {
-    background: #fff3e0 !important; color: #FF9F1C !important;
-    animation: pulseOrange 3s infinite;
-}
-
-/* --- LES ANIMATIONS --- */
-
-/* 1. Pulse VERT (Pharmacie) */
-@keyframes pulseGreen {
-    0% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.4); }
-    70% { box-shadow: 0 0 0 8px rgba(39, 174, 96, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0); }
-}
-
-/* 2. Pulse ORANGE (GPS) */
-@keyframes pulseOrange {
-    0% { box-shadow: 0 0 0 0 rgba(255, 159, 28, 0.4); }
-    70% { box-shadow: 0 0 0 8px rgba(255, 159, 28, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(255, 159, 28, 0); }
-}
-
-/* --- MODE SOMBRE (Le Secret) --- */
-
-/* En mode sombre, on change le fond et on met une lueur BLANCHE/CLAIRE */
-body.dark-mode .header-pill-btn {
-    background: rgba(39, 174, 96, 0.2); 
-    color: #2ecc71;
-    border-color: #2ecc71;
-    animation: pulseGlowDark 3s infinite; /* Nouvelle animation spéciale nuit */
-}
-
-/* Spécifique GPS en mode sombre */
-body.dark-mode #loc-btn.header-pill-btn {
-    background: rgba(255, 159, 28, 0.2) !important;
-    color: #FF9F1C !important;
-    border-color: #FF9F1C;
-}
-
-/* 3. Animation spéciale NUIT (Lueur plus visible) */
-@keyframes pulseGlowDark {
-    0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); } /* Lueur Blanche */
-    50% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
-}
-
-/* ========================================= */
-/* ANIMATION + VENDRE (CORRIGÉE)             */
-/* ========================================= */
-
-.pulse-text {
-    display: inline-block !important; /* INDISPENSABLE pour que ça bouge */
-    animation: pumpIt 1.5s infinite ease-in-out;
-    transform-origin: center; /* Ça grossit depuis le centre */
-}
-
-@keyframes pumpIt {
-    0% { transform: scale(1); }
-    50% { 
-        transform: scale(1.25); /* Grossit de 25% */
-        color: #e67e22;         /* Devient plus foncé */
-        text-shadow: 0 0 5px rgba(230, 126, 34, 0.3);
-    }
-    100% { transform: scale(1); }
-}
-/* --- NOUVEAUX BADGES INTELLIGENTS --- */
-
-/* 1. Badge VÉRIFIÉ (Bleu confiance, lueur douce) */
-.badge-verified {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: linear-gradient(135deg, #0066cc, #004499);
-    color: white;
-    font-size: 0.55rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 20px;
-    margin-top: 4px;
-    box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
-    letter-spacing: 0.5px;
-}
-/* Petit effet de brillance */
-.badge-verified::before {
-    content: '✓';
-    font-weight: 900;
-}
-
-/* 2. Badge SPONSORISÉ (Doré/Orange, pour ceux qui paient) */
-.badge-sponsored {
-    position: absolute;
-    top: 5px; right: 5px;
-    background: linear-gradient(45deg, #FFD700, #FFC107);
-    color: #5a4a00;
-    font-size: 0.5rem;
-    font-weight: 900;
-    padding: 2px 6px;
-    border-radius: 4px;
-    text-transform: uppercase;
-    box-shadow: 0 2px 5px rgba(255, 215, 0, 0.4);
-    z-index: 5;
-    animation: glowGold 2s infinite alternate;
-}
-
-@keyframes glowGold {
-    from { box-shadow: 0 0 5px rgba(255, 215, 0, 0.4); }
-    to { box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); }
-}
-
-/* Ajustement carte boutique */
-.shop-card { position: relative; overflow: visible; }
-
-/* MODALE PANIER */
-.cart-list {
-    max-height: 50vh;
-    overflow-y: auto;
-    margin-bottom: 20px;
-}
-
-.cart-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 10px 0;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.cart-item img {
-    width: 50px; height: 50px;
-    border-radius: 8px;
-    object-fit: cover;
-    border: 1px solid #eee;
-}
-
-.cart-item-info {
-    flex: 1;
-}
-
-.cart-title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 2px;
-    line-height: 1.2;
-}
-
-.cart-price {
-    font-size: 0.8rem;
-    color: var(--primary);
-    font-weight: 700;
-}
-
-.cart-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.btn-remove {
-    background: #ffebee;
-    color: #e74c3c;
-    border: none;
-    width: 30px; height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
-    line-height: 0;
-}
-
-/* Footer du panier (Total) */
-.cart-footer {
-    border-top: 2px dashed #eee;
-    padding-top: 15px;
-}
-
-.cart-total-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.1rem;
-    color: var(--dark);
-}
-
-/* Dark Mode Support pour le Panier */
-body.dark-mode .cart-item { border-color: #333; }
-body.dark-mode .cart-title { color: white; }
-body.dark-mode .cart-footer { border-color: #333; }
-body.dark-mode .cart-total-row { color: white; }
-body.dark-mode .btn-remove { background: #330000; color: #ff5252; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
