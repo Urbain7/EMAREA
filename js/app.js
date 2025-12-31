@@ -221,10 +221,21 @@ function renderShops() {
     if(c && countLabel) {
         countLabel.textContent = `${allShops.length} actifs`;
         c.innerHTML = '';
+        
+        // Récupération du thème actuel
+        const currentTheme = localStorage.getItem('em_theme') || 'light';
+
         allShops.forEach(s => {
+            // CONSTRUCTION INTELLIGENTE DU LIEN
+            const separator = s.url.includes('?') ? '&' : '?';
+            // On ajoute le paramètre theme=dark ou light
+            const linkWithTheme = `${s.url}${separator}theme=${currentTheme}`;
+            
             let sponsorBadge = s.boost_level > 0 ? `<div class="badge-sponsored">SPONSORISÉ</div>` : '';
+            
+            // On utilise linkWithTheme dans le href
             c.innerHTML += `
-            <a href="${s.url}" class="shop-card" target="_blank">
+            <a href="${linkWithTheme}" class="shop-card" target="_blank">
                 <div style="position:relative;">
                     <img src="${s.logo}" class="shop-logo" style="${s.boost_level > 0 ? "border:2px solid #FFD700" : ""}" onerror="this.src='https://via.placeholder.com/70'">
                     ${sponsorBadge}
